@@ -29,6 +29,9 @@ pkg
 #
 .DS_Store
 
+# Netbeans
+nbproject
+
 # For TextMate
 #*.tmproj
 #tmtags

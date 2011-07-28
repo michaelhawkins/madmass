@@ -1,7 +1,7 @@
 madmass
 -------
 
-madmass stands for "MAssively Distributed Multi-Agent System Simulator" and is a framework for designing web based multi agent system simulations,
+Madmass stands for "MAssively Distributed Multi-Agent System Simulator" and is a framework for designing web based multi agent system simulations,
 with a massive number of agents. madmass is released under AGPL License.
 
 Contributing to MadMass
@@ -20,7 +20,7 @@ Credits
 
 ![Algorithmica](http://algorithmica.it/images/rounded-logo.png)
 
-Madmass is maintained and funded by [Algorithmica, srl](http://algorithmica.it)
+Madmass is maintained and funded by [Algorithmica Srl](http://algorithmica.it)
 
 The names and logos for Algorithmica are trademarks of Algorithmica Srl.
 
