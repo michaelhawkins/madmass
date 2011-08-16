@@ -13,6 +13,7 @@ require 'shoulda'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'madmass'
+require 'test'
 
 class Test::Unit::TestCase
 end
