@@ -1,7 +1,6 @@
 # This is the module that manages the logging facilities.
 # You can attach the Madmass logger to the Rails logger if you use it or use the
 # internal logger (TODO).
-require 'singleton'
 
 module Madmass
   module Utils

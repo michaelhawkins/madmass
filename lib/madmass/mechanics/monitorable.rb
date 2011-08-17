@@ -5,9 +5,13 @@ module Madmass
       def exec_monitor &block
 
         action_policy = policy
-    
-#        ActiveRecord::Base.transaction do #FIXME, should not be AR!
+
+        Madmass.transaction do
           block.call
+        end
+
+#        ActiveRecord::Base.transaction do #FIXME, should not be AR!
+#          block.call
 #        end
 
         # must be outside transaction if involves communication (e.g., socky)

@@ -13,10 +13,13 @@ require File.join(Madmass.root, 'errors')
 require File.join(Madmass.root, 'utils')
 require File.join(Madmass.root, 'madmass', 'mechanics', 'action_factory')
 require File.join(Madmass.root, 'comm')
+require File.join(Madmass.root, 'atomic')
 
 module Madmass
   class << self
     include Madmass::Utils::Loggable
     include Madmass::Utils::Env
+    include Madmass::Utils::Configurable
+    include Madmass::Atomic
   end
 end
