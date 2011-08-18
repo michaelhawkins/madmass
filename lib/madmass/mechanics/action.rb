@@ -1,5 +1,6 @@
 #$:.unshift(File.dirname(__FILE__))
 require 'monitorable'
+require 'stateful'
 
 # This is the base class for any action and defines a specific action definition pattern. This pattern can be briefly described below:
 #
@@ -64,7 +65,7 @@ module Madmass
   module Mechanics
     class Action
       include Madmass::Mechanics::Monitorable
-      #include Stateful
+      include Madmass::Mechanics::Stateful
 
       class_attribute :valid_params
 
@@ -80,7 +81,7 @@ module Madmass
         validate parameters # raises Madmass::Errors::WrongInputError
         @parameters = parameters
         @why_not_applicable = nil
-#        @perception_builder = PerceptionBuilder.new
+        #        @perception_builder = PerceptionBuilder.new
         @comm_strategy = Comm::StandardCommStrategy.new(self)
         @message_builder = Comm::MessageBuilder.new(self)
         process_params
@@ -91,7 +92,7 @@ module Madmass
       end
 
       def percept
-#        return @perception_builder.percept.clone
+        #        return @perception_builder.percept.clone
         {}
       end
 
@@ -111,11 +112,11 @@ module Madmass
           # we are in a transaction!
 
           # check if the action is applicable in the current state
-#          unless state_match?
-#            raise Madmass::Errors::StateMismatchError, I18n.t(:'action.state_mistmatch',
-#              {:user_state => User.current.state,
-#                :action_states => applicable_states.join(", ")})
-#          end
+          unless state_match?
+            raise Madmass::Errors::StateMismatchError, I18n.t(:'action.state_mistmatch',
+              {:agent_state => Madmass.current_agent.status,
+                :action_states => applicable_states.join(", ")})
+          end
 
           # check action specific applicability
           raise Madmass::Errors::NotApplicableError, why_not_applicable unless applicable?
@@ -124,12 +125,12 @@ module Madmass
           execute
 
           # change user state
-#          change_state
+          change_state
 
           # generate percept (must be extracted within the transaction)
           build_result
         end
-    
+
         return percept
       end
 
@@ -184,10 +185,10 @@ module Madmass
         true
       end
 
-#      # Allows easy access to the configuration variables in the game_options.yml
-#      def options key
-#        GameOptions.options(Game.current.format)[key]
-#      end
+      #      # Allows easy access to the configuration variables in the game_options.yml
+      #      def options key
+      #        GameOptions.options(Game.current.format)[key]
+      #      end
 
       # Check if the parameters are a subset of accepted parameters for the action.
       def validate params
@@ -198,6 +199,7 @@ module Madmass
           "#{self.class.name}: unexpected params: #{(params_set - valid_params).to_a.join(',')}"
         ) unless params_set.subset?(valid_params)
       end
+
 
       # Override this method to add parameters preprocessing code (if needed)
       def process_params

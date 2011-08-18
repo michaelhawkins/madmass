@@ -28,7 +28,7 @@ module Madmass
         raise "Madmass::Comm::Helper::sent_to_all: I do not accept a block!" if block_given?
         return if js_array.blank?
         js = js_array.join("\n ")
-        PerceptionSender.send(js, :channels => stringify(environment_channels(channels)))
+        PerceptionSender.instance.send(js, :channels => stringify(environment_channels(channels)))
       end
 
       # Sends js code to all clients registered to the given private client channels.
@@ -46,7 +46,7 @@ module Madmass
         raise "Madmass::Comm::Helper::sent_to_agent: I do not accept a block!" if block_given?
         return if js_array.blank?
         js = js_array.join("\n ")
-        PerceptionSender.send(js, :clients => stringify(environment_channels(clients)))
+        PerceptionSender.instance.send(js, :clients => stringify(environment_channels(clients)))
       end
 
       ###############################################################################

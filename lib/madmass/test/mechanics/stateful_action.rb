@@ -2,7 +2,9 @@ module Madmass
   module Test
 
     # This is a simple test action.
-    class SimpleAction < Madmass::Mechanics::Action
+    class StatefulAction < Madmass::Mechanics::Action
+      action_states :state1, :state2
+      next_state :state3
 
       private
 
@@ -14,4 +16,3 @@ module Madmass
 
   end
 end
-      

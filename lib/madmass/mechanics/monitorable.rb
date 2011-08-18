@@ -10,13 +10,10 @@ module Madmass
           block.call
         end
 
-#        ActiveRecord::Base.transaction do #FIXME, should not be AR!
-#          block.call
-#        end
-
         # must be outside transaction if involves communication (e.g., socky)
         action_policy[:success].call
 
+        # FIXME: permit to provide rescue action from outside
 #      rescue ActiveRecord::Rollback => exc
 #        Rails.logger.info("#{exc.class}: #{exc.message}")
 #        sleep(rand(1)/4.0)

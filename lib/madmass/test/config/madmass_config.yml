@@ -1,1 +1,2 @@
 tx_adapter: :Madmass::Atomic::ActiveRecordAdapter
+comm: :Madmass::Comm::SockySender

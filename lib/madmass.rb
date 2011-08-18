@@ -4,7 +4,11 @@ module Madmass
   class << self
     def root
       MADMASS_ROOT
-    end    
+    end
+
+    def config_root
+      File.join(Madmass.root, '..', 'config')
+    end
   end
 end
 
@@ -14,6 +18,7 @@ require File.join(Madmass.root, 'utils')
 require File.join(Madmass.root, 'madmass', 'mechanics', 'action_factory')
 require File.join(Madmass.root, 'comm')
 require File.join(Madmass.root, 'atomic')
+require File.join(Madmass.root, 'agent')
 
 module Madmass
   class << self
@@ -21,5 +26,6 @@ module Madmass
     include Madmass::Utils::Env
     include Madmass::Utils::Configurable
     include Madmass::Atomic
+    include Madmass::Agent::Current
   end
 end

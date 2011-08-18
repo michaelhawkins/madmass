@@ -1,0 +1,6 @@
+# Madmass I18n italian translation
+
+en:
+  action:
+    state_mistmatch: "Current action is executable in %{action_states} but you are in %{agent_state} state!"
+    test_not_applicable: "Test message for not applicability of actions."
