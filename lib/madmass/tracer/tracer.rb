@@ -16,7 +16,7 @@ module Madmass
     # every change that occur in attributes inside *options* (the method argument).
     # FIXME: must permit to define tracer for new types (other than ActiveRecord, OgmModel and Object)
     # by classes defined out of the madmass gem.
-    def trace *options
+    def madmass_trace *options
       ancstrs = ancestors.map(&:to_s)
       if ancstrs.include?('ActiveRecord::Base')
         ar_trace options

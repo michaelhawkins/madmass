@@ -1,7 +1,7 @@
 module Madmass
   module Agent
 
-    # This is the Singleton class that hold the current agent instance.
+    # This is the Singleton class that holds the current agent instance.
     class CurrentAccessor
       include Singleton
       attr_accessor :agent

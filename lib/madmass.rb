@@ -19,6 +19,7 @@ require File.join(Madmass.root, 'madmass', 'mechanics', 'action_factory')
 require File.join(Madmass.root, 'comm')
 require File.join(Madmass.root, 'atomic')
 require File.join(Madmass.root, 'agent')
+require File.join(Madmass.root, 'percept')
 
 module Madmass
   class << self
@@ -27,5 +28,6 @@ module Madmass
     include Madmass::Utils::Configurable
     include Madmass::Atomic
     include Madmass::Agent::Current
+    include Madmass::Percept::Current
   end
 end

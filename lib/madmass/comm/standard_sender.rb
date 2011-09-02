@@ -6,8 +6,6 @@ module Madmass
 
       class << self
         def send(js, options = {})
-          # FIXME: different send mechanism configurable
-          # Socky.send(js.html_safe, options)
           js
         end
       end

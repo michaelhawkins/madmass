@@ -4,11 +4,11 @@ module Madmass
     class Config
       include Singleton
 
-      attr_accessor :tx_adapter, :comm
+      attr_accessor :tx_adapter, :perception_sender
       
       def initialize
         @tx_adapter = :"Madmass::Atomic::NoneAdapter"
-        @comm = :"Madmass::Comm::StandardSender"
+        @perception_sender = :"Madmass::Comm::StandardSender"
       end
 
       # Overrides default values for all configurations in the yaml file passed
@@ -18,13 +18,18 @@ module Madmass
         conf = YAML.load(File.read(file_path))
         # override tx_manager
         @tx_adapter = conf['tx_adapter'] if conf['tx_adapter']
-        @comm = conf['comm'] if conf['comm']
+        @perception_sender = conf['perception_sender'] if conf['perception_sender']
       end
+      
     end
 
     module Configurable
       def config
         Madmass::Utils::Config.instance
+      end
+
+      def setup &block
+        yield(config)
       end
     end
 

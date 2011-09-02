@@ -20,9 +20,7 @@ require 'stateful'
 #    why a certain action is not applicable through  #why_not_applicable method that returns an ActiveModel::Errors.
 # 5. MANDATORY: Override the #execute method. All the action side effects on the current state of the world have to be performed here.
 #    The execution of #applicable? and #execute will be executed by the system in a single transaction .
-# 6. MANDATORY: Override #build_result method. Any executed action returns a percept. The percept content can be defined in the #build_result method using the @perception_builder to PerceptionBuilder.
-#    If you simply call @perception_builder.percept in #percept method, a basic percept, made of a communication channel and an empty array of agents, will be returned.
-#    Otherwise, if you need to add more information in my_new_action percept, you can use one add_* methods of PerceptionBuilder class.
+# 6. MANDATORY: Override #build_result method. Any executed action returns a percept. The percept content can be defined in the #build_result method accessing Madmass.current_percept.
 #
 # So the workflow is:
 #
@@ -51,11 +49,11 @@ require 'stateful'
 #     end
 #
 #     def execute
-#       puts "You full name is : #{@parameters[:name]} #{@parameters[:last_name]}"
+#       puts "Your full name is : #{@parameters[:name]} #{@parameters[:last_name]}"
 #     end
 #
 #     def build_result
-#        @perception_builder.add_all_players
+#        Madmass.current_percept[:players] = Player.all
 #     end
 #
 #   end
@@ -81,7 +79,9 @@ module Madmass
         validate parameters # raises Madmass::Errors::WrongInputError
         @parameters = parameters
         @why_not_applicable = nil
-        #        @perception_builder = PerceptionBuilder.new
+
+        Madmass.current_percept = {}
+
         @comm_strategy = Comm::StandardCommStrategy.new(self)
         @message_builder = Comm::MessageBuilder.new(self)
         process_params
@@ -89,11 +89,6 @@ module Madmass
 
       def messages
         return @message_builder.messages
-      end
-
-      def percept
-        #        return @perception_builder.percept.clone
-        {}
       end
 
       def why_not_applicable
@@ -104,7 +99,7 @@ module Madmass
       # This method essentially checks the action preconditions by calling #applicable? method, then if the action is applicable call the #execute method,
       # otherwise it raise Madmass::Errors::NotApplicableError exception.
       #
-      # Returns: a percept. You have to define the percept content (arranged in a hash) in the  #percept method.
+      # Returns: a percept. You have to define the percept content (arranged in a hash) in the  #build_result method.
       #
       # Raises: Madmass::Errors::NotApplicableError
       def do_it
@@ -131,7 +126,7 @@ module Madmass
           build_result
         end
 
-        return percept
+        return Madmass.current_percept
       end
 
       private
@@ -142,7 +137,7 @@ module Madmass
       #
       def policy
         unless(@policy)
-          if(Madmass.test?)
+          if(Madmass.env == 'testo')
             error_notify = Proc.new do
               Madmass.logger.info('TEST: sending error messages (simulation)')
             end
@@ -154,7 +149,7 @@ module Madmass
               @comm_strategy.send_messages(messages)
             end
             success_notify = Proc.new do
-              @comm_strategy.send_percept(percept)
+              @comm_strategy.send_percept(Madmass.current_percept)
               @comm_strategy.send_messages(messages)
             end
           end

@@ -10,7 +10,7 @@ class TestAgent < Test::Unit::TestCase
 
   should "have initial status set to :initial" do
     agent = Madmass::Test::RealAgent.new
-    assert_equal :initial, agent.status
+    assert_nil agent.status
     agent.status = :new_state
     assert_equal :new_state, agent.status
   end

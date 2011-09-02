@@ -5,7 +5,7 @@ class TestConfig < Test::Unit::TestCase
     assert_equal :'Madmass::Atomic::NoneAdapter', Madmass.config.tx_adapter
     Madmass.config.load(File.join(Madmass.root, 'madmass', 'test', 'config', 'madmass_config.yml'))
     assert_equal :'Madmass::Atomic::ActiveRecordAdapter', Madmass.config.tx_adapter
-    assert_equal :'Madmass::Comm::SockySender', Madmass.config.comm
+    assert_equal :'Madmass::Comm::SockySender', Madmass.config.perception_sender
   end
 end
 

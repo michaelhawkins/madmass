@@ -15,16 +15,6 @@ module Madmass
 
       end
 
-      def method_missing(method, *args)
-        method = method.to_s
-        if defined?(Rails)
-          Rails.send(method)
-        else
-          env = method.sub(/\?$/, '')
-          super unless ['test', 'development', 'production'].include?(env)
-          return ENV['MADMASS_ENV'] == env
-        end
-      end
     end
     
   end

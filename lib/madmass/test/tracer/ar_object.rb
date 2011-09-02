@@ -1,3 +1,3 @@
 class ArObject < ActiveRecord::Base
-  trace
+  madmass_trace
 end

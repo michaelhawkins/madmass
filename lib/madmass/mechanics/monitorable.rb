@@ -13,30 +13,16 @@ module Madmass
         # must be outside transaction if involves communication (e.g., socky)
         action_policy[:success].call
 
-        # FIXME: permit to provide rescue action from outside
-#      rescue ActiveRecord::Rollback => exc
-#        Rails.logger.info("#{exc.class}: #{exc.message}")
-#        sleep(rand(1)/4.0)
-#        exec_monitor do
-#          block.call
-#        end
-#        return
-#
-#      rescue ActiveRecord::StaleObjectError => exc
-#        Rails.logger.info("#{exc.class}: #{exc.message}")
-#        sleep(rand(1)/4.0)
-#
-##        Game.current.reload if Game.current
-##        Player.current.reload if Player.current
-#
-#        exec_monitor do
-#          block.call
-#        end
-#        return
       rescue Exception => error
         # Errors are logged
         Madmass.logger.error("#{error.class}: #{error.message}")
 
+        # Execute external exception handling
+        if rescue_proc = Madmass.rescues[error.class]
+          rescue_proc.call
+          return
+        end
+        
         error_policy = action_policy[:error][error.class]
         error_policy.call if error_policy
 

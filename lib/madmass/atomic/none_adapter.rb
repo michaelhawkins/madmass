@@ -7,6 +7,14 @@ module Madmass
         def transaction &block
           block.call
         end
+
+        def rescues
+          {Exception => Proc.new {
+              raise exception
+            }
+          }
+        end
+        
       end
     end
 
