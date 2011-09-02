@@ -137,7 +137,7 @@ module Madmass
       #
       def policy
         unless(@policy)
-          if(Madmass.env == 'testo')
+          if(Madmass.env == 'test')
             error_notify = Proc.new do
               Madmass.logger.info('TEST: sending error messages (simulation)')
             end
