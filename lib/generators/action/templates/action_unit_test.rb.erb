@@ -1,0 +1,28 @@
+require File.dirname(__FILE__)+'/../test_helper'
+require File.dirname(__FILE__)+'/../../lib/actions/<%=file_name%>_action.rb'
+
+
+class <%=file_name.camelize%>ActionTest < ActiveSupport::TestCase
+
+
+
+
+  test "a <%=file_name.humanize%>" do
+
+    agent = Madmass::Agent::DummyAgent.new
+
+    action = Madmass::Mechanics::ActionFactory.make(
+      :cmd => 'Actions::<%=file_name%>',
+      :agent => agent)
+
+    assert_not_nil action
+
+    percept = action.do_it
+
+    assert_not_nil percept
+
+    #more testing code here
+
+  end
+
+end
