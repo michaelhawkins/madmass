@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Algorithmica Srl"]
-  s.date = %q{2011-08-31}
+  s.date = %q{2011-10-01}
   s.description = %q{madmass (MAssively Distributed Multi-Agent System Simulator) is a framework for designing web based multi agent system simulations, with a massive number of agents.}
   s.email = %q{info@algorithmica.it}
   s.extra_rdoc_files = [
@@ -30,6 +30,8 @@ Gem::Specification.new do |s|
     "lib/atomic.rb",
     "lib/comm.rb",
     "lib/errors.rb",
+    "lib/generators/action/action_generator.rb",
+    "lib/generators/action/templates/action.rb.erb",
     "lib/madmass.rb",
     "lib/madmass/agent/agent.rb",
     "lib/madmass/agent/current.rb",
@@ -52,6 +54,7 @@ Gem::Specification.new do |s|
     "lib/madmass/mechanics/action_factory.rb",
     "lib/madmass/mechanics/monitorable.rb",
     "lib/madmass/mechanics/stateful.rb",
+    "lib/madmass/percept/current.rb",
     "lib/madmass/test/agent/build_agent.rb",
     "lib/madmass/test/agent/real_agent.rb",
     "lib/madmass/test/agent/wrong_agent.rb",
@@ -66,9 +69,12 @@ Gem::Specification.new do |s|
     "lib/madmass/utils/config.rb",
     "lib/madmass/utils/env.rb",
     "lib/madmass/utils/logger.rb",
+    "lib/madmass_template.rb",
+    "lib/percept.rb",
     "lib/test.rb",
     "lib/tracer.rb",
     "lib/utils.rb",
+    "madmass.gemspec",
     "test/helper.rb",
     "test/test_action.rb",
     "test/test_agent.rb",
@@ -80,11 +86,10 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/algorithmica/madmass}
   s.licenses = ["GNU AGPL"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
+  s.rubygems_version = %q{1.5.2}
   s.summary = %q{madmass (MAssively Distributed Multi-Agent System Simulator) is a framework for designing web based multi agent system simulations, with a massive number of agents.}
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
