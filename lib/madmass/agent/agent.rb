@@ -7,13 +7,13 @@ module Madmass
     def self.included(base)
       base.class_eval do
         # TODO: delete dependency if possible
-        if base.ancestors.include?(ActiveRecord::Base)
-          base.send(:include, Madmass::ActiveRecordAgent)
-        else
-          attr_accessor :status
-          alias_method :initialize_without_check, :initialize
-          alias_method :initialize, :initialize_with_check
-        end        
+        #HACK if base.ancestors.include?(ActiveRecord::Base)
+        #HACK   base.send(:include, Madmass::ActiveRecordAgent)
+        #HACK else
+        attr_accessor :status
+        alias_method :initialize_without_check, :initialize
+        alias_method :initialize, :initialize_with_check
+        #HACK end
       end
     end
 
