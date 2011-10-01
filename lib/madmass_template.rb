@@ -20,9 +20,21 @@ initializer("madmass.rb", %Q{
     # Configure Madmass in order to use the Active Record transaction adapter,
     # default is :"Madmass::Atomic::NoneAdapter".
     # You can also create your own adapter and pass it to the configuration
-    config.tx_adapter = :'Madmass::Atomic::ActiveRecordAdapter'
+    # config.tx_adapter = :'Madmass::Atomic::ActiveRecordAdapter'
 
     # Configure Madmass to use
     config.perception_sender = :'Madmass::Comm::SockySender'
   end
   })
+
+if yes?("Would you like to migrate the DBs?")
+
+  rake "db:create", :env => 'development'
+  rake "db:migrate", :env => 'development'
+
+  rake "db:create", :env => 'test'
+  rake "db:migrate", :env => 'test'
+
+  rake "db:create", :env => 'production'
+  rake "db:migrate", :env => 'production'
+end
