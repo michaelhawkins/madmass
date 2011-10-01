@@ -5,19 +5,13 @@ require File.dirname(__FILE__)+'/../../lib/actions/<%=file_name%>_action.rb'
 class <%=file_name.camelize%>ActionTest < ActiveSupport::TestCase
 
 
-
-
   test "a <%=file_name.humanize%>" do
 
-    agent = Madmass::Agent::DummyAgent.new
+    agent = Madmass::Agent::ProxyAgent.new
 
-    action = Madmass::Mechanics::ActionFactory.make(
-      :cmd => 'Actions::<%=file_name%>',
-      :agent => agent)
+    assert_not_nil agent
 
-    assert_not_nil action
-
-    percept = action.do_it
+    percept = agent.execute(:cmd => <%=file_name%>)
 
     assert_not_nil percept
 

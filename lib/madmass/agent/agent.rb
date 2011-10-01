@@ -17,6 +17,24 @@ module Madmass
       end
     end
 
+
+    def execute(usr_opts={})
+      
+      #prepare opts
+      opts=usr_opts.clone
+      opts[:agent] = self
+      opts[:cmd] = "Actions::"+ opts[:cmd]
+
+      #create the action
+      action = Madmass::Mechanics::ActionFactory.make(opts)
+
+      #execute the action
+      percept = action.do_it
+
+      #return the percept
+      return percept;
+    end
+
     private
 
     # Verify that che class that implements the agent has the required attributes.
@@ -38,4 +56,6 @@ module Madmass
       save
     end
   end
+
+
 end
