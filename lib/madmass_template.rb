@@ -2,10 +2,7 @@
 #http://edgeguides.rubyonrails.org/rails_application_templates.html
 
 #Dependency with MADMASS
-#FIXME gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "master" )
-gem("madmass", :path => "/Users/vittorio/dev/projects/madmass" )
-
-#Installation of Devise for authentication (optional)
+gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "master" )
 
 
 #MADMASS initialization
@@ -23,9 +20,13 @@ initializer("madmass.rb", %Q{
   })
 
 
+#DB related stuff
+
 return if no?("Would you like to use a DB?")
 
-if yes?("Would you like to install Devise?")
+
+#Installation of Devise for authentication (optional)
+if yes?("Would you like to install Devise for authentication?")
   gem("devise")
   generate("devise:install")
   model_name = ask("What would you like the user model to be called? [user]")
