@@ -8,7 +8,7 @@ Target applications include, but are not limited to, Multi-Player Online Games,
 Transaction Processing Systems, Location-based Mobile Social Networks (or geo-social networks)
 and cooperative systems (e.g.,crowd-sourcing apps).
 
-Please refer to the [wiki](wiki) for further information.
+Please refer to the [wiki](https://github.com/algorithmica/madmass/wiki) for further information.
 
 Contributing to MadMass
 -----------------------
