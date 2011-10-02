@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Algorithmica Srl"]
-  s.date = %q{2011-10-01}
+  s.date = %q{2011-10-02}
   s.description = %q{madmass (MAssively Distributed Multi-Agent System Simulator) is a framework for designing web based multi agent system simulations, with a massive number of agents.}
   s.email = %q{info@algorithmica.it}
   s.extra_rdoc_files = [
@@ -32,9 +32,11 @@ Gem::Specification.new do |s|
     "lib/errors.rb",
     "lib/generators/action/action_generator.rb",
     "lib/generators/action/templates/action.rb.erb",
+    "lib/generators/action/templates/action_unit_test.rb.erb",
     "lib/madmass.rb",
     "lib/madmass/agent/agent.rb",
     "lib/madmass/agent/current.rb",
+    "lib/madmass/agent/proxy_agent.rb",
     "lib/madmass/atomic/active_record_adapter.rb",
     "lib/madmass/atomic/none_adapter.rb",
     "lib/madmass/atomic/transaction_manager.rb",
