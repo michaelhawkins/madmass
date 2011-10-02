@@ -1,8 +1,14 @@
 madmass
 -------
 
-Madmass stands for "MAssively Distributed Multi-Agent System Simulator" and is a framework for designing web based multi agent system simulations,
-with a massive number of agents. madmass is released under AGPL License.
+MADMASS is an open-source Ruby on Rails gem for developing MAssively Distributed
+Multi Agent System Simulators. MADMASS is a framework for developing web
+applications that featuring scalability and real-time interactions among users.
+Target applications include, but are not limited to, Multi-Player Online Games,
+Transaction Processing Systems, Location-based Mobile Social Networks (or geo-social networks)
+and cooperative systems (e.g.,crowd-sourcing apps).
+
+Please refer to the [wiki](wiki) for further information.
 
 Contributing to MadMass
 -----------------------
