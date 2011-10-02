@@ -2,16 +2,11 @@
 #http://edgeguides.rubyonrails.org/rails_application_templates.html
 
 #Dependency with MADMASS
-gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "master" )
+#FIXME gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "master" )
+gem("madmass", :path => "/Users/vittorio/dev/projects/madmass" )
 
 #Installation of Devise for authentication (optional)
-if yes?("Would you like to install Devise?")
-  gem("devise")
-  generate("devise:install")
-  model_name = ask("What would you like the user model to be called? [user]")
-  model_name = "user" if model_name.blank?
-  generate("devise", model_name)
-end
+
 
 #MADMASS initialization
 
@@ -26,6 +21,17 @@ initializer("madmass.rb", %Q{
     config.perception_sender = :'Madmass::Comm::SockySender'
   end
   })
+
+
+return if no?("Would you like to use a DB?")
+
+if yes?("Would you like to install Devise?")
+  gem("devise")
+  generate("devise:install")
+  model_name = ask("What would you like the user model to be called? [user]")
+  model_name = "user" if model_name.blank?
+  generate("devise", model_name)
+end
 
 if yes?("Would you like to migrate the DBs?")
 
