@@ -20,7 +20,7 @@ module Madmass
         perception = do_it action
 
         #dispatch percept
-        dispatch_percepts
+        perception.dispatch
 
         #return the perception
         return perception;
@@ -59,20 +59,10 @@ module Madmass
           action.build_result
         end
 
-        return Madmass.current_percept
+        return Madmass.current_perception
       end
 
-      def dispatch_percepts
-
-        Madmass.current_percept.each do |percept|
-
-          topics = percept.header.topics
-          #TODO @comm_strategy.send_to_topics(t, percept) if topics.any?
-
-          clients = percept.header.clients
-          #TODO @comm_strategy.send_to_clients(clients, percept) if clients.any?
-        end
-      end
+    
     
     end
   end

@@ -78,7 +78,7 @@ module Madmass
         @parameters = parameters
         @why_not_applicable = nil
 
-        Madmass.current_percept = {}
+        Madmass.current_perception = Madmass::Observation::Perception.new
 
         @comm_strategy = Comm::StandardCommStrategy.new(self)
         @message_builder = Comm::MessageBuilder.new(self)
