@@ -2,7 +2,7 @@ module Madmass
   module Comm
     
     class DummyCommStrategy < CommStrategy
-      def send_percept percept
+      def dispatch percept
         #does nothing
       end
     end

@@ -37,6 +37,7 @@ module Madmass
 
         unless Madmass.current_agent.action_applicable
           why_not_applicable.add(:'action.test_not_applicable', 'Agent cannot execute the build action')
+          #FIXME THIS SHOULD NOT BE DONE HERE
           @message_builder.add_result({
               :message => :'action.test_not_applicable',
               :subs => {:type => 'build'},
@@ -55,7 +56,11 @@ module Madmass
 
       # Builds the perception (see Action)
       def build_result
-        # TODO: when perception builder will be implemented
+         p = Madmass::Perception::Percept.new(self)
+         p.header = {:topics => 'all', :clients => '1'}
+         p.status = {:code => '100'}
+         p.data = {:message => "some data"}
+         Madmass.current_perception << p
       end
 
     end

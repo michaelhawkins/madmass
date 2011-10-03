@@ -21,7 +21,6 @@ module Madmass
       end
     end
 
-
     
 
     private
@@ -36,6 +35,8 @@ module Madmass
         initialize_without_check
       end
     end
+
+    #Initialize current_perception
 
   end
 

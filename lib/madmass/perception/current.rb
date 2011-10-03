@@ -1,5 +1,5 @@
 module Madmass
-  module Observation
+  module Perception
 
     # This is the Singleton class that holds the current perception instance.
     class CurrentAccessor
@@ -11,11 +11,11 @@ module Madmass
     # action in execution, in all classes by invoking Madmass.current_perception.
     module Current
       def current_perception
-        Observation::CurrentAccessor.instance.perception
+        Perception::CurrentAccessor.instance.perception ||= [] #HACK TODO in a better way
       end
 
       def current_perception=(perception)
-        Observation::CurrentAccessor.instance.perception = perception
+        Perception::CurrentAccessor.instance.perception = perception
       end
     end
   end

@@ -78,10 +78,9 @@ module Madmass
         @parameters = parameters
         @why_not_applicable = nil
 
-        Madmass.current_perception = Madmass::Observation::Perception.new
-
-        @comm_strategy = Comm::StandardCommStrategy.new(self)
-        @message_builder = Comm::MessageBuilder.new(self)
+        #REMOVE ME @comm_strategy = Comm::StandardCommStrategy.new(self)
+        
+        @message_builder = Comm::MessageBuilder.new(self) #TODO remove from here
         process_params
       end
 
@@ -92,9 +91,6 @@ module Madmass
       def why_not_applicable
         @why_not_applicable ||= ActiveModel::Errors.new(self)
       end
-
-      
-
       
       # Override this method in your action to define the action postconditions.
       def execute
@@ -111,7 +107,6 @@ module Madmass
       end
 
       private
-
       #      # Allows easy access to the configuration variables in the game_options.yml
       #      def options key
       #        GameOptions.options(Game.current.format)[key]

@@ -41,8 +41,14 @@ class TestAction < Test::Unit::TestCase
     end
 
     agent.action_applicable = true
-    agent.execute(:cmd => 'madmass::test::build', :agent => agent, :initial_placement => 1, :target => 10)
+    perception = agent.execute(:cmd => 'madmass::test::build', :agent => agent, :initial_placement => 1, :target => 10)
     assert_equal 1, agent.executions
+    assert perception
+    assert_equal perception.size, 1
+    assert_equal perception[0].data, {:message => "some data"}
+    assert_equal perception[0].header, {:topics => 'all', :clients => '1'}
+    assert_equal perception[0].status,{:code => '100'}
+    
   end
 
 end

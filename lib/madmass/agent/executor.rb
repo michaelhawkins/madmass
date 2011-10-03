@@ -7,7 +7,7 @@ module Madmass
       include ExecutionMonitor
 
       def execute(usr_opts={})
-
+                
         #prepare opts
         opts=usr_opts.clone
         opts[:agent] = self
@@ -19,8 +19,6 @@ module Madmass
         #execute the action (transactional)
         perception = do_it action
 
-        #dispatch percept
-        perception.dispatch
 
         #return the perception
         return perception;
@@ -61,9 +59,7 @@ module Madmass
 
         return Madmass.current_perception
       end
-
-    
-    
+ 
     end
   end
 end
