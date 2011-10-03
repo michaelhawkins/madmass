@@ -1,9 +1,13 @@
+require "#{File.dirname(__FILE__)}/executor"
+
 module Madmass
   # This module must be included by classes that represents the agent that executes
   # the action. For example in a game the Agent can be the player etc.
   # The Agent is used by actions to check its status and execute the workflow defined
   # inside actions by the *action_states* and *next_state* directives.
   module Agent
+    include  Madmass::Agent::Executor
+
     def self.included(base)
       base.class_eval do
         # TODO: delete dependency if possible
@@ -18,22 +22,7 @@ module Madmass
     end
 
 
-    def execute(usr_opts={})
-      
-      #prepare opts
-      opts=usr_opts.clone
-      opts[:agent] = self
-      opts[:cmd] = "Actions::"+ opts[:cmd]
-
-      #create the action
-      action = Madmass::Mechanics::ActionFactory.make(opts)
-
-      #execute the action
-      percept = action.do_it
-
-      #return the percept
-      return percept;
-    end
+    
 
     private
 

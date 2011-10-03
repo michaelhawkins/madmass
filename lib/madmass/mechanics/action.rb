@@ -1,5 +1,4 @@
 #$:.unshift(File.dirname(__FILE__))
-require 'monitorable'
 require 'stateful'
 
 # This is the base class for any action and defines a specific action definition pattern. This pattern can be briefly described below:
@@ -62,7 +61,6 @@ require 'stateful'
 module Madmass
   module Mechanics
     class Action
-      include Madmass::Mechanics::Monitorable
       include Madmass::Mechanics::Stateful
 
       class_attribute :valid_params
@@ -95,77 +93,9 @@ module Madmass
         @why_not_applicable ||= ActiveModel::Errors.new(self)
       end
 
-      # This is the method that fire the action execution. Any action instance previously created through the Mechanics::ActionFactory, can be executed by calling this method.
-      # This method essentially checks the action preconditions by calling #applicable? method, then if the action is applicable call the #execute method,
-      # otherwise it raise Madmass::Errors::NotApplicableError exception.
-      #
-      # Returns: a percept. You have to define the percept content (arranged in a hash) in the  #build_result method.
-      #
-      # Raises: Madmass::Errors::NotApplicableError
-      def do_it
-        exec_monitor do
-          # we are in a transaction!
+      
 
-          # check if the action is applicable in the current state
-          unless state_match?
-            raise Madmass::Errors::StateMismatchError, I18n.t(:'action.state_mistmatch',
-              {:agent_state => Madmass.current_agent.status,
-                :action_states => applicable_states.join(", ")})
-          end
-
-          # check action specific applicability
-          raise Madmass::Errors::NotApplicableError, why_not_applicable unless applicable?
-
-          # execute action
-          execute
-
-          # change user state
-          change_state
-
-          # generate percept (must be extracted within the transaction)
-          build_result
-        end
-
-        return Madmass.current_percept
-      end
-
-      private
-
-      # policy returns the error or success actions in the form of an hash like this:
-      #
-      #   {:error => {error1 => action1, error2 => action2, ...}, :success => action}
-      #
-      def policy
-        unless(@policy)
-          if(Madmass.env == 'test')
-            error_notify = Proc.new do
-              Madmass.logger.info('TEST: sending error messages (simulation)')
-            end
-            success_notify = Proc.new do
-              Madmass.logger.info('TEST: sending percept and success messages (simulation)')
-            end
-          else
-            error_notify = Proc.new do
-              @comm_strategy.send_messages(messages)
-            end
-            success_notify = Proc.new do
-              @comm_strategy.send_percept(Madmass.current_percept)
-              @comm_strategy.send_messages(messages)
-            end
-          end
-
-          @policy = {
-            :error =>{
-              Madmass::Errors::WrongInputError => error_notify,
-              Madmass::Errors::NotApplicableError => error_notify
-            },
-            :success => success_notify
-          }
-        end
-
-        return @policy
-      end
-
+      
       # Override this method in your action to define the action postconditions.
       def execute
         raise "Action is abstract!"
@@ -179,6 +109,8 @@ module Madmass
       def applicable?
         true
       end
+
+      private
 
       #      # Allows easy access to the configuration variables in the game_options.yml
       #      def options key

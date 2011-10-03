@@ -6,7 +6,6 @@ module Madmass
       action_states :state1, :state2
       next_state :state3
 
-      private
 
       def execute
         true

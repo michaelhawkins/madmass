@@ -17,8 +17,17 @@ module Madmass
       end
 
       module InstanceMethods
-        private
-  
+
+        # Check if the current user state is allowed. Any is a special state that allow
+        # every user state.
+        def state_match?
+          # withot the current agent the flow don't exists
+          return true unless Madmass.current_agent
+          applicable_states.include?('any') or applicable_states.include?(Madmass.current_agent.status.to_s)
+        end
+
+
+       
         def applicable_states
           self.class.applicable_states
         end
@@ -49,14 +58,7 @@ module Madmass
           next_state!(Madmass.current_agent) if action_next_state
         end
 
-        # Check if the current user state is allowed. Any is a special state that allow
-        # every user state.
-        def state_match?
-          # withot the current agent the flow don't exists
-          return true unless Madmass.current_agent
-          applicable_states.include?('any') or applicable_states.include?(Madmass.current_agent.status.to_s)
-        end
-
+        
         # Set the next state to the user.
         def next_state!(agent)
           # FIXME: active record objects needs specific persistence invocation

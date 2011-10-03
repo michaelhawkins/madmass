@@ -27,8 +27,6 @@ module Madmass
       action_params :initial_placement, :target
       action_states :play
 
-      private
-
       # Preprocess parameters (see Action)
       def process_params
         @target = @parameters[:target]
