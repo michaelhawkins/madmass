@@ -5,9 +5,15 @@
 module Madmass
   module Perception
     class Percept
-      attr_accessor  :header, :data, :status
+      attr_reader  :header, :data, :status
+      attr_writer :data, :status
 
-      def initialize(context)
+      def add_headers headers
+        @header.merge! headers
+      end
+
+
+    def initialize(context)
         @header = HashWithIndifferentAccess.new({
             :agent_id => "#{Madmass.current_agent.id}",
             :action => context.class.name})

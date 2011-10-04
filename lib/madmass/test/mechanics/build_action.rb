@@ -57,7 +57,7 @@ module Madmass
       # Builds the perception (see Action)
       def build_result
          p = Madmass::Perception::Percept.new(self)
-         p.header.merge!({:topics => 'all', :clients => '1'})
+         p.add_headers({:topics => 'all', :clients => '1'})
          p.status = {:code => '100'}
          p.data =  {:message => "some data"}
          Madmass.current_perception << p
