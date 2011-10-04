@@ -7,6 +7,7 @@ class <%=file_name.camelize%>AgentController < ActionController::Base
   include ActionView::Helpers::JavaScriptHelper
 
   before_filter :get_agent
+  
   def execute
     return unless action_monitor do
       @percept = Madmass.current_agent.execute(params)
