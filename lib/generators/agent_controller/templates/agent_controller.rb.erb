@@ -5,7 +5,8 @@ class <%=file_name.camelize%>AgentController < ActionController::Base
 
   include ApplicationHelper
   include ActionView::Helpers::JavaScriptHelper
-  
+
+  before_filter :get_agent
   def execute
     return unless action_monitor do
       @percept = Madmass.current_agent.execute(params)
@@ -18,6 +19,10 @@ class <%=file_name.camelize%>AgentController < ActionController::Base
   
   
   private
+
+  def get_agent
+    Madmass.current_agent = Madmass::Agent::ProxyAgent.new
+  end
 
   # Utility to manage exceptions raised by block. In case of MadmassErrors::CatastrophicError a
   # recovery action may be defined. The default recovery action is :list
