@@ -11,7 +11,7 @@ module Madmass
     # action in execution, in all classes by invoking Madmass.current_perception.
     module Current
       def current_perception
-        Perception::CurrentAccessor.instance.perception ||= [] #HACK TODO in a better way
+        Perception::CurrentAccessor.instance.perception #HACK TODO in a better way
       end
 
       def current_perception=(perception)

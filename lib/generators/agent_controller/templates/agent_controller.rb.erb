@@ -6,7 +6,7 @@ class <%=file_name.camelize%>AgentController < ActionController::Base
   include ApplicationHelper
   include ActionView::Helpers::JavaScriptHelper
 
-  before_filter :get_agent
+  before_filter :init
   
   def execute
     return unless action_monitor do
@@ -21,8 +21,9 @@ class <%=file_name.camelize%>AgentController < ActionController::Base
   
   private
 
-  def get_agent
+  def init
     Madmass.current_agent = Madmass::Agent::ProxyAgent.new
+    Madmass.current_agent = []
   end
 
   # Utility to manage exceptions raised by block. In case of MadmassErrors::CatastrophicError a
