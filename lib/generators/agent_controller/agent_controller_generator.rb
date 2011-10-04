@@ -9,7 +9,7 @@ class AgentControllerGenerator < Rails::Generators::NamedBase
   def render_action_files
     raise "The agent controller name can not be blank!" if file_name.blank?
     template "agent_controller.rb.erb", "app/controllers/#{file_name}_agent_controller.rb"
-    route("match '#{file_name}', :to => '#{file_name}_agent#execute'")
+    route("match '#{file_name}', :to => '#{file_name}_agent#execute', :via => [:post]")
   end
 
 end
