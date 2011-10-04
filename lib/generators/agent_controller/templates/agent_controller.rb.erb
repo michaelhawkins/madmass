@@ -29,21 +29,21 @@ class <%=file_name.camelize%>AgentController < ActionController::Base
     block.call
     return true
 
-  rescue MadmassErrors::StateMismatchError
+  rescue Madmass::Errors::StateMismatchError
     redirect_to :action => current_user.state
     return false
 
-  rescue MadmassErrors::NotApplicableError
+  rescue Madmass::Errors::NotApplicableError
     render :text => 'not applicable', :status => :precondition_failed
     return false
 
-  rescue MadmassErrors::WrongInputError => exc
+  rescue Madmass::Errors::WrongInputError => exc
     logger.debug "MadmassErrors::WrongInputError: #{exc.message}"
     redirect_to  :action => :root
     return false
 
 
-  rescue MadmassErrors::CatastrophicError => exc
+  rescue Madmass::Errors::CatastrophicError => exc
     logger.error "MadmassErrors::CatastrophicError: #{exc.message}"
     redirect_to '/error'
     return false
