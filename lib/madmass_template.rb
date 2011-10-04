@@ -21,7 +21,7 @@ initializer("madmass.rb", %Q{
 
 #Autoload files in lib
 inject_into_file 'config/application.rb', 
-  "\n\t config.autoload_paths += %W(\#{config.root}/lib)'",
+  "\n\t config.autoload_paths += %W(\#{config.root}/lib)",
   :after => "# Custom directories with classes and modules you want to be autoloadable."
 inject_into_file 'config/application.rb', 
   "\n\t config.autoload_paths += Dir[\"\#{config.root}/lib/**/\"]",
