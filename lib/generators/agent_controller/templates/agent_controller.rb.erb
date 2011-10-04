@@ -23,7 +23,7 @@ class <%=file_name.camelize%>AgentController < ActionController::Base
 
   def init
     Madmass.current_agent = Madmass::Agent::ProxyAgent.new
-    Madmass.current_agent = []
+    Madmass.current_perception = []
   end
 
   # Utility to manage exceptions raised by block. In case of MadmassErrors::CatastrophicError a
