@@ -46,9 +46,11 @@ class TestAction < Test::Unit::TestCase
     assert perception
     assert_equal perception.size, 1
     assert_equal perception[0].data, {:message => "some data"}
-    assert_equal perception[0].header, {:topics => 'all', :clients => '1'}
+    assert_equal perception[0].header[:topics], 'all'
+    assert_equal perception[0].header[:clients], '1'
     assert_equal perception[0].status,{:code => '100'}
-    
+    assert_equal perception[0].header[:agent_id], "#{agent.id}"
+    assert_equal perception[0].header[:action], "Madmass::Test::BuildAction"
   end
 
 end
