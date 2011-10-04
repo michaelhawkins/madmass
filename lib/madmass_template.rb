@@ -22,11 +22,11 @@ initializer("madmass.rb", %Q{
 
 #DB related stuff
 
-return if no?("Would you like to use a DB?")
+return if no?("Would you like to use a DB? (yes/no)")
 
 
 #Installation of Devise for authentication (optional)
-if yes?("Would you like to install Devise for authentication?")
+if yes?("Would you like to install Devise for authentication?(yes/no)")
   gem("devise")
   generate("devise:install")
   model_name = ask("What would you like the user model to be called? [user]")

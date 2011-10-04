@@ -13,7 +13,7 @@ module Madmass
       end
 
 
-    def initialize(context)
+      def initialize(context)
         @header = HashWithIndifferentAccess.new({
             :agent_id => "#{Madmass.current_agent.id}",
             :action => context.class.name})

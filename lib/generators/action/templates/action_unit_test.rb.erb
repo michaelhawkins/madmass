@@ -11,7 +11,7 @@ class <%=file_name.camelize%>ActionTest < ActiveSupport::TestCase
 
     assert_not_nil agent
 
-    percept = agent.execute(:cmd => '<%=file_name%>')
+    percept = agent.execute(:cmd => 'actions::<%=file_name%>')
 
     assert_not_nil percept
 
