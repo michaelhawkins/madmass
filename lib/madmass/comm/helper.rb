@@ -54,6 +54,7 @@ module Madmass
       ###############################################################################
       #            NOTIFICATION METHODS
 
+      #FIXME: delete me, this was just for html
       # Notifies the errors.
       # clients => is the array of clients to notify.
       # errors => is a string or a hash of key (error type) value (error msg) errors
@@ -62,17 +63,18 @@ module Madmass
       #    send_to_player(clients, js)
       #  end
 
-      def html_errors(errors)
-        messages = gather_errors(errors)
-        html_out = '<div id="error_explanation"><ul>'
-        html_out += messages.map {|msg| page_notification(msg)}.join
-        html_out += '</ul></div>'
-        return html_out.html_safe
-      end
+#      def html_errors(errors)
+#        messages = gather_errors(errors)
+#        html_out = '<div id="error_explanation"><ul>'
+#        html_out += messages.map {|msg| page_notification(msg)}.join
+#        html_out += '</ul></div>'
+#        return html_out.html_safe
+#      end
 
 
       private
 
+      # FIXME: delete me, was used by html_errors
       # Returns an array of error messages from the errors hash (from an action).
       # A single error message is a hash of this form:
       #
@@ -84,24 +86,25 @@ module Madmass
       # errors parameter is a hash of:
       #   * strings: typically are messages from catastrophic errors
       #   * hash: {type => message, ...} typically are messages from action errors
-      def gather_errors(errors)
-        errors_messages = []
-        errors.each do |id, error|
-          case error
-          when String
-            errors_messages << {:type => :error, :msg => "#{error}"}
-          when Hash
-            error.each  do |id, msg|
-              errors_messages << {:type => :warning, :msg => "#{msg}"}
-            end
-          end
-        end
-        return errors_messages
-      end
+#      def gather_errors(errors)
+#        errors_messages = []
+#        errors.each do |id, error|
+#          case error
+#          when String
+#            errors_messages << {:type => :error, :msg => "#{error}"}
+#          when Hash
+#            error.each  do |id, msg|
+#              errors_messages << {:type => :warning, :msg => "#{msg}"}
+#            end
+#          end
+#        end
+#        return errors_messages
+#      end
 
-      def page_notification(error)
-        "<li><h2>#{error[:type]}</h2> <i>#{error[:msg]}</i></li>"
-      end
+      #FIXME: delete me, was used by html_errors
+#      def page_notification(error)
+#        "<li><h2>#{error[:type]}</h2> <i>#{error[:msg]}</i></li>"
+#      end
 
       # Stringifies all the elements of the array
       def stringify(some_array)
