@@ -19,7 +19,6 @@ module Madmass
         #execute the action (transactional)
         perception = do_it action
 
-
         #return the perception
         return perception;
       end
