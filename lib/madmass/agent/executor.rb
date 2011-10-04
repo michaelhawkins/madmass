@@ -13,6 +13,9 @@ module Madmass
         opts[:agent] = self
         #opts[:cmd] = "Actions::"+ opts[:cmd]
 
+        #Reset perception, that will be populated by the following actions
+        Madmass.current_perception = []
+
         #create the action
         action = Madmass::Mechanics::ActionFactory.make(opts)
 
