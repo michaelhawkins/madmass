@@ -1,13 +1,9 @@
 # Load the communication strategies module.
 comm_path = File.join(Madmass.root, 'madmass', 'comm')
-require File.join(comm_path, 'helper')
-require File.join(comm_path, 'message_builder')
-require File.join(comm_path, 'comm_strategy')
+#require File.join(comm_path, 'helper')
+require File.join(comm_path, 'percept_grouper')
+require File.join(comm_path, 'dispatcher')
 
-# require all comm strategy classes
-Dir.glob(File.join(comm_path, '**', '*_comm_strategy.rb')).each do |source|
-  require source
-end
 
 # require all comm strategy classes
 Dir.glob(File.join(comm_path, '**', '*_sender.rb')).each do |source|

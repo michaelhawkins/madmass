@@ -18,6 +18,6 @@ module Madmass
         Perception::CurrentAccessor.instance.perception = perception
       end
     end
-  end
 
+  end
 end

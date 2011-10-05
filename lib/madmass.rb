@@ -29,5 +29,6 @@ module Madmass
     include Madmass::Atomic
     include Madmass::Agent::Current
     include Madmass::Perception::Current
+    include Madmass::Comm::Dispatcher
   end
 end

@@ -80,7 +80,7 @@ module Madmass
 
         #REMOVE ME @comm_strategy = Comm::StandardCommStrategy.new(self)
         
-        @message_builder = Comm::MessageBuilder.new(self) #TODO remove from here
+       # @message_builder = Comm::MessageBuilder.new(self) #TODO remove from here
         process_params
       end
 

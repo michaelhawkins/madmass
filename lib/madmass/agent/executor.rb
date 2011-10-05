@@ -20,10 +20,13 @@ module Madmass
         action = Madmass::Mechanics::ActionFactory.make(opts)
 
         #execute the action (transactional)
-        perception = do_it action
+        percepts = do_it action
+
+        #dispatch
+        Madmass.dispatch_percepts
 
         #return the perception
-        return perception;
+        return percepts;
       end
 
 

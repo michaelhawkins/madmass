@@ -8,7 +8,7 @@ module Madmass
         @context = action
       end
 
-      def dispatcht percept
+      def dispatch percept
         raise "Can not invoke #{self.class}::send_percept. This is an abstract method"
       end
 

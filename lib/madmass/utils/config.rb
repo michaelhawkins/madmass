@@ -8,7 +8,7 @@ module Madmass
       
       def initialize
         @tx_adapter = :"Madmass::Atomic::NoneAdapter"
-        @perception_sender = :"Madmass::Comm::StandardSender"
+        @perception_sender = :"Madmass::Comm::DummySender"
       end
 
       # Overrides default values for all configurations in the yaml file passed

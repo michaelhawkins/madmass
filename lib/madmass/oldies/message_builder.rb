@@ -4,24 +4,24 @@ module Madmass
 
     class Message
       #
-      # - contest [String]: is the mechanics action like build_city, trade_bank etc.
+      # - action [String]: is the mechanics action like build_city, trade_bank etc.
       #   It is useful for message grouping and filtergin operations.
       # - type [String]: message type, like 'info', 'warning', 'error'
       # - level [Integer]: a number >= 0 that represent the message level (like priority).
-      #   The client can decide to show only higher message level of a given contest group.
+      #   The client can decide to show only higher message level of a given action group.
       # - key [Symbol or String]: assigned in the initialization. It's the message id.
       # - message [String]: the actual message. The massage can have substitutions in the form of {subParam1} ...
       # - subs [Hash]: substitution parameters for the message. The client will do the substitutions.
       # - options [Hash]: a hash of optional options to pass to the client.
       # - users [Array]: array of socky client ids (for private messages)
       # - channels [Array]: array od socky channel ids (for public messages)
-      attr_reader :contest, :type, :level, :key, :message, :subs, :options, :users, :channels
+      attr_reader :action, :type, :level, :key, :message, :subs, :options, :users, :channels
 
       def initialize(msg_params)
         translate(msg_params)
 
         # Assignments useful for inspection
-        @contest = msg_params[:contest]
+        @action = msg_params[:action]
         @type = msg_params[:type]
         @level = msg_params[:level]
         @key = msg_params[:key]
@@ -99,13 +99,13 @@ module Madmass
 
       # Message added when the builder fails to add a message
       BUILD_ERROR_MSG = {
-        :contest => 'message_builder',
+        :action => 'message_builder',
         :type => TYPES[:server],
         :level => 1000,
       }.freeze unless defined? BUILD_ERROR_MSG
 
-      def initialize(contest)
-        @contest = contestualize contest
+      def initialize(action)
+        @action = actionualize action
         @messages = []
         # Message is sent by default only to the current user
       
@@ -126,7 +126,7 @@ module Madmass
           error_msg[:users] = [@user]
           msg = error_msg
         end
-        msg[:contest] = @contest
+        msg[:action] = @action
         msg[:users] ||= [@user] if(@user and msg[:channels].blank?)
         @messages << Message.new(full_message(msg).clone)
       end
@@ -145,9 +145,9 @@ module Madmass
         add msg
       end
 
-      # Returns a string representing the contest given the contest parameter that can be a String or any other class
-      def contestualize(contest)
-        return (contest.is_a?(String) ? contest : contest.class.name.demodulize.underscore)
+      # Returns a string representing the action given the action parameter that can be a String or any other class
+      def actionualize(action)
+        return (action.is_a?(String) ? action : action.class.name.demodulize.underscore)
       end
 
       # Fills the message with all parameters

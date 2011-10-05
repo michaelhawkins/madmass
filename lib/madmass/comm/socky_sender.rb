@@ -3,10 +3,10 @@ module Madmass
           
     class SockySender
       include Singleton
-
+      
       class << self
-        def send(js, options = {})
-          Socky.send(js.html_safe, options)
+        def send(pecepts,opts)
+          Socky.send(percepts.to_json.html_safe,opts) #FIXME
         end
       end
       

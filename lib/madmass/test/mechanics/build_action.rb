@@ -38,11 +38,11 @@ module Madmass
         unless Madmass.current_agent.action_applicable
           why_not_applicable.add(:'action.test_not_applicable', 'Agent cannot execute the build action')
           #FIXME THIS SHOULD NOT BE DONE HERE
-          @message_builder.add_result({
-              :message => :'action.test_not_applicable',
-              :subs => {:type => 'build'},
-              :level => 1
-            })
+#          @message_builder.add_result({
+#              :message => :'action.test_not_applicable',
+#              :subs => {:type => 'build'},
+#              :level => 1
+#            })
         end
 
         return why_not_applicable.empty?
