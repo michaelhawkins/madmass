@@ -9,6 +9,7 @@ gem("madmass", :path => "/Users/vittorio/dev/projects/madmass")
 websockets = "socky"
 user_ws = ask("Which implementation of websockets to you want to use?  (socky/none) [#{websockets}]" )
 websockets = user_ws unless user_ws.blank?
+
 case websockets
 when 'none'
   ws_adapter = 'Madmass::Comm::DummySender'
@@ -43,6 +44,30 @@ when 'socky'
     }
 
   end
+  
+  create_file "socky_server.yml" do
+    %Q{
+      :port: 9090
+      :debug: false
+
+      # :subscribe_url: http://localhost:3000/socky/subscribe
+      # :unsubscribe_url: http://localhost:3000/socky/unsubscribe
+
+      :secret: my_secret_key
+
+      :secure: false
+
+      # :timeout: 3
+
+      # :log_path: /var/log/socky.log
+      # :pid_path: /var/run/socky.pid
+
+      # :tls_options:
+      #   :private_key_file: /private/key
+      #   :cert_chain_file: /ssl/certificate
+    }
+   
+  end
 end
 
 #MADMASS initialization
@@ -59,10 +84,10 @@ initializer("madmass.rb", %Q{
   })
 
 #Autoload files in lib
-inject_into_file 'config/application.rb', 
+inject_into_file 'config/application.rb',
   "\n\t config.autoload_paths += %W(\#{config.root}/lib)",
   :after => "# Custom directories with classes and modules you want to be autoloadable."
-inject_into_file 'config/application.rb', 
+inject_into_file 'config/application.rb',
   "\n\t config.autoload_paths += Dir[\"\#{config.root}/lib/**/\"]",
   :after => "# Custom directories with classes and modules you want to be autoloadable."
 
