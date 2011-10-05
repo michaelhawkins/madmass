@@ -5,7 +5,7 @@ module Madmass
       include Singleton
       
       class << self
-        def send(pecepts,opts)
+        def send(percepts,opts)
           Socky.send(percepts.to_json.html_safe,opts) #FIXME
         end
       end
