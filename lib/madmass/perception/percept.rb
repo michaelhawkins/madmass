@@ -12,7 +12,6 @@ module Madmass
         @header.merge! headers
       end
 
-
       def initialize(context)
         @header = HashWithIndifferentAccess.new({
             :agent_id => "#{Madmass.current_agent.id}",
