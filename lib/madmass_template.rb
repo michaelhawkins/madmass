@@ -2,72 +2,42 @@
 #http://edgeguides.rubyonrails.org/rails_application_templates.html
 
 #Dependency with MADMASS
-gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "js_integration")
+#gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "js_integration")
+gem("madmass", :path => "/Users/marco/dev/git-repos/madmass")
 
 #WebSockets
 websockets = "socky"
 user_ws = ask("Which implementation of websockets to you want to use?  (socky/none) [#{websockets}]" )
 websockets = user_ws unless user_ws.blank?
 
+config = {}
+
 case websockets
 when 'none'
-  ws_adapter = 'Madmass::Comm::DummySender'
+  config['ws_adapter'] = 'Madmass::Comm::DummySender'
 when 'socky'
-  ws_adapter = 'Madmass::Comm::SockySender'
+  config['ws_adapter'] = 'Madmass::Comm::SockySender'
   gem("socky-client", :version => "0.4.3")
   gem("socky-client-rails", :version => "0.4.5")
   gem("socky-server", :version => "0.4.1")
-  host = "localhost"
-  port= "9090"
-  secret= "my_secret_key"
-  secure = "false"
-  user_host = ask("on what host will the socky server run? [#{host}]")
-  host = user_host unless user_host.blank?
+  config['host'] = "localhost"
+  config['port'] = "9090"
+  config['secure'] = "false"
+  config['secret'] = "my_secret_key"
+  user_host = ask("on what host will the socky server run? [#{config['host']}]")
+  config['host'] = user_host unless user_host.blank?
 
-  user_port = ask("and on what port will it run? [#{port}]")
-  port = user_port unless user_port.blank?
+  user_port = ask("and on what port will it run? [#{config['port']}]")
+  config['port'] = user_port unless user_port.blank?
 
   passwd = ask("what password do you want to use? (leave blank to leave connection unsecured)")
   unless passwd.blank?
-    secure = "true"
-    secret = passwd
-  end
-
-  create_file "config/socky_hosts.yml" do
-    %Q{
-:hosts:
-  - :host: #{host}
-    :port: #{port}
-    :secret: #{secret}
-    :secure: #{secure}
-    }
-
-  end
-
-  create_file "socky_server.yml" do
-    %Q{
-:port: 9090
-:debug: false
-
-# :subscribe_url: http://localhost:3000/socky/subscribe
-# :unsubscribe_url: http://localhost:3000/socky/unsubscribe
-
-:secret: my_secret_key
-
-:secure: false
-
-# :timeout: 3
-
-# :log_path: /var/log/socky.log
-# :pid_path: /var/run/socky.pid
-
-# :tls_options:
-#   :private_key_file: /private/key
-#   :cert_chain_file: /ssl/certificate
-    }
-   
+    config['secure'] = "true"
+    config['secret'] = passwd
   end
 end
+
+generate "madmass:install", config.keys.join(','), config.values.join(',')
 
 #MADMASS initialization
 initializer("madmass.rb", %Q{
@@ -78,7 +48,7 @@ initializer("madmass.rb", %Q{
     # config.tx_adapter = :'Madmass::Atomic::ActiveRecordAdapter'
 
     # Configure Madmass to use
-    config.perception_sender = "#{ws_adapter}"
+    config.perception_sender = "#{config['ws_adapter']}"
   end
   })
 
@@ -94,8 +64,6 @@ inject_into_file 'config/application.rb',
 inject_into_file 'app/assets/javascripts/application.js',
   "\n//= require madmass\n//= require config",
   :after => "//= require jquery_ujs"
-
-generate "madmass:install"
 
 #DB related stuff
 
