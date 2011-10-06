@@ -3,7 +3,6 @@
 
 #Dependency with MADMASS
 gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "js_integration")
-#gem("madmass", :path => "/Users/marco/dev/git-repos/madmass")
 
 #WebSockets
 websockets = "socky"
@@ -41,35 +40,6 @@ when 'socky'
     :port: #{port}
     :secret: #{secret}
     :secure: #{secure}
-    }
-
-  end
-  
-  create_file "app/assets/javascripts/config.js" do
-    %Q{
-/**
- * Madmass Configuration. You can put here any parameters or method
- * that will be available through the global constant CONFIG.
- **/
-Madmass.Config = new Class.Singleton({
-  initialize: function(){
-
-    // Enables debugging info from core. Use this flag freely for your purpose too.
-    this.debug = true;
-
-    /* Servers params used by ajax. This auto configuration should be enough.
-     * Customize it if necessary. */
-    var domain = window.location.host.split(':');
-    this.server = {
-      host: domain[0],
-      port: domain[1],
-      controller: 'default_agent'
-    };
-
-    /* Add here properties and methods */
-
-  }
-});
     }
 
   end
@@ -124,6 +94,8 @@ inject_into_file 'config/application.rb',
 inject_into_file 'app/assets/javascripts/application.js',
   "\n//= require madmass\n//= require config",
   :after => "//= require jquery_ujs"
+
+generate "madmass:install"
 
 #DB related stuff
 
