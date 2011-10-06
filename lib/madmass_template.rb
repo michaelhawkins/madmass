@@ -2,7 +2,8 @@
 #http://edgeguides.rubyonrails.org/rails_application_templates.html
 
 #Dependency with MADMASS
-gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "master")
+gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "js_integration")
+#gem("madmass", :path => "/Users/marco/dev/git-repos/madmass")
 
 #WebSockets
 websockets = "socky"
@@ -35,35 +36,64 @@ when 'socky'
 
   create_file "config/socky_hosts.yml" do
     %Q{
-    :hosts:
-      - :host: #{host}
-        :port: #{port}
-        :secret: #{secret}
-        :secure: #{secure}
+:hosts:
+  - :host: #{host}
+    :port: #{port}
+    :secret: #{secret}
+    :secure: #{secure}
     }
 
   end
   
+  create_file "app/assets/javascripts/config.js" do
+    %Q{
+/**
+ * Madmass Configuration. You can put here any parameters or method
+ * that will be available through the global constant CONFIG.
+ **/
+Madmass.Config = new Class.Singleton({
+  initialize: function(){
+
+    // Enables debugging info from core. Use this flag freely for your purpose too.
+    this.debug = true;
+
+    /* Servers params used by ajax. This auto configuration should be enough.
+     * Customize it if necessary. */
+    var domain = window.location.host.split(':');
+    this.server = {
+      host: domain[0],
+      port: domain[1],
+      controller: 'default_agent'
+    };
+
+    /* Add here properties and methods */
+
+  }
+});
+    }
+
+  end
+
   create_file "socky_server.yml" do
     %Q{
-      :port: 9090
-      :debug: false
+:port: 9090
+:debug: false
 
-      # :subscribe_url: http://localhost:3000/socky/subscribe
-      # :unsubscribe_url: http://localhost:3000/socky/unsubscribe
+# :subscribe_url: http://localhost:3000/socky/subscribe
+# :unsubscribe_url: http://localhost:3000/socky/unsubscribe
 
-      :secret: my_secret_key
+:secret: my_secret_key
 
-      :secure: false
+:secure: false
 
-      # :timeout: 3
+# :timeout: 3
 
-      # :log_path: /var/log/socky.log
-      # :pid_path: /var/run/socky.pid
+# :log_path: /var/log/socky.log
+# :pid_path: /var/run/socky.pid
 
-      # :tls_options:
-      #   :private_key_file: /private/key
-      #   :cert_chain_file: /ssl/certificate
+# :tls_options:
+#   :private_key_file: /private/key
+#   :cert_chain_file: /ssl/certificate
     }
    
   end
@@ -89,6 +119,11 @@ inject_into_file 'config/application.rb',
 inject_into_file 'config/application.rb',
   "\n\t config.autoload_paths += Dir[\"\#{config.root}/lib/**/\"]",
   :after => "# Custom directories with classes and modules you want to be autoloadable."
+
+#Requires for madmass js libraries
+inject_into_file 'app/assets/javascripts/application.js',
+  "\n//= require madmass\n//= require config",
+  :after => "//= require jquery_ujs"
 
 #DB related stuff
 
