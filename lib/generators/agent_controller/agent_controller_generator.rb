@@ -6,10 +6,13 @@ class AgentControllerGenerator < Rails::Generators::NamedBase
 
   #Adds in the lib/action directory a "file_name action" rb class template
   #Adds in the test/unit directory  a "file_name action" unit test template
-  def render_action_files
-    raise "The agent controller name can not be blank!" if file_name.blank?
+  def generate_controller
     template "agent_controller.rb.erb", "app/controllers/#{file_name}_agent_controller.rb"
     route("match '#{file_name}', :to => '#{file_name}_agent#execute', :via => [:post]")
+  end
+
+  def generate_view
+    template "agent_view.rb.erb", "app/views/#{file_name}_agent/execute.html.erb"
   end
 
 end
