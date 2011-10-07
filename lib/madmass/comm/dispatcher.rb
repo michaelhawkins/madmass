@@ -15,11 +15,11 @@ module Madmass
         grouper = PerceptGrouper.new(Madmass.current_perception)
 
         grouper.for_clients.each do |client, percepts|
-          @sender.send(percepts.map{|p| p.translate}, :client => client)
+          @sender.send(percepts, :client => client)
         end
 
         grouper.for_topics.each do |topic, percepts|
-          @sender.send(percepts.map{|p| p.translate}, :topics => topic)
+          @sender.send(percepts, :topics => topic)
         end
 
       end

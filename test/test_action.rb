@@ -3,10 +3,11 @@ require "#{File.dirname(__FILE__)}/helper"
 class TestAction < Test::Unit::TestCase
   should "instantiate a simple action and execute it" do
     agent = Madmass::Agent::ProxyAgent.new
-    agent.execute(:cmd => 'madmass::test::simple')
-    #assert_equal({}, percept)
+    status = agent.execute(:cmd => 'madmass::test::simple')
+    assert_equal status, :ok
   end
 
+  
   should "execute action with right status" do
     agent = Madmass::Test::RealAgent.new
     agent.status = :state1
@@ -36,13 +37,18 @@ class TestAction < Test::Unit::TestCase
     end
     
     agent.status = :play
-    assert_raise Madmass::Errors::NotApplicableError do
-      agent.execute(:cmd => 'madmass::test::build',  :initial_placement => 1, :target => 10)
-    end
+    
+    result = agent.execute(:cmd => 'madmass::test::build',  :initial_placement => 1, :target => 10)
+
+    assert_equal result, :precondition_failed
 
     agent.action_applicable = true
-    perception = agent.execute(:cmd => 'madmass::test::build',  :initial_placement => 1, :target => 10)
+    status = agent.execute(:cmd => 'madmass::test::build',  :initial_placement => 1, :target => 10)
+    assert_equal status, :ok
     assert_equal 1, agent.executions
+
+    perception = Madmass.current_perception
+    
     assert perception
     assert_equal perception.size, 1
     assert_equal perception[0].data, {:message => "some data"}

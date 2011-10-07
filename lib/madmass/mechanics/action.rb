@@ -78,9 +78,6 @@ module Madmass
         @parameters = parameters
         @why_not_applicable = nil
 
-        #REMOVE ME @comm_strategy = Comm::StandardCommStrategy.new(self)
-        
-       # @message_builder = Comm::MessageBuilder.new(self) #TODO remove from here
         process_params
       end
 
@@ -107,11 +104,7 @@ module Madmass
       end
 
       private
-      #      # Allows easy access to the configuration variables in the game_options.yml
-      #      def options key
-      #        GameOptions.options(Game.current.format)[key]
-      #      end
-
+      
       # Check if the parameters are a subset of accepted parameters for the action.
       def validate params
         params_set = params.keys.to_set

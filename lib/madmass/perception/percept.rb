@@ -17,7 +17,7 @@ module Madmass
           base_header.merge!({:action => context.class.name}) if context
           @header = HashWithIndifferentAccess.new(base_header)
           @data = HashWithIndifferentAccess.new
-          @status = HashWithIndifferentAccess.new
+          @status = HashWithIndifferentAccess.new(:code => :ok)
       end
 
       #Deep copy of the percept
@@ -42,7 +42,7 @@ module Madmass
       # Does a deep (recursive) translation of the content hash passed as argument.
       # Any value in the  hash that corresponds to a key in the translation
       # file is translated.
-      # *Note* The method does side-effect on the content hash
+      # *Note* The method does side-effect on the content
       def recursive_translate content
           
         content.each do |key,value|

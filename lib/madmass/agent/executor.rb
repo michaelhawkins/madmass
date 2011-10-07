@@ -20,13 +20,13 @@ module Madmass
         action = Madmass::Mechanics::ActionFactory.make(opts)
 
         #execute the action (transactional)
-        percepts = do_it action
+        status = do_it action
 
-        #dispatch
+        #dispatch (FIXME no I18n here, it must be done client side somehow)
         Madmass.dispatch_percepts
 
-        #return the perception
-        return percepts;
+        #return the I18n perception
+        return  status
       end
 
 
@@ -34,11 +34,13 @@ module Madmass
       # This method essentially checks the action preconditions by calling #applicable? method, then if the action is applicable call the #execute method,
       # otherwise it raise Madmass::Errors::NotApplicableError exception.
       #
-      # Returns: a percept. You have to define the percept content (arranged in a hash) in the  #build_result method.
+      # Returns: an http status Rails constant
       #
       # Raises: Madmass::Errors::NotApplicableError
 
+
       def do_it action
+
         exec_monitor do
           # we are in a transaction!
 
@@ -50,7 +52,7 @@ module Madmass
           end
 
           # check action specific applicability
-          raise Madmass::Errors::NotApplicableError, action.why_not_applicable unless action.applicable?
+          raise Madmass::Errors::NotApplicableError unless action.applicable?
 
           # execute action
           action.execute
@@ -61,8 +63,46 @@ module Madmass
           # generate percept (must be extracted within the transaction)
           action.build_result
         end
+        return :ok #http status
 
-        return Madmass.current_perception
+      rescue Madmass::Errors::StateMismatchError
+        raise Madmass::Errors::StateMismatchError
+
+      rescue Madmass::Errors::NotApplicableError => exc
+        error_percept_factory(action, exc,
+          :code => 'precondition_failed',
+          :why_not_applicable => action.why_not_applicable.as_json)
+        return :precondition_failed #http status
+
+      rescue Madmass::Errors::WrongInputError => exc
+        error_percept_factory(action, exc,
+          :code => 'bad_request',
+          :message => exc.message)
+        return :bad_request #http status
+
+      rescue Madmass::Errors::CatastrophicError => exc
+        error_percept_factory(action, exc,
+          :code => 'internal_server_error',
+          :message => exc.message)
+        return :internal_server_error #http status
+        
+      rescue Exception => exc
+        error_percept_factory(action, exc,
+          :code => 'service_unavailable',
+          :message => exc.message)
+        return :service_unavailable #http status
+      end
+
+      def error_percept_factory(action, error, opts)
+
+        Madmass.logger.error("#{error.class}: #{error.message}")
+
+        e = Madmass::Perception::Percept.new(action)
+        e.status = {:code => opts[:code], :exception => error.class.name}
+        e.data.merge!({:message => opts[:message]}) if opts[:message]
+        e.data.merge!({:why_not_applicable => opts[:why_not_applicable]}) if opts[:why_not_applicable]
+
+        Madmass.current_perception << e
       end
  
     end

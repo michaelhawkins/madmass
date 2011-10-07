@@ -9,48 +9,24 @@ class <%=file_name.camelize%>AgentController < ApplicationController
   before_filter :get_agent
   
   def execute
-    return unless action_monitor do
-      @percept = Madmass.current_agent.execute(params[:agent])
-    end
+    return unless 
+      status = Madmass.current_agent.execute(params[:agent])
+      @perception = Madmass.current_perception;
+
     respond_to do |format|
-      format.html
-      format.json { render :json => @percept.to_json, :status => :ok }
+      format.html {render :execute, :status => status}
+      format.json {render :json => @perception.to_json, :status => status}
     end
+
+  rescue Madmass::Errors::StateMismatchError
+    #FIXME redirect_to :action => current_user.state
   end
   
   private
 
   def get_agent
-    Madmass.current_agent = Madmass::Agent::ProxyAgent.new
+     #FIXME
+     Madmass.current_agent = Madmass::Agent::ProxyAgent.new
   end
-
-  # Utility to manage exceptions raised by block. In case of MadmassErrors::CatastrophicError a
-  # recovery action may be defined. The default recovery action is :list
-  def action_monitor &block
-    # check if params for game exist, otherwise problems can occur inside
-    # the block passed to this method
-    # ex. params[:game] ||= HashWithIndifferentAccess.new
-
-    block.call
-    return true
-
-  rescue Madmass::Errors::StateMismatchError
-    redirect_to :action => current_user.state
-    return false
-
-  rescue Madmass::Errors::NotApplicableError
-    render :text => 'not applicable', :status => :precondition_failed
-    return false
-
-  rescue Madmass::Errors::WrongInputError => exc
-    logger.debug "MadmassErrors::WrongInputError: #{exc.message}"
-    redirect_to  :action => :root
-    return false
-
-  rescue Madmass::Errors::CatastrophicError => exc
-    logger.error "MadmassErrors::CatastrophicError: #{exc.message}"
-    redirect_to '/error'
-    return false
-  end
-
+  
 end

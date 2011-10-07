@@ -5,41 +5,28 @@ module Madmass
 
       def exec_monitor &block
 
-        #FIXME action_policy = policy
-
         Madmass.transaction do
           block.call
         end
 
-        # must be outside transaction if involves communication (e.g., socky)
-        #FIXME action_policy[:success].call
-
-      rescue Exception => error
-        # Errors are logged
-        Madmass.logger.error("#{error.class}: #{error.message}")
-
-        #TODO Build Error percept
-        #in current percept
-        #return
-
-        #Send back to
-        # Execute external exception handling
-        #p = Percept.new
-        #p.add_header(:)
+        #      FIXME: remove dependency with AR!
+        #      rescue ActiveRecord::Rollback => exc
+        #        Rails.logger.info("#{exc.class}: #{exc.message}")
+        #        sleep(rand(1)/4.0)
+        #        exec_monitor do
+        #          block.call
+        #        end
+        #        return
         #
-#        if rescue_proc = Madmass.rescues[error.class]
-#          rescue_proc.call
-#          return
-#        end
-        
-        #FIXME error_policy = action_policy[:error][error.class]
-        #FIXME error_policy.call if error_policy
-
-        # The exception is raised again, so that it can be properly dealt with in the upper
-        # layers of the stack
-        raise error
+        #      rescue ActiveRecord::StaleObjectError => exc
+        #        Rails.logger.info("#{exc.class}: #{exc.message}")
+        #        sleep(rand(1)/4.0)
+        #
+        #        exec_monitor do
+        #          block.call
+        #        end
+        #        return
       end
-
     end
   end
 end
