@@ -1,6 +1,6 @@
 # This is the transaction manager adapter that do nothing. 
 module Madmass
-  module Atomic
+  module Transaction
 
     class NoneAdapter
       class << self

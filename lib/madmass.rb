@@ -17,7 +17,7 @@ require File.join(Madmass.root, 'errors')
 require File.join(Madmass.root, 'utils')
 require File.join(Madmass.root, 'madmass', 'mechanics', 'action_factory')
 require File.join(Madmass.root, 'comm')
-require File.join(Madmass.root, 'atomic')
+require File.join(Madmass.root, 'transaction')
 require File.join(Madmass.root, 'agent')
 require File.join(Madmass.root, 'perception')
 
@@ -26,7 +26,7 @@ module Madmass
     include Madmass::Utils::Loggable
     include Madmass::Utils::Env
     include Madmass::Utils::Configurable
-    include Madmass::Atomic
+    include Madmass::Transaction
     include Madmass::Agent::Current
     include Madmass::Perception::Current
     include Madmass::Comm::Dispatcher

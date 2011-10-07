@@ -1,8 +1,8 @@
+#TODO this file should be moved into the transaction directory 
 module Madmass
   module Agent
     module ExecutionMonitor
-      #include Rescues;
-
+     
       def exec_monitor &block
 
         Madmass.transaction do

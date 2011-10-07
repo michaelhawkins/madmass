@@ -73,9 +73,9 @@ end
 initializer("madmass.rb", %Q{
   Madmass.setup do |config|
     # Configure Madmass in order to use the Active Record transaction adapter,
-    # default is :"Madmass::Atomic::NoneAdapter".
+    # default is :"Madmass::Transaction::NoneAdapter".
     # You can also create your own adapter and pass it to the configuration
-    # config.tx_adapter = :'Madmass::Atomic::ActiveRecordAdapter'
+    # config.tx_adapter = :'Madmass::Transaction::ActiveRecordAdapter'
 
     # Configure Madmass to use
     config.perception_sender = "#{ws_adapter}"

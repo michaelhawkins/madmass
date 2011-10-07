@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Algorithmica Srl"]
-  s.date = %q{2011-10-06}
+  s.date = %q{2011-10-07}
   s.description = %q{madmass (MAssively Distributed Multi-Agent System Simulator) is a framework for designing web based multi agent system simulations, with a massive number of agents.}
   s.email = %q{info@algorithmica.it}
   s.extra_rdoc_files = [
@@ -27,7 +27,6 @@ Gem::Specification.new do |s|
     "config/locales/madmass_en.yml",
     "config/locales/madmass_it.yml",
     "lib/agent.rb",
-    "lib/atomic.rb",
     "lib/comm.rb",
     "lib/errors.rb",
     "lib/generators/action/action_generator.rb",
@@ -42,9 +41,6 @@ Gem::Specification.new do |s|
     "lib/madmass/agent/execution_monitor.rb",
     "lib/madmass/agent/executor.rb",
     "lib/madmass/agent/proxy_agent.rb",
-    "lib/madmass/atomic/active_record_adapter.rb",
-    "lib/madmass/atomic/none_adapter.rb",
-    "lib/madmass/atomic/transaction_manager.rb",
     "lib/madmass/comm/dispatcher.rb",
     "lib/madmass/comm/dummy_sender.rb",
     "lib/madmass/comm/percept_grouper.rb",
@@ -56,7 +52,6 @@ Gem::Specification.new do |s|
     "lib/madmass/mechanics/action.rb",
     "lib/madmass/mechanics/action_factory.rb",
     "lib/madmass/mechanics/stateful.rb",
-    "lib/madmass/oldies/comm_strategy.rb",
     "lib/madmass/oldies/helper.rb",
     "lib/madmass/oldies/message_builder.rb",
     "lib/madmass/perception/current.rb",
@@ -66,6 +61,7 @@ Gem::Specification.new do |s|
     "lib/madmass/test/agent/wrong_agent.rb",
     "lib/madmass/test/config/madmass_config.yml",
     "lib/madmass/test/mechanics/build_action.rb",
+    "lib/madmass/test/mechanics/i18n_action.rb",
     "lib/madmass/test/mechanics/simple_action.rb",
     "lib/madmass/test/mechanics/stateful_action.rb",
     "lib/madmass/test/tracer/ar_object.rb",

@@ -7,7 +7,7 @@ module Madmass
       attr_accessor :tx_adapter, :perception_sender
       
       def initialize
-        @tx_adapter = :"Madmass::Atomic::NoneAdapter"
+        @tx_adapter = :"Madmass::Transaction::NoneAdapter"
         @perception_sender = :"Madmass::Comm::DummySender"
       end
 
