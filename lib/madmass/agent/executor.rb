@@ -17,7 +17,7 @@ module Madmass
         Madmass.current_perception = []
 
         #create the action
-        action = Madmass::Mechanics::ActionFactory.make(opts)
+        action = Madmass::Action::ActionFactory.make(opts)
 
         #execute the action (transactional)
         status = do_it action
@@ -30,7 +30,7 @@ module Madmass
       end
 
 
-      # This is the method that fires the action execution. Any action instance previously created through the Mechanics::ActionFactory, can be executed by calling this method.
+      # This is the method that fires the action execution. Any action instance previously created through the Action::ActionFactory, can be executed by calling this method.
       # This method essentially checks the action preconditions by calling #applicable? method, then if the action is applicable call the #execute method,
       # otherwise it raise Madmass::Errors::NotApplicableError exception.
       #

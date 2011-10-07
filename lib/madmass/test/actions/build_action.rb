@@ -23,7 +23,7 @@
 module Madmass
   module Test
 
-    class BuildAction < Madmass::Mechanics::Action
+    class BuildAction < Madmass::Action::Action
       action_params :initial_placement, :target
       action_states :play
 

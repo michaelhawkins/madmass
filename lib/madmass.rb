@@ -15,7 +15,7 @@ end
 require File.join(Madmass.root, 'tracer')
 require File.join(Madmass.root, 'errors')
 require File.join(Madmass.root, 'utils')
-require File.join(Madmass.root, 'madmass', 'mechanics', 'action_factory')
+require File.join(Madmass.root, 'madmass', 'action', 'action_factory')
 require File.join(Madmass.root, 'comm')
 require File.join(Madmass.root, 'transaction')
 require File.join(Madmass.root, 'agent')

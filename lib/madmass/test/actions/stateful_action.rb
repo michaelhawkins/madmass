@@ -2,9 +2,10 @@ module Madmass
   module Test
 
     # This is a simple test action.
-    class SimpleAction < Madmass::Mechanics::Action
+    class StatefulAction < Madmass::Action::Action
+      action_states :state1, :state2
+      next_state :state3
 
-     
 
       def execute
         true
@@ -14,4 +15,3 @@ module Madmass
 
   end
 end
-      

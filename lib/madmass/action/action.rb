@@ -27,7 +27,7 @@ require 'stateful'
 #
 # Example:
 #
-#   class Mechanics::MyAction < Madmass::Mechanics::Action
+#   class Action::MyAction < Madmass::Action::Action
 #     action_params :name, :last_name
 #
 #     private
@@ -59,9 +59,9 @@ require 'stateful'
 #
 
 module Madmass
-  module Mechanics
+  module Action
     class Action
-      include Madmass::Mechanics::Stateful
+      include Madmass::Action::Stateful
 
       class_attribute :valid_params
 

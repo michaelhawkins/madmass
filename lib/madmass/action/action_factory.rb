@@ -4,7 +4,7 @@ require 'action'
 # This class implements an action factory: given a set of params returns an
 # appropriate instance of an action.
 module Madmass
-  module Mechanics
+  module Action
 
     class ActionFactory
       # Returns the action instance.
@@ -15,7 +15,7 @@ module Madmass
           cmd = options.delete(:cmd).to_s
           klass_name = "#{cmd.split('::').map(&:camelize).join('::')}Action"
           klass = klass_name.constantize
-          raise "#{klass_name} is not a subclass of Madmass::Mechanics::Action" unless klass.ancestors.include?(Madmass::Mechanics::Action)
+          raise "#{klass_name} is not a subclass of Madmass::Action::Action" unless klass.ancestors.include?(Madmass::Action::Action)
           return klass.new(options)
         rescue NameError => ex
           msg = "ActionFactory: action #{klass_name} doesn't exists!"

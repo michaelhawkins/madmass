@@ -8,7 +8,7 @@ class TestComm < Test::Unit::TestCase
 #    agent = Madmass::Test::BuildAgent.new
 #    agent.status = :play
 #    agent.action_applicable = true
-#    action = Madmass::Mechanics::ActionFactory.make(:cmd => 'madmass::test::build', :agent => agent, :initial_placement => 1, :target => 10)
+#    action = Madmass::Action::ActionFactory.make(:cmd => 'madmass::test::build', :agent => agent, :initial_placement => 1, :target => 10)
 #    action.do_it
 #
   end

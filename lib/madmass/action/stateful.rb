@@ -2,7 +2,7 @@
 # The mechanism uses the Agent status to check action applicability and change its
 # value when actions fires a status change.
 module Madmass
-  module Mechanics
+  module Action
     module Stateful
 
       def self.included base
