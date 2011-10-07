@@ -11,7 +11,9 @@ class <%=file_name.camelize%>ActionTest < ActiveSupport::TestCase
 
     assert_not_nil agent
 
-    perception = agent.execute(:cmd => 'actions::<%=file_name%>')
+    status = agent.execute(:cmd => 'actions::<%=file_name%>')
+
+    perception = Madmass.current_perception
 
     assert perception
 
