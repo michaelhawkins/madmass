@@ -14,11 +14,8 @@ module Madmass
         #Reset perception, that will be populated by the following actions
         Madmass.current_perception = []
 
-        #create the action
-        action = Madmass::Action::ActionFactory.make(opts)
-
-        #execute the action (transactional)
-        status = do_it action
+        #execute the command (transactional)
+        status = do_it opts
 
         #dispatch generated percepts
         Madmass.dispatch_percepts
@@ -37,7 +34,10 @@ module Madmass
       # Raises: Madmass::Errors::NotApplicableError
 
 
-      def do_it action
+      def do_it opts
+
+        #create the action
+        action = Madmass::Action::ActionFactory.make(opts)
 
         tx_monitor do
           # we are in a transaction!
