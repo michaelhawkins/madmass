@@ -1,6 +1,7 @@
 module Madmass
   module Agent
     module ExecutionMonitor
+      #include Rescues;
 
       def exec_monitor &block
 
@@ -17,11 +18,19 @@ module Madmass
         # Errors are logged
         Madmass.logger.error("#{error.class}: #{error.message}")
 
+        #TODO Build Error percept
+        #in current percept
+        #return
+
+        #Send back to
         # Execute external exception handling
-        if rescue_proc = Madmass.rescues[error.class]
-          rescue_proc.call
-          return
-        end
+        #p = Percept.new
+        #p.add_header(:)
+        #
+#        if rescue_proc = Madmass.rescues[error.class]
+#          rescue_proc.call
+#          return
+#        end
         
         #FIXME error_policy = action_policy[:error][error.class]
         #FIXME error_policy.call if error_policy
@@ -31,41 +40,6 @@ module Madmass
         raise error
       end
 
-      #      # FIXME policy returns the error or success actions in the form of an hash like this:
-      #      #
-      #      #   {:error => {error1 => action1, error2 => action2, ...}, :success => action}
-      #      #
-      #      def policy
-      #        unless(@policy)
-      #          if(Madmass.env == 'test')
-      #            error_notify = Proc.new do
-      #              Madmass.logger.info('TEST: sending error messages (simulation)')
-      #            end
-      #            success_notify = Proc.new do
-      #              Madmass.logger.info('TEST: sending percept and success messages (simulation)')
-      #            end
-      #          else
-      #            error_notify = Proc.new do
-      #              @comm_strategy.send_messages(messages)
-      #            end
-      #            success_notify = Proc.new do
-      #              @comm_strategy.send_percept(Madmass.current_percept)
-      #              @comm_strategy.send_messages(messages)
-      #            end
-      #          end
-      #
-      #          @policy = {
-      #            :error =>{
-      #              Madmass::Errors::WrongInputError => error_notify,
-      #              Madmass::Errors::NotApplicableError => error_notify
-      #            },
-      #            :success => success_notify
-      #          }
-      #        end
-      #
-      #        return @policy
-      #      end
-      #
     end
   end
 end
