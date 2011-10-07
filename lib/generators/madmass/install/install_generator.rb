@@ -24,6 +24,8 @@ module Madmass
         if(@options['ws_adapter'] == 'Madmass::Comm::SockySender')
           template "socky_server.yml.erb", "socky_server.yml"
           template "socky_hosts.yml.erb", "config/socky_hosts.yml"
+          remove_file "app/helpers/application_helper.rb"
+          copy_file "application_helper.rb", "app/helpers/application_helper.rb"
         end
       end
 
