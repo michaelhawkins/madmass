@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Algorithmica Srl"]
-  s.date = %q{2011-10-07}
+  s.date = %q{2011-10-08}
   s.description = %q{madmass (MAssively Distributed Multi-Agent System Simulator) is a framework for designing web based multi agent system simulations, with a massive number of agents.}
   s.email = %q{info@algorithmica.it}
   s.extra_rdoc_files = [
@@ -36,9 +36,11 @@ Gem::Specification.new do |s|
     "lib/generators/agent_controller/templates/agent_controller.rb.erb",
     "lib/generators/agent_controller/templates/agent_view.rb.erb",
     "lib/madmass.rb",
+    "lib/madmass/action/action.rb",
+    "lib/madmass/action/action_factory.rb",
+    "lib/madmass/action/stateful.rb",
     "lib/madmass/agent/agent.rb",
     "lib/madmass/agent/current.rb",
-    "lib/madmass/agent/execution_monitor.rb",
     "lib/madmass/agent/executor.rb",
     "lib/madmass/agent/proxy_agent.rb",
     "lib/madmass/comm/dispatcher.rb",
@@ -51,6 +53,9 @@ Gem::Specification.new do |s|
     "lib/madmass/errors/wrong_input_error.rb",
     "lib/madmass/perception/current.rb",
     "lib/madmass/perception/percept.rb",
+    "lib/madmass/test/actions/build_action.rb",
+    "lib/madmass/test/actions/simple_action.rb",
+    "lib/madmass/test/actions/stateful_action.rb",
     "lib/madmass/test/agent/build_agent.rb",
     "lib/madmass/test/agent/real_agent.rb",
     "lib/madmass/test/agent/wrong_agent.rb",

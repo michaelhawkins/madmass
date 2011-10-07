@@ -1,11 +1,9 @@
 
-require "#{File.dirname(__FILE__)}/execution_monitor"
-
 module Madmass
   module Agent
     module Executor
-      include ExecutionMonitor
-
+      include Madmass::Transaction::TxMonitor
+     
       def execute(usr_opts={})
                 
         #prepare opts
@@ -22,7 +20,7 @@ module Madmass
         #execute the action (transactional)
         status = do_it action
 
-        #dispatch (FIXME no I18n here, it must be done client side somehow)
+        #dispatch generated percepts
         Madmass.dispatch_percepts
 
         #return the I18n perception
@@ -41,7 +39,7 @@ module Madmass
 
       def do_it action
 
-        exec_monitor do
+        tx_monitor do
           # we are in a transaction!
 
           # check if the action is applicable in the current state
@@ -60,7 +58,7 @@ module Madmass
           # change user state
           action.change_state
 
-          # generate percept (must be extracted within the transaction)
+          # generate percept (in Madmass.current_percept)
           action.build_result
         end
         return :ok #http status
@@ -93,6 +91,8 @@ module Madmass
         return :service_unavailable #http status
       end
 
+      private
+      
       def error_percept_factory(action, error, opts)
 
         Madmass.logger.error("#{error.class}: #{error.message}")
