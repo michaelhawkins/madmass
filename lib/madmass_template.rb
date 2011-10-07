@@ -62,7 +62,7 @@ inject_into_file 'config/application.rb',
 
 #Requires for madmass js libraries
 inject_into_file 'app/assets/javascripts/application.js',
-  "\n//= require madmass\n//= require config",
+  "\n//= require madmass\n//= require madmass/config",
   :after => "//= require jquery_ujs"
 
 #DB related stuff
