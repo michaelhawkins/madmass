@@ -9,7 +9,7 @@ class <%=file_name.camelize%>AgentController < ApplicationController
   before_filter :get_agent
   
   def execute
-    return unless 
+      return unless params[:agent]
       status = Madmass.current_agent.execute(params[:agent])
       @perception = Madmass.current_perception;
 
