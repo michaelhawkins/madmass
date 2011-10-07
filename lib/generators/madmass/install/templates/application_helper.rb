@@ -9,8 +9,8 @@ module ApplicationHelper
   # Channels are used to broadcast messages to everyone while client is
   # used to send private messges only to the client.
   def register_socky(options)
-    if(!options.kind_of?(Hash) or options[:channels].blank? or options[:client].blank?)
-      raise GameErrors::CatastrophicError, "Wrong socky registration: #{options.inspect}"
+    if(!options.kind_of?(Hash) or (options[:channels].blank? and options[:client].blank?))
+      raise Madmass::Errors::CatastrophicError, "Wrong socky registration: #{options.inspect}"
     end
 
     socky(:channels => options[:channels], :client_id => options[:client])
