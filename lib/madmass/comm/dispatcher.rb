@@ -12,14 +12,14 @@ module Madmass
       include Singleton
 
       def dispatch_percepts
-        grouper = PerceptGrouper.new Madmass.current_perception
+        grouper = PerceptGrouper.new(Madmass.current_perception)
 
-        grouper.for_clients.each do |client, percept|
-          @sender.send(percept, :client => client)
+        grouper.for_clients.each do |client, percepts|
+          @sender.send(percepts, :client => client)
         end
 
-        grouper.for_topics.each do |topic, percept|
-          @sender.send(percept, :topics => topic)
+        grouper.for_topics.each do |topic, percepts|
+          @sender.send(percepts, :topics => topic)
         end
 
       end

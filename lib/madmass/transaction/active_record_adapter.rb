@@ -1,6 +1,6 @@
 # This is the transaction manager adapter for Active Record.
 module Madmass
-  module Atomic
+  module Transaction
 
     class ActiveRecordAdapter
       class << self

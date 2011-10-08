@@ -14,8 +14,8 @@ module Madmass
         percepts.each do |perc|
           topics = perc.header[:topics]
           clients = perc.header[:clients]
-          topics.each {|t| @topics[t] ? @topics[t] << perc : @topics[t] = [perc]} if topics.any?
-          clients.each {|c| @clients[c] ? @clients[c] << perc : @clients[c] = [perc]} if clients.any?
+          topics.each {|t| @topics[t] ? @topics[t] << perc : @topics[t] = [perc]} unless topics.blank?
+          clients.each {|c| @clients[c] ? @clients[c] << perc : @clients[c] = [perc]} unless clients.blank?
         end
       end
 

@@ -1,2 +1,2 @@
-tx_adapter: :Madmass::Atomic::ActiveRecordAdapter
+tx_adapter: :Madmass::Transaction::ActiveRecordAdapter
 perception_sender: :Madmass::Comm::SockySender

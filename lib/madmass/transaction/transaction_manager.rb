@@ -1,16 +1,16 @@
 require 'forwardable'
 
 module Madmass
-  module Atomic
+  module Transaction
 
     def transaction &block
-      Madmass::Atomic::TransactionManager.instance.transaction do
+      Madmass::Transaction::TransactionManager.instance.transaction do
         block.call
       end
     end
 
     def rescues
-      Madmass::Atomic::TransactionManager.instance.rescues
+      Madmass::Transaction::TransactionManager.instance.rescues
     end
 
 

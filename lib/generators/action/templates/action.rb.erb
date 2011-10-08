@@ -1,10 +1,10 @@
 
 # This file is the implementation of the  <%= file_name.camelize %>Action.
 # The implementation must comply with the action definition pattern
-# that is briefly described in the Madmass::Mechanics::Action class.
+# that is briefly described in the Madmass::Action::Action class.
 
   module Actions
-    class <%= file_name.camelize%>Action < Madmass::Mechanics::Action
+    class <%= file_name.camelize%>Action < Madmass::Action::Action
        #action_params :my_param1, :my_param2
        action_states :none
        next_state :none
