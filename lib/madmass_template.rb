@@ -2,8 +2,7 @@
 #http://edgeguides.rubyonrails.org/rails_application_templates.html
 
 #Dependency with MADMASS
-gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "js_integration")
-#gem("madmass", :path => "/Users/marco/dev/git-repos/madmass")
+gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "master")
 
 #WebSockets
 websockets = "socky"
