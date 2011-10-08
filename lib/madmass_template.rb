@@ -36,6 +36,7 @@ when 'socky'
   end
 end
 
+run 'bundle install'
 generate "madmass:install", config.keys.join(','), config.values.join(',')
 
 #MADMASS initialization
