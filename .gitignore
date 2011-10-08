@@ -49,3 +49,5 @@ nbproject
 
 # For rubinius:
 #*.rbc
+
+Gemfile.lock
