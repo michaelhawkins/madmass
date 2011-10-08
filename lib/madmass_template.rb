@@ -2,7 +2,8 @@
 #http://edgeguides.rubyonrails.org/rails_application_templates.html
 
 #Dependency with MADMASS
-gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "master")
+# gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "master")
+gem("madmass", :path => "/Users/vittorio/dev/projects/madmass")
 
 #WebSockets
 websockets = "socky"
@@ -36,8 +37,33 @@ when 'socky'
   end
 end
 
-run 'bundle install'
-generate "madmass:install", config.keys.join(','), config.values.join(',')
+
+
+#DB related stuff
+#Installation of Devise for authentication (optional)
+reply = ask("Would you like to install Devise for authentication?(yes/no)[yes]")
+@ar = false
+if(reply.strip.downcase == 'yes' or reply.blank?)
+  @ar = true
+  gem("devise")
+  generate("devise:install")
+  model_name = ask("What would you like the user model to be called? [user]")
+  model_name = "user" if model_name.blank?
+  generate("devise", model_name)
+
+
+  reply = ask("Would you like to create and migrate the DBs?(yes/no) [yes]")
+  if(reply.strip.downcase == 'yes' or reply.blank?)
+    rake "db:create", :env => 'development'
+    rake "db:migrate", :env => 'development'
+
+    rake "db:create", :env => 'test'
+    rake "db:migrate", :env => 'test'
+
+    rake "db:create", :env => 'production'
+    rake "db:migrate", :env => 'production'
+  end
+end
 
 #MADMASS initialization
 initializer("madmass.rb", %Q{
@@ -45,7 +71,9 @@ initializer("madmass.rb", %Q{
     # Configure Madmass in order to use the Active Record transaction adapter,
     # default is :"Madmass::Transaction::NoneAdapter".
     # You can also create your own adapter and pass it to the configuration
-    # config.tx_adapter = :'Madmass::Transaction::ActiveRecordAdapter'
+   #{ 
+      "config.tx_adapter = :'Madmass::Transaction::ActiveRecordAdapter'" if @ar
+    }
 
     # Configure Madmass to use
     config.perception_sender = "#{config['ws_adapter']}"
@@ -65,28 +93,6 @@ inject_into_file 'app/assets/javascripts/application.js',
   "\n//= require madmass\n//= require madmass/config",
   :after => "//= require jquery_ujs"
 
-#DB related stuff
 
-#return if no?("Would you like to use a DB? (yes/no)")
-#
-#
-##Installation of Devise for authentication (optional)
-#if yes?("Would you like to install Devise for authentication?(yes/no)")
-#  gem("devise")
-#  generate("devise:install")
-#  model_name = ask("What would you like the user model to be called? [user]")
-#  model_name = "user" if model_name.blank?
-#  generate("devise", model_name)
-#end
-#
-#if yes?("Would you like to migrate the DBs?")
-#
-#  rake "db:create", :env => 'development'
-#  rake "db:migrate", :env => 'development'
-#
-#  rake "db:create", :env => 'test'
-#  rake "db:migrate", :env => 'test'
-#
-#  rake "db:create", :env => 'production'
-#  rake "db:migrate", :env => 'production'
-#end
+run 'bundle install'
+generate "madmass:install", config.keys.join(','), config.values.join(',')

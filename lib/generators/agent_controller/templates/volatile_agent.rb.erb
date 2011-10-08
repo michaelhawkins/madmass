@@ -7,7 +7,7 @@ class <%=file_name.camelize%>AgentController < ApplicationController
   include ActionView::Helpers::JavaScriptHelper
 
   before_filter :get_agent
-  
+
   def execute
       return unless params[:agent]
       status = Madmass.current_agent.execute(params[:agent])
@@ -17,16 +17,15 @@ class <%=file_name.camelize%>AgentController < ApplicationController
       format.html {render :execute, :status => status}
       format.json {render :json => @perception.to_json, :status => status}
     end
+ end
 
-  rescue Madmass::Errors::StateMismatchError
-    #FIXME redirect_to :action => current_user.state
-  end
-  
+
   private
 
   def get_agent
-     #FIXME
      Madmass.current_agent = Madmass::Agent::ProxyAgent.new
   end
-  
+
 end
+
+
