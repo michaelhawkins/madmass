@@ -14,9 +14,9 @@ module Madmass
         #HACK if base.ancestors.include?(ActiveRecord::Base)
         #HACK   base.send(:include, Madmass::ActiveRecordAgent)
         #HACK else
-        attr_accessor :status
-        alias_method :initialize_without_check, :initialize
-        alias_method :initialize, :initialize_with_check
+        attr_accessor :status #HACK
+       # alias_method :initialize_without_check, :initialize
+       # alias_method :initialize, :initialize_with_check
         #HACK end
       end
     end

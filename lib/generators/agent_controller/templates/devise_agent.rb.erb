@@ -27,7 +27,8 @@ class <%=file_name.camelize%>AgentController < ApplicationController
 
   def get_agent
      authenticate_user!
-     Madmass.current_agent = Madmass::Agent::ProxyAgent.new
+     current_user.agent = Agent.create unless current_user.agent
+     Madmass.current_agent = current_user.agent
   end
 
 end

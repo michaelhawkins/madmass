@@ -47,11 +47,28 @@ if(reply.strip.downcase == 'yes' or reply.blank?)
   @ar = true
   gem("devise")
   generate("devise:install")
-  model_name = ask("What would you like the user model to be called? [user]")
-  model_name = "user" if model_name.blank?
+  model_name = ask("What would you like the user model to be called? [user]").underscore
+
+  model_name = "user" if model_name.blank? or model == "agent"
+
   generate("devise", model_name)
 
+  #Generate the agent model
+  generate("model", "agent  status:string")
+  inject_into_file "app/models/agent.rb",
+  "\n include Madmass::Agent",
+  :after => "class Agent < ActiveRecord::Base"
 
+  #Generate relationship "User belongs to Agent"
+  model_name  = model_name.camelize
+  inject_into_file "app/models/#{model_name}.rb",
+  "\n belongs_to :agent",
+  :after => "class #{model_name} < ActiveRecord::Base"
+
+  #Generate migrations
+  generate("migration", "AddAgentIdTo#{model_name} agent_id:integer")
+  
+  #Create and migrate the db
   reply = ask("Would you like to create and migrate the DBs?(yes/no) [yes]")
   if(reply.strip.downcase == 'yes' or reply.blank?)
     rake "db:create", :env => 'development'
@@ -63,6 +80,8 @@ if(reply.strip.downcase == 'yes' or reply.blank?)
     rake "db:create", :env => 'production'
     rake "db:migrate", :env => 'production'
   end
+
+
 end
 
 #MADMASS initialization
