@@ -26,9 +26,10 @@ class <%=file_name.camelize%>AgentController < ApplicationController
   private
 
   def get_agent
-     authenticate_user!
-     current_user.create_agent unless current_user.agent
-     Madmass.current_agent = current_user.agent
+      authenticate_user!
+      current_user.create_agent!(:status => 'init') unless current_user.agent
+      current_user.save!
+      Madmass.current_agent = current_user.agent
   end
 
 end

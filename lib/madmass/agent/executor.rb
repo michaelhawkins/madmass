@@ -63,8 +63,9 @@ module Madmass
         end
         return :ok #http status
 
-      rescue Madmass::Errors::StateMismatchError
-        raise Madmass::Errors::StateMismatchError
+      rescue Madmass::Errors::StateMismatchError => exc
+        puts "ERROR -------------\n#{exc.inspect} "
+        raise exc
 
       rescue Madmass::Errors::NotApplicableError => exc
         error_percept_factory(action, exc,

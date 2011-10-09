@@ -81,10 +81,7 @@ module Madmass
         process_params
       end
 
-      def messages
-        return @message_builder.messages
-      end
-
+     
       def why_not_applicable
         @why_not_applicable ||= ActiveModel::Errors.new(self)
       end
