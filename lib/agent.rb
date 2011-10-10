@@ -1,8 +1,7 @@
 # Load the Agent module
 
-# Load the agentunication strategies module.
+# Load the agent modules.
 agent_path = File.join(Madmass.root, 'madmass', 'agent')
-#require File.join(agent_path, 'helper')
 require File.join(agent_path, 'executor')
 require File.join(agent_path, 'f_s_a_executor')
 
