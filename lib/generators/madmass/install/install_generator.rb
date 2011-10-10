@@ -16,8 +16,6 @@ module Madmass
 
       def install_js_core
         copy_file "config.js", "app/assets/javascripts/madmass/config.js"
-        directory "../../../../assets", "lib/assets"
-        directory "../../../../../vendor/assets", "vendor/assets"
       end
 
       def setup_socky
