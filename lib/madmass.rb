@@ -6,6 +6,10 @@ module Madmass
       MADMASS_ROOT
     end
 
+    def gem_root
+      File.join(Madmass.root, '..')
+    end
+
     def config_root
       File.join(Madmass.root, '..', 'config')
     end

@@ -56,9 +56,14 @@ initializer("madmass.rb", %Q{
 inject_into_file 'config/application.rb',
   "\n\t config.autoload_paths += %W(\#{config.root}/lib)",
   :after => "# Custom directories with classes and modules you want to be autoloadable."
+
 inject_into_file 'config/application.rb',
   "\n\t config.autoload_paths += Dir[\"\#{config.root}/lib/**/\"]",
   :after => "# Custom directories with classes and modules you want to be autoloadable."
+
+inject_into_file 'config/application.rb',
+  "\n\tconfig.assets.paths << \"\#{Madmass.gem_root}/vendor/assets/javascripts\"\n\tconfig.assets.paths << \"\#{Madmass.gem_root}/lib/assets/javascripts\"",
+  :after => "config.assets.version = '1.0'"
 
 #Requires for madmass js libraries
 inject_into_file 'app/assets/javascripts/application.js',
