@@ -10,25 +10,22 @@ module Madmass
 
     def self.included(base)
       base.class_eval do
-        # TODO: delete dependency if possible
-        #HACK if base.ancestors.include?(ActiveRecord::Base)
-        #HACK   base.send(:include, Madmass::ActiveRecordAgent)
-        #HACK else
-        attr_accessor :status #HACK
-       # alias_method :initialize_without_check, :initialize
-       # alias_method :initialize, :initialize_with_check
-        #HACK end
+        alias_method :initialize_without_check, :initialize
+        alias_method :initialize, :initialize_with_check
       end
     end
-
     
-
     private
 
     # Verify that che class that implements the agent has the required attributes.
     def initialize_with_check args = nil
       # attribute id is required
       raise Madmass::Errors::WrongInputError, "#{self.class} must have the required attribute 'id'!" unless defined?(self.id)
+      begin
+        self.status
+      rescue NoMethodError
+        raise Madmass::Errors::WrongInputError, "#{self.class} must have the required attribute 'status'!"
+      end
       if args
         initialize_without_check args
       else
@@ -36,15 +33,6 @@ module Madmass
       end
     end
 
-    #Initialize current_perception
-
-  end
-
-  module ActiveRecordAgent
-    def status=(state)
-      write_attribute(:status, state)
-      save
-    end
   end
 
 
