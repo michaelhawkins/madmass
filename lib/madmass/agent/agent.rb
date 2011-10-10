@@ -6,7 +6,7 @@ module Madmass
   # The Agent is used by actions to check its status and execute the workflow defined
   # inside actions by the *action_states* and *next_state* directives.
   module Agent
-    include Madmass::Agent::FSAExecutor
+    include Madmass::Agent::Executor
 
     
   end
