@@ -42,12 +42,9 @@ module Madmass
         tx_monitor do
           # we are in a transaction!
 
-          # check if the action is applicable in the current state
-          unless action.state_match? or action.applicable_states.empty?
-            raise Madmass::Errors::StateMismatchError, I18n.t(:'action.state_mistmatch',
-              {:agent_state => Madmass.current_agent.status,
-                :action_states => action.applicable_states.join(", ")})
-          end
+          # check if the action is consistent with behavioral specification
+          # e.g., FSA, PNP, etc ...
+          behavioral_validation(action)
 
           # check action specific applicability
           raise Madmass::Errors::NotApplicableError unless action.applicable?
@@ -104,6 +101,10 @@ module Madmass
         e.data.merge!({:why_not_applicable => opts[:why_not_applicable]}) if opts[:why_not_applicable]
 
         Madmass.current_perception << e
+      end
+
+      def behavioral_validation action
+         return true;
       end
  
     end
