@@ -16,7 +16,7 @@ class AgentControllerGenerator < Rails::Generators::Base
     if options.devise?
       template "devise_agent.rb.erb", controller_path
     else
-      template "colatile_agent.rb.erb", controller_path
+      template "volatile_agent.rb.erb", controller_path
     end
 
     route("match '#{file_name}', :to => '#{file_name}_agent#execute', :via => [:post]")

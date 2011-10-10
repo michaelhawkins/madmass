@@ -14,8 +14,8 @@ class <%=file_name.camelize%>AgentController < ApplicationController
       @perception = Madmass.current_perception;
 
     respond_to do |format|
-      format.html {render :execute, :status => status}
-      format.json {render :json => @perception.to_json, :status => status}
+      format.html {render :execute, :status => status.to_sym}
+      format.json {render :json => @perception.to_json, :status => status.to_sym}
     end
  end
 
