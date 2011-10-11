@@ -15,12 +15,12 @@ class TestAgent < Test::Unit::TestCase
     assert_equal :new_state, agent.status
   end
 
-  should "raise for agents without required attributes" do
-    assert_raise Madmass::Errors::WrongInputError do
-      agent = Madmass::Test::WrongAgent.new
-    end
-    
-  end
+#  should "raise for agents without required attributes" do
+#    assert_raise Madmass::Errors::WrongInputError do
+#      agent = Madmass::Test::WrongAgent.new
+#    end
+# 
+#  end
 end
 
 

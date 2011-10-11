@@ -3,7 +3,7 @@
 # value when actions fires a status change.
 module Madmass
   module Action
-    module Stateful
+    module Stateful 
 
       def self.included base
         base.class_eval do
