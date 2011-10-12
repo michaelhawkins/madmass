@@ -11,19 +11,15 @@ class AgentControllerGenerator < Rails::Generators::Base
   #Adds in the test/unit directory  a "file_name action" unit test template
   def generate_controller
 
-    controller_path ="app/controllers/#{file_name}_agent_controller.rb"
+    controller_path ="app/controllers/#{file_name}_controller.rb"
 
-    if options.devise?
-      template "devise_agent.rb.erb", controller_path
-    else
-      template "volatile_agent.rb.erb", controller_path
-    end
+    template "agent_controller.rb.erb", controller_path
 
-    route("match '#{file_name}', :to => '#{file_name}_agent#execute', :via => [:post]")
+    route("match '#{file_name}', :to => '#{file_name}#execute', :via => [:post]")
   end
 
   def generate_view
-    template "agent_view.rb.erb", "app/views/#{file_name}_agent/execute.html.erb"
+    template "agent_view.rb.erb", "app/views/#{file_name}/execute.html.erb"
   end
 
 end
