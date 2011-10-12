@@ -4,7 +4,7 @@ class TestAction < Test::Unit::TestCase
   should "instantiate a simple action and execute it" do
     agent = Madmass::Agent::ProxyAgent.new
     status = agent.execute(:cmd => 'madmass::test::simple')
-    assert_equal :ok, status
+    assert_equal 'ok', status
   end
 
   

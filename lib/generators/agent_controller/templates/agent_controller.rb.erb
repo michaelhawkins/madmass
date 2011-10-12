@@ -1,5 +1,5 @@
 
-class <%=file_name.camelize%>AgentController < ApplicationController
+class <%=file_name.camelize%>Controller < ApplicationController
   protect_from_forgery
 
   respond_to :json, :html
@@ -18,18 +18,24 @@ class <%=file_name.camelize%>AgentController < ApplicationController
       format.html {render :execute, :status => status}
       format.json {render :json => @perception.to_json, :status => status}
     end
-  rescue Madmass::Errors::StateMismatchError
-    redirect_to :action => current_user.state
+ <% if Madmass::InstallConfig.options('devise') == true%>
+ rescue Madmass::Errors::StateMismatchError
+    # redirect_to :action => current_user.state
+ <%end%>
  end
 
 
   private
 
   def get_agent
+   <%unless Madmass::InstallConfig.options('devise') == true%>
+      Madmass.current_agent = Madmass::Agent::ProxyAgent.new
+   <%else%>
       authenticate_user!
       current_user.create_agent!(:status => 'init') unless current_user.agent
       current_user.save!
       Madmass.current_agent = current_user.agent
+   <%end%>
   end
 
 end

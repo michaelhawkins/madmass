@@ -5,7 +5,7 @@
 
   module Actions
     class <%= file_name.camelize%>Action < Madmass::Action::Action
-       #action_params :my_param1, :my_param2
+       #action_params :message
        #action_states :none
        #next_state :none
 
@@ -19,17 +19,17 @@
       # [MANDATORY] Override this method in your action to define
       # the action effects.
       # def execute
-      #   puts "Implement me!"
+      #   @message = @parameters[:message]
       # end
 
       # [MANDATORY] Override this method in your action to define
       # the perception content.
       # def build_result
       #  #Example
-      #  p = Madmass::Perception::Percept.new(self)
-      #  p.add_headers({:topics => 'all'})
-      #  p.data =  {:message => 'hello'}
-      #  Madmass.current_perception << p
+      #   p = Madmass::Perception::Percept.new(self)
+      #   p.add_headers({:topics => 'all'}) #who must receive the percept
+      #   p.data =  {:message => @message}
+      #   Madmass.current_perception << p
       # end
 
       # [OPTIONAL] - The default implementation returns always true

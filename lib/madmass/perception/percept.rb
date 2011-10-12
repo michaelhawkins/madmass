@@ -17,7 +17,7 @@ module Madmass
           base_header.merge!({:action => context.class.name}) if context
           @header = HashWithIndifferentAccess.new(base_header)
           @data = HashWithIndifferentAccess.new
-          @status = HashWithIndifferentAccess.new(:code => :ok)
+          @status = HashWithIndifferentAccess.new(:code => 'ok')
       end
 
       #Deep copy of the percept
