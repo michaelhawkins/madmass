@@ -58,10 +58,9 @@ module Madmass
           # generate percept (in Madmass.current_percept)
           action.build_result
         end
-        return :ok #http status
+        return 'ok' #http status
 
       rescue Madmass::Errors::StateMismatchError => exc
-        puts "ERROR -------------\n#{exc.inspect} "
         raise exc
 
       rescue Madmass::Errors::NotApplicableError => exc
