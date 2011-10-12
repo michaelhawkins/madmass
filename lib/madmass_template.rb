@@ -42,15 +42,21 @@ end
 #DB related stuff
 #Installation of Devise for authentication (optional)
 reply = ask("Would you like to install Devise for authentication?(yes/no)[yes]")
-@ar = false
+config[:db] = false
+config[:ar] = false
+config[:devise] = false
+
 if(reply.strip.downcase == 'yes' or reply.blank?)
-  @ar = true
+  config[:db] = true
+  config[:ar] = true
+  config[:devise] = true
   gem("devise")
   generate("devise:install")
   model_name = ask("What would you like the user model to be called? [user]").underscore
 
   model_name = "user" if model_name.blank? or model == "agent"
 
+  config[:user_model] = model_name
   generate("devise", model_name)
 
   #Generate the agent model
@@ -84,20 +90,6 @@ if(reply.strip.downcase == 'yes' or reply.blank?)
 
 end
 
-#MADMASS initialization
-initializer("madmass.rb", %Q{
-  Madmass.setup do |config|
-    # Configure Madmass in order to use the Active Record transaction adapter,
-    # default is :"Madmass::Transaction::NoneAdapter".
-    # You can also create your own adapter and pass it to the configuration
-   #{ 
-      "config.tx_adapter = :'Madmass::Transaction::ActiveRecordAdapter'" if @ar
-    }
-
-    # Configure Madmass to use
-    config.perception_sender = "#{config['ws_adapter']}"
-  end
-  })
 
 #Autoload files in lib
 inject_into_file 'config/application.rb',
@@ -120,3 +112,19 @@ inject_into_file 'app/assets/javascripts/application.js',
 
 run 'bundle install'
 generate "madmass:install", config.keys.join(','), config.values.join(',')
+
+#MADMASS initialization
+initializer("madmass.rb", %Q{
+  Madmass.setup do |config|
+    # Configure Madmass in order to use the Active Record transaction adapter,
+    # default is :"Madmass::Transaction::NoneAdapter".
+    # You can also create your own adapter and pass it to the configuration
+   #{
+      "config.tx_adapter = :'Madmass::Transaction::ActiveRecordAdapter'" if @ar
+    }
+
+    # Configure Madmass to use
+    config.perception_sender = "#{config['ws_adapter']}"
+    Madmass::InstallConfig.init
+ end
+  })

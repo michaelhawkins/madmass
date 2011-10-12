@@ -27,6 +27,11 @@ module Madmass
         end
       end
 
+      def store_install_confs
+        create_file 'config/install_settings.yml', %Q{# THIS IS AN AUTOMATICALLY GENERATED\n# DO NOT EDIT MANUALLY \n
+        } + @options.to_yaml
+      end
+
     end
 
   end
