@@ -1,0 +1,42 @@
+.madmass-konsole-panel{
+  $timestamp-color: #f2eded;
+  $timestamp-background: #383229;
+
+  $info-color: white;
+  $warning-color: mediumblue;
+  $error-color: red;
+
+  $message-border: #7A7F7F;
+  .content{
+    .debug-message{
+      border-bottom: 1px dotted $message-border;
+      padding: 2px 5px;
+      font-size: 13px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      .entry{
+        color: $timestamp-color;
+        font-weight: bold;
+        background-color: $timestamp-background;
+        padding: 0 2px;
+      }
+    }
+    .info{color: $info-color;}
+    .warn{color: $warning-color;}
+    .error{color: $error-color;}
+  }
+}
+.madmass-konsole-dialog{
+  .clear{
+    color: black;
+    background-color: white;
+    position: absolute;
+    right: 40px; top: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0.3;
+    padding: 0 2px;
+    @include round-box(5px);
+    &:hover{background-color: red; color: yellow; opacity: 1; border: 1px solid white;}
+  }
+}

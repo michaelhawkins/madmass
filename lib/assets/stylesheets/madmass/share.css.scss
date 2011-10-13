@@ -1,0 +1,44 @@
+// GLOBAL MIXINS ===================================
+
+@mixin round-box($radius: 10px){
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin text-shadow($dX: 3px, $dY: 3px, $fuzz: 2px, $col: #333333){
+  text-shadow: $col $dX $dY $fuzz;
+}
+
+@mixin box-shadow($dX: 3px, $dY: 3px, $fuzz: 2px, $col: #333333){
+  box-shadow: $col $dX $dY $fuzz;
+}
+
+// Mirrors an element around x and/or y. Syntax: @include flip([H|V|HV|VH])
+@mixin flip($direction: H) {
+  @if $direction == H {
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+  } @else if $direction == V {
+    -moz-transform: scaleY(-1);
+    -o-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    transform: scaleY(-1);
+    filter: FlipV;
+  } @else if $direction == HV {
+    -moz-transform: scaleX(-1) scaleY(-1);
+    -o-transform: scaleX(-1) scaleY(-1);
+    -webkit-transform: scaleX(-1) scaleY(-1);
+    transform: scaleX(-1) scaleY(-1);
+    filter: FlipH FlipV;
+  } @else if $direction == VH {
+    -moz-transform: scaleX(-1) scaleY(-1);
+    -o-transform: scaleX(-1) scaleY(-1);
+    -webkit-transform: scaleX(-1) scaleY(-1);
+    transform: scaleX(-1) scaleY(-1);
+    filter: FlipH FlipV;
+  }
+}

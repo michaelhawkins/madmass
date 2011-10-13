@@ -86,10 +86,7 @@ if(reply.strip.downcase == 'yes' or reply.blank?)
     rake "db:create", :env => 'production'
     rake "db:migrate", :env => 'production'
   end
-
-
 end
-
 
 #Autoload files in lib
 inject_into_file 'config/application.rb',
@@ -101,21 +98,14 @@ inject_into_file 'config/application.rb',
   :after => "# Custom directories with classes and modules you want to be autoloadable."
 
 inject_into_file 'config/application.rb',
-  "\n\tconfig.assets.paths << \"\#{Madmass.gem_root}/vendor/assets/javascripts\"
-   \n\tconfig.assets.paths << \"\#{Madmass.gem_root}/vendor/assets/stylesheets\"
-   \n\tconfig.assets.paths << \"\#{Madmass.gem_root}/lib/assets/javascripts\"",
+  "\n\t config.assets.paths << \"\#{Madmass.gem_root}/vendor/assets/javascripts\"
+   \t config.assets.paths << \"\#{Madmass.gem_root}/lib/assets/javascripts\"",
   :after => "config.assets.version = '1.0'"
 
 #Requires for madmass js libraries
 inject_into_file 'app/assets/javascripts/application.js',
   "\n//= require madmass\n//= require madmass/config",
   :after => "//= require jquery_ujs"
-
-#Requires for jquery ui css default theme
-inject_into_file 'app/assets/stylesheets/application.css',
-  "\n *= require ui-darkness/jquery-ui-1.8.16.css",
-  :after => "*= require_tree ."
-
 
 run 'bundle install'
 generate "madmass:install", config.keys.join(','), config.values.join(',')
