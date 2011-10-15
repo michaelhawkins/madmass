@@ -3,7 +3,6 @@
 
 #Dependency with MADMASS
 gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "master")
-run 'bundle install'
 #gem("madmass", :path =>"/Users/marco/dev/git-repos/madmass")
 
 #WebSockets
@@ -52,7 +51,6 @@ if(reply.strip.downcase == 'yes' or reply.blank?)
   config[:ar] = true
   config[:devise] = true
   gem("devise")
-
   generate("devise:install")
   model_name = ask("What would you like the user model to be called? [user]").underscore
 
@@ -109,7 +107,7 @@ inject_into_file 'app/assets/javascripts/application.js',
   "\n//= require madmass\n//= require madmass/config",
   :after => "//= require jquery_ujs"
 
-
+run 'bundle install'
 generate "madmass:install", config.keys.join(','), config.values.join(',')
 
 #MADMASS initialization
