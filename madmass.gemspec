@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Algorithmica Srl"]
-  s.date = %q{2011-10-10}
+  s.date = %q{2011-10-15}
   s.description = %q{madmass (MAssively Distributed Multi-Agent System Simulator) is a framework for designing web based multi agent system simulations, with a massive number of agents.}
   s.email = %q{info@algorithmica.it}
   s.extra_rdoc_files = [
@@ -28,27 +28,37 @@ Gem::Specification.new do |s|
     "config/locales/madmass_it.yml",
     "lib/agent.rb",
     "lib/assets/.gitkeep",
-    "lib/assets/javascripts/client/controller.js",
     "lib/assets/javascripts/client/core.ajax.js",
     "lib/assets/javascripts/client/core.dispatcher.js",
     "lib/assets/javascripts/client/core.fsm.js",
     "lib/assets/javascripts/client/core.js",
+    "lib/assets/javascripts/client/core.konsole.panel.js",
+    "lib/assets/javascripts/client/core.module.draganddrop.js",
     "lib/assets/javascripts/client/core.rpc.js",
     "lib/assets/javascripts/client/core.transitions.js",
     "lib/assets/javascripts/client/core.versioning.js",
+    "lib/assets/javascripts/client/madmass.controller.js",
+    "lib/assets/javascripts/client/madmass.gui.js",
+    "lib/assets/javascripts/client/madmass.helpers.js",
+    "lib/assets/javascripts/client/madmass.perceptor.js",
+    "lib/assets/javascripts/client/madmass.sniffer.js",
+    "lib/assets/javascripts/client/madmass.socky.js",
     "lib/assets/javascripts/lib/socky/WebSocketMain.swf",
     "lib/assets/javascripts/lib/socky/madsocky.js",
     "lib/assets/javascripts/madmass.js",
+    "lib/assets/stylesheets/madmass/index.css.scss",
+    "lib/assets/stylesheets/madmass/konsole.panel.css.scss",
+    "lib/assets/stylesheets/madmass/share.css.scss",
     "lib/comm.rb",
     "lib/errors.rb",
     "lib/generators/action/action_generator.rb",
     "lib/generators/action/templates/action.rb.erb",
     "lib/generators/action/templates/action_unit_test.rb.erb",
     "lib/generators/agent_controller/agent_controller_generator.rb",
+    "lib/generators/agent_controller/templates/agent_controller.rb.erb",
     "lib/generators/agent_controller/templates/agent_view.rb.erb",
-    "lib/generators/agent_controller/templates/devise_agent.rb.erb",
-    "lib/generators/agent_controller/templates/volatile_agent.rb.erb",
     "lib/generators/madmass/install/install_generator.rb",
+    "lib/generators/madmass/install/templates/application.css",
     "lib/generators/madmass/install/templates/application_helper.rb",
     "lib/generators/madmass/install/templates/config.js",
     "lib/generators/madmass/install/templates/socky_hosts.yml.erb",
@@ -90,6 +100,7 @@ Gem::Specification.new do |s|
     "lib/madmass/transaction/tx_monitor.rb",
     "lib/madmass/utils/config.rb",
     "lib/madmass/utils/env.rb",
+    "lib/madmass/utils/install_config.rb",
     "lib/madmass/utils/logger.rb",
     "lib/madmass_template.rb",
     "lib/perception.rb",
@@ -106,12 +117,27 @@ Gem::Specification.new do |s|
     "test/test_tracer.rb",
     "test/test_transaction_manager.rb",
     "vendor/assets/javascripts/mootools/Class.Mutators.jQuery.js",
-    "vendor/assets/javascripts/mootools/mootools-1.2.4-base.js"
+    "vendor/assets/javascripts/mootools/mootools-1.2.4-base.js",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-bg_flat_30_cccccc_40x100.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-bg_flat_50_5c5c5c_40x100.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-bg_glass_20_555555_1x400.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-bg_glass_40_0078a3_1x400.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-bg_glass_40_ffc73d_1x400.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-bg_gloss-wave_25_333333_500x100.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-bg_highlight-soft_80_eeeeee_1x100.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-bg_inset-soft_25_000000_1x100.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-bg_inset-soft_30_f58400_1x100.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-icons_222222_256x240.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-icons_4b8e0b_256x240.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-icons_a83300_256x240.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-icons_cccccc_256x240.png",
+    "vendor/assets/stylesheets/ui-darkness/images/ui-icons_ffffff_256x240.png",
+    "vendor/assets/stylesheets/ui-darkness/jquery-ui-1.8.16.css"
   ]
   s.homepage = %q{http://github.com/algorithmica/madmass}
   s.licenses = ["GNU AGPL"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.5.2}
+  s.rubygems_version = %q{1.5.1}
   s.summary = %q{madmass (MAssively Distributed Multi-Agent System Simulator) is a framework for designing web based multi agent system simulations, with a massive number of agents.}
 
   if s.respond_to? :specification_version then
