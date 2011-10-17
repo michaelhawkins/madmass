@@ -2,8 +2,8 @@
 #http://edgeguides.rubyonrails.org/rails_application_templates.html
 
 #Dependency with MADMASS
-gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "master")
-#gem("madmass", :path =>"/Users/marco/dev/git-repos/madmass")
+#gem("madmass", :git => "git://github.com/algorithmica/madmass.git", :branch => "master")
+gem("madmass", :path =>"/Users/vittorio/dev/projects/madmass")
 
 #WebSockets
 websockets = "socky"
@@ -125,3 +125,11 @@ initializer("madmass.rb", %Q{
     Madmass::InstallConfig.init
  end
   })
+
+#TORQUEBOX
+reply = ask("Would you like to make this app a Torquebox app?(yes/no)[no]")
+if(reply.strip.downcase == 'yes')
+  gem 'activerecord-jdbc-adapter'
+  gem 'jdbc-sqlite3'
+  rake "rails:template LOCATION=$TORQUEBOX_HOME/share/rails/template.rb"
+end
