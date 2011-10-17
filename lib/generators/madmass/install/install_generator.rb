@@ -14,6 +14,8 @@ module Madmass
         @options = Hash[*keys.split(',').zip(values.split(',')).flatten]
       end
 
+     
+      
       def install_js_core
         copy_file "config.js", "app/assets/javascripts/madmass/config.js"
       end
@@ -34,11 +36,15 @@ module Madmass
         end
       end
 
-      def store_install_confs
+      def create_jms_executor
+        copy_file "jms_executor.rb", "lib/madmass/action/jms_xecutor" if[@options[:torquebox] == 'true']
+      end
+
+
+  def store_install_confs
         create_file 'config/install_settings.yml', %Q{# THIS IS AN AUTOMATICALLY GENERATED\n# DO NOT EDIT MANUALLY \n
         } + @options.to_yaml
       end
-
     end
 
   end

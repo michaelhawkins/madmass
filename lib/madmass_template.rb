@@ -38,7 +38,6 @@ when 'socky'
 end
 
 
-
 #DB related stuff
 #Installation of Devise for authentication (optional)
 reply = ask("Would you like to install Devise for authentication?(yes/no)[yes]")
@@ -62,14 +61,14 @@ if(reply.strip.downcase == 'yes' or reply.blank?)
   #Generate the agent model
   generate("model", "agent  status:string")
   inject_into_file "app/models/agent.rb",
-  "\n include Madmass::Agent",
-  :after => "class Agent < ActiveRecord::Base"
+    "\n include Madmass::Agent",
+    :after => "class Agent < ActiveRecord::Base"
 
   #Generate relationship "User belongs to Agent"
   model_name  = model_name.camelize
   inject_into_file "app/models/#{model_name}.rb",
-  "\n belongs_to :agent",
-  :after => "class #{model_name} < ActiveRecord::Base"
+    "\n belongs_to :agent",
+    :after => "class #{model_name} < ActiveRecord::Base"
 
   #Generate migrations
   generate("migration", "AddAgentIdTo#{model_name} agent_id:integer")
@@ -107,8 +106,22 @@ inject_into_file 'app/assets/javascripts/application.js',
   "\n//= require madmass\n//= require madmass/config",
   :after => "//= require jquery_ujs"
 
+
+
+
+#TORQUEBOX
+reply = ask("Would you like to make this app a Torquebox app?(yes/no)[no]")
+if(reply.strip.downcase == 'yes')
+  config[:torquebox] = true
+  if config[:ar]
+    gem 'activerecord-jdbc-adapter'
+    gem 'jdbc-sqlite3'
+  end
+end
+
 run 'bundle install'
 generate "madmass:install", config.keys.join(','), config.values.join(',')
+
 
 #MADMASS initialization
 initializer("madmass.rb", %Q{
@@ -117,7 +130,7 @@ initializer("madmass.rb", %Q{
     # default is :"Madmass::Transaction::NoneAdapter".
     # You can also create your own adapter and pass it to the configuration
    #{
-      "config.tx_adapter = :'Madmass::Transaction::ActiveRecordAdapter'" if @ar
+  "config.tx_adapter = :'Madmass::Transaction::ActiveRecordAdapter'" if @ar
     }
 
     # Configure Madmass to use
@@ -126,10 +139,4 @@ initializer("madmass.rb", %Q{
  end
   })
 
-#TORQUEBOX
-reply = ask("Would you like to make this app a Torquebox app?(yes/no)[no]")
-if(reply.strip.downcase == 'yes')
-  gem 'activerecord-jdbc-adapter'
-  gem 'jdbc-sqlite3'
-  rake "rails:template LOCATION=$TORQUEBOX_HOME/share/rails/template.rb"
-end
+rake "rails:template LOCATION=$TORQUEBOX_HOME/share/rails/template.rb" if config[:torquebox]
