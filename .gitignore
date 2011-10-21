@@ -51,3 +51,5 @@ nbproject
 #*.rbc
 
 Gemfile.lock
+
+.idea
