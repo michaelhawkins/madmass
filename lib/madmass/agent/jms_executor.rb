@@ -6,26 +6,23 @@ module Madmass
     #FIXME use generator instead!
 
     class JmsExecutor < TorqueBox::Messaging::MessageProcessor
-      include  include Madmass::Agent::Executor
+      include Madmass::Agent::Executor
       include TorqueBox::Injectors
-      always_background :execute
+     
 
       def create
         @execution_queue = inject( '/queues/execute' )
       end
 
       def on_message(body)
-
-        code = execute(body)
-        #code is a TB future object
-        #
-        #raise "action did not succeed" unless code == 'ok'
         # The body will be of whatever type was published by the Producer
         # the entire JMS message is available as a member variable called message()
+        code = execute(body)
+        raise "action did not succeed" unless code == 'ok'
       end
       #def on_error(exception)
-        # You may optionally override this to interrogate the exception. If you do,
-        # you're responsible for re-raising it to force a retry.
+      # You may optionally override this to interrogate the exception. If you do,
+      # you're responsible for re-raising it to force a retry.
       #end
 
     end

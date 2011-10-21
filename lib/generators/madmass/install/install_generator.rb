@@ -36,12 +36,11 @@ module Madmass
         end
       end
 
-      def create_jms_executor
-        copy_file "jms_executor.rb", "lib/madmass/action/jms_xecutor" if[@options[:torquebox] == 'true']
+      def add_torquebox_confs
+         copy_file "torquebox.yml", "config/torquebox.yml" if @options['torquebox']
       end
 
-
-  def store_install_confs
+      def store_install_confs
         create_file 'config/install_settings.yml', %Q{# THIS IS AN AUTOMATICALLY GENERATED\n# DO NOT EDIT MANUALLY \n
         } + @options.to_yaml
       end
