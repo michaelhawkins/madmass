@@ -18,7 +18,7 @@ class <%=file_name.camelize%>Controller < ApplicationController
       format.html {render :execute, :status => status}
       format.json {render :json => @perception.to_json, :status => status}
     end
- <% if Madmass::InstallConfig.options('devise') == true%>
+ <% if Madmass.install_options('devise') == true%>
  rescue Madmass::Errors::StateMismatchError
     # redirect_to :action => current_user.state
  <%end%>
@@ -28,7 +28,7 @@ class <%=file_name.camelize%>Controller < ApplicationController
   private
 
   def get_agent
-   <%unless Madmass::InstallConfig.options('devise') == true%>
+   <%unless Madmass.install_options('devise') == true%>
       Madmass.current_agent = Madmass::Agent::ProxyAgent.new
    <%else%>
       authenticate_user!

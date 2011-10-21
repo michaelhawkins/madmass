@@ -1,5 +1,8 @@
 # encoding: utf-8
 
+require "bundler/gem_tasks"
+=begin
+
 require 'rubygems'
 require 'bundler'
 begin
@@ -9,6 +12,8 @@ rescue Bundler::BundlerError => e
   $stderr.puts "Run `bundle install` to install missing gems"
   exit e.status_code
 end
+
+
 require 'rake'
 
 require 'jeweler'
@@ -51,3 +56,4 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+=end

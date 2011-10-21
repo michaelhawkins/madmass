@@ -24,6 +24,7 @@ module Madmass
     
     module Loggable
       # FIXME: invoke the right logger
+      # FIXME: prefer torquebox logger if TorqueBox is defined
       def logger
         if defined?(Rails)
           Rails.logger
