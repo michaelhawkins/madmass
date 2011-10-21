@@ -22,7 +22,7 @@ module Madmass
       private
       # Called by init to load the configuration file.
       def load_options
-        raise "Cannot find game options file at #{@options_path}" unless File.file?(@options_path)
+        raise "Cannot find install config file at #{@options_path}" unless File.file?(@options_path)
         #@options = File.open(@options_path) { |yf|  HashWithIndifferentAccess.new(YAML::load(yf)) }
         @options = File.open(@options_path) { |yf|  YAML::load(yf) }
       end
