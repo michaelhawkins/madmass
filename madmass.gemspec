@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Algorithmica Srl"]
-  s.date = %q{2011-10-18}
+  s.date = %q{2011-10-21}
   s.description = %q{madmass (MAssively Distributed Multi-Agent System Simulator) is a framework for designing web based multi agent system simulations, with a massive number of agents.}
   s.email = %q{info@algorithmica.it}
   s.extra_rdoc_files = [
@@ -63,16 +63,17 @@ Gem::Specification.new do |s|
     "lib/generators/madmass/install/templates/config.js",
     "lib/generators/madmass/install/templates/socky_hosts.yml.erb",
     "lib/generators/madmass/install/templates/socky_server.yml.erb",
+    "lib/generators/madmass/install/templates/torquebox.yml",
     "lib/generators/percept_strategy/percept_strategy_generator.rb",
     "lib/generators/percept_strategy/templates/percept_strategy.js.erb",
     "lib/madmass.rb",
     "lib/madmass/action/action.rb",
     "lib/madmass/action/action_factory.rb",
     "lib/madmass/action/stateful.rb",
-    "lib/madmass/agent/agent.rb",
     "lib/madmass/agent/current.rb",
     "lib/madmass/agent/executor.rb",
     "lib/madmass/agent/f_s_a_executor.rb",
+    "lib/madmass/agent/jms_executor.rb",
     "lib/madmass/agent/proxy_agent.rb",
     "lib/madmass/comm/dispatcher.rb",
     "lib/madmass/comm/dummy_sender.rb",
@@ -102,7 +103,6 @@ Gem::Specification.new do |s|
     "lib/madmass/utils/env.rb",
     "lib/madmass/utils/install_config.rb",
     "lib/madmass/utils/logger.rb",
-    "lib/madmass_template.rb",
     "lib/perception.rb",
     "lib/test.rb",
     "lib/tracer.rb",
