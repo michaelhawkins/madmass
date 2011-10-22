@@ -1,4 +1,4 @@
-#TODO this file should be moved into the transaction directory 
+
 module Madmass
   module Transaction
     module TxMonitor
@@ -10,6 +10,8 @@ module Madmass
         end
 
       rescue Exception => exc
+       # Madmass.logger exc.inspect
+        puts "***********************************" + exc.inspect
         policy = Madmass.rescues[exc.class]
         if Madmass.rescues[exc.class]
           policy.call

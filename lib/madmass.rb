@@ -39,6 +39,8 @@ module Madmass
     autoload :Action, 'madmass/action/action'
     autoload :ActionFactory, 'madmass/action/action_factory'
     autoload :Stateful, 'madmass/action/stateful'
+    autoload :ClassMethods, 'madmass/action/stateful'
+    autoload :InstanceMethods, 'madmass/action/stateful'
   end
 
   module Comm
@@ -85,6 +87,15 @@ module Madmass
     autoload :Loggable, 'madmass/utils/logger'
   end
 
+end
+
+#HACK FIXME
+# require all transaction classes
+Dir.glob(File.join(Madmass.root, 'madmass', 'transaction', '*.rb')).each do |source|
+  require source
+end
+
+module Madmass
   class << self
     include Madmass::Utils::Loggable
     include Madmass::Utils::Env
@@ -94,9 +105,7 @@ module Madmass
     include Madmass::Perception::Current
     include Madmass::Comm::Dispatcher
   end
-
 end
-
 # Every object can be traceable
 class Object
   include Madmass::Tracer::Tracer
