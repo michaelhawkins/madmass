@@ -1,5 +1,3 @@
-#$:.unshift(File.dirname(__FILE__))
-require 'stateful'
 
 # This is the base class for any action and defines a specific action definition pattern. This pattern can be briefly described below:
 #

@@ -71,6 +71,8 @@ module Madmass
     autoload :Tracer, 'madmass/tracer/tracer'
   end
 
+  autoload :Transaction, 'madmass/transaction/transaction_manager'
+
   module Transaction
     autoload :ActiveRecordAdapter, 'madmass/transaction/active_record_adapter'
     autoload :NoneAdapter, 'madmass/transaction/none_adapter'
@@ -89,11 +91,11 @@ module Madmass
 
 end
 
-#HACK FIXME
-# require all transaction classes
-Dir.glob(File.join(Madmass.root, 'madmass', 'transaction', '*.rb')).each do |source|
-  require source
-end
+##HACK FIXME
+## require all transaction classes
+#Dir.glob(File.join(Madmass.root, 'madmass', 'transaction', '*.rb')).each do |source|
+#  require source
+#end
 
 module Madmass
   class << self

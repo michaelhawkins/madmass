@@ -13,8 +13,6 @@ module Madmass
         # FIXME Really can not do it differently??
         @options = Hash[*keys.split(',').zip(values.split(',')).flatten]
       end
-
-     
       
       def install_js_core
         copy_file "config.js", "app/assets/javascripts/madmass/config.js"

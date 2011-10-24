@@ -11,7 +11,7 @@ module Madmass
 
       rescue Exception => exc
        # Madmass.logger exc.inspect
-        puts "***********************************" + exc.inspect
+        puts "*********************************** " + exc.inspect
         policy = Madmass.rescues[exc.class]
         if Madmass.rescues[exc.class]
           policy.call
