@@ -6,9 +6,11 @@ module Madmass
   module Utils
 
     # The internal logger.
+     #This is for be used in gem test environment were Rails logger is not available
     class Logger
       include Singleton
-      
+
+      #FIXME do not use puts, but rather the Ruby logger
       def error msg
         puts msg
       end
@@ -21,10 +23,8 @@ module Madmass
         puts msg
       end
     end
-    
+
     module Loggable
-      # FIXME: invoke the right logger
-      # FIXME: prefer torquebox logger if TorqueBox is defined
       def logger
         if defined?(Rails)
           Rails.logger
@@ -34,7 +34,7 @@ module Madmass
       end
 
     end
-    
+
   end
 end
 

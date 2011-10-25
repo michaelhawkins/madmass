@@ -7,11 +7,10 @@ module Madmass
 
         Madmass.transaction do
           block.call
-        end
+         end
 
       rescue Exception => exc
-       # Madmass.logger exc.inspect
-        puts "*********************************** " + exc.inspect
+        Madmass.logger(exc)
         policy = Madmass.rescues[exc.class]
         if Madmass.rescues[exc.class]
           policy.call

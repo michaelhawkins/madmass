@@ -91,12 +91,6 @@ module Madmass
 
 end
 
-##HACK FIXME
-## require all transaction classes
-#Dir.glob(File.join(Madmass.root, 'madmass', 'transaction', '*.rb')).each do |source|
-#  require source
-#end
-
 module Madmass
   class << self
     include Madmass::Utils::Loggable
@@ -108,6 +102,7 @@ module Madmass
     include Madmass::Comm::Dispatcher
   end
 end
+
 # Every object can be traceable
 class Object
   include Madmass::Tracer::Tracer
