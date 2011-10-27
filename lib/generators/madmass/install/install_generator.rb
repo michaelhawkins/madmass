@@ -3,7 +3,7 @@ module Madmass
 
     class InstallGenerator < ::Rails::Generators::Base
       source_root File.expand_path('../templates', __FILE__)
-      desc "Installs gem files in the newly creted rails application"
+      desc "Installs gem files in the newly created rails application"
 
       argument :keys, :type => :string
       argument :values, :type => :string
