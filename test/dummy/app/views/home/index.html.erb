@@ -1,0 +1,36 @@
+<!-- registering with socky message server on the public channel all-->
+<%= register_socky(:channels => ['all']) %>
+
+<!-- a simple heading title -->
+<h1>Simple chat</h1>
+
+<!-- an edit box using the rails `text_field_tag` helper -->
+<%= text_field_tag 'new-message', nil, :onkeyup => "sendOnReturn(event);" %>
+
+<script type="text/javascript">
+  
+  // the javascript function registered to _onkeyup_ of the edit box.
+  function sendOnReturn(event){
+
+    // do nothing unless return key is not pressed
+    if(event.keyCode != 13) return;
+    
+    var msg = $('#new-message').val();
+    // send message (unless empty) 
+    if(msg.length > 0){
+      
+      //ask an agent, through the commands agent controller
+      //to perform Actions::ChatAction with parameter message
+      $askAgent({ agent: 'commands', cmd: 'actions::chat', data: {message: msg} });
+
+      //and clear the input box
+      $('#new-message').val('');
+    }
+  }
+
+</script>
+
+<!-- creating a simple messages box with a div and some basic inline style -->
+<div class="messages" style="background-color: #FCEED8; border: 1px solid #A9A9A9">
+  Chat messages:  
+</div>

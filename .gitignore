@@ -53,3 +53,8 @@ nbproject
 Gemfile.lock
 
 .idea
+
+test/dummy/tmp/cache
+test/dummy/tmp/pids
+test/dummy/log
+test/dummy/db

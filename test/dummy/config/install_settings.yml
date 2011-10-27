@@ -1,0 +1,12 @@
+# THIS IS AN AUTOMATICALLY GENERATED
+# DO NOT EDIT MANUALLY 
+
+        --- 
+port: "9090"
+ws_adapter: Madmass::Comm::SockySender
+secure: "false"
+devise: "false"
+ar: "false"
+host: localhost
+db: "false"
+secret: my_secret_key

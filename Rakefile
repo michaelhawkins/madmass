@@ -35,11 +35,5 @@ Rake::TestTask.new(:test) do |t|
   t.verbose = false
 end
 
-Rake::TestTask.new(:"test:units") do |t|
-  t.libs << 'lib'
-  t.libs << 'test'
-  t.pattern = 'test/unit/*_test.rb'
-  t.verbose = false
-end
 
 task :default => :test

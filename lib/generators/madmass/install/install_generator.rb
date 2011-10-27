@@ -18,13 +18,6 @@ module Madmass
         copy_file "config.js", "app/assets/javascripts/madmass/config.js"
       end
 
-      def install_styles
-        directory "../../../../../vendor/assets/stylesheets/ui-darkness", "app/assets/stylesheets/ui-darkness"
-        directory "../../../../assets/stylesheets", "app/assets/stylesheets"
-        remove_file "app/assets/stylesheets/application.css"
-        copy_file "application.css", "app/assets/stylesheets/application.css"
-      end
-
       def setup_socky
         if(@options['ws_adapter'] == 'Madmass::Comm::SockySender')
           template "socky_server.yml.erb", "socky_server.yml"
