@@ -3,7 +3,7 @@ module Madmass
 
     class InstallGenerator < ::Rails::Generators::Base
       source_root File.expand_path('../templates', __FILE__)
-      desc "Installs gem files in the newly created rails application"
+      desc "Installs gem files in the newly creted rails application"
 
       argument :keys, :type => :string
       argument :values, :type => :string
@@ -13,7 +13,7 @@ module Madmass
         # FIXME Really can not do it differently??
         @options = Hash[*keys.split(',').zip(values.split(',')).flatten]
       end
-      
+
       def install_js_core
         copy_file "config.js", "app/assets/javascripts/madmass/config.js"
       end
@@ -34,14 +34,11 @@ module Madmass
         end
       end
 
-      def add_torquebox_confs
-         copy_file "torquebox.yml", "config/torquebox.yml" if @options['torquebox']
-      end
-
       def store_install_confs
         create_file 'config/install_settings.yml', %Q{# THIS IS AN AUTOMATICALLY GENERATED\n# DO NOT EDIT MANUALLY \n
         } + @options.to_yaml
       end
+
     end
 
   end
