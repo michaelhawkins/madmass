@@ -1,6 +1,6 @@
-require "#{File.dirname(__FILE__)}/helper"
+require "helper"
 
-class TestConfig < Test::Unit::TestCase
+class ConfigTest < Test::Unit::TestCase
   should "override default configuration via yaml file" do
     assert_equal :'Madmass::Transaction::NoneAdapter', Madmass.config.tx_adapter
     Madmass.config.load(File.join(Madmass.root, 'madmass', 'test', 'config', 'madmass_config.yml'))

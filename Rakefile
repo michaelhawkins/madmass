@@ -1,59 +1,45 @@
-# encoding: utf-8
-
-require "bundler/gem_tasks"
-=begin
-
-require 'rubygems'
-require 'bundler'
+#!/usr/bin/env rake
 begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
-  exit e.status_code
+  require 'bundler/setup'
+rescue LoadError
+  puts 'You must `gem install bundler` and `bundle install` to run rake tasks'
+end
+begin
+  require 'rdoc/task'
+rescue LoadError
+  require 'rdoc/rdoc'
+  require 'rake/rdoctask'
+  RDoc::Task = Rake::RDocTask
 end
 
-
-require 'rake'
-
-require 'jeweler'
-Jeweler::Tasks.new do |gem|
-  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "madmass"
-  gem.homepage = "http://github.com/algorithmica/madmass"
-  gem.license = "GNU AGPL"
-  gem.summary = %Q{madmass (MAssively Distributed Multi-Agent System Simulator) is a framework for designing web based multi agent system simulations, with a massive number of agents.}
-  gem.description = %Q{madmass (MAssively Distributed Multi-Agent System Simulator) is a framework for designing web based multi agent system simulations, with a massive number of agents.}
-  gem.email = "info@algorithmica.it"
-  gem.authors = ["Algorithmica Srl"]
-  # dependencies defined in Gemfile
+RDoc::Task.new(:rdoc) do |rdoc|
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title    = 'Madmass'
+  rdoc.options << '--line-numbers'
+  rdoc.rdoc_files.include('README.rdoc')
+  rdoc.rdoc_files.include('lib/**/*.rb')
 end
-Jeweler::RubygemsDotOrgTasks.new
+
+APP_RAKEFILE = File.expand_path("../test/dummy/Rakefile", __FILE__)
+load 'rails/tasks/engine.rake'
+
+
+Bundler::GemHelper.install_tasks
 
 require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'lib' << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
+
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'lib'
+  t.libs << 'test'
+  t.pattern = 'test/**/*_test.rb'
+  t.verbose = false
 end
 
-require 'rcov/rcovtask'
-Rcov::RcovTask.new do |test|
-  test.libs << 'test'
-  test.pattern = 'test/**/test_*.rb'
-  test.verbose = true
-  test.rcov_opts << '--exclude "gems/*"'
+Rake::TestTask.new(:"test:units") do |t|
+  t.libs << 'lib'
+  t.libs << 'test'
+  t.pattern = 'test/unit/*_test.rb'
+  t.verbose = false
 end
 
 task :default => :test
-
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "madmass #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end
-=end

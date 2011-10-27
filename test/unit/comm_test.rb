@@ -1,6 +1,6 @@
-require "#{File.dirname(__FILE__)}/helper"
+require "helper"
 
-class TestComm < Test::Unit::TestCase
+class CommTest < Test::Unit::TestCase
   should "send perception via socky" do
      #TODO FIX ME
     #    # set socky communication configuration

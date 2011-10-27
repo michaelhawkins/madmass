@@ -1,6 +1,6 @@
-require "#{File.dirname(__FILE__)}/helper"
+require "#{File.dirname(__FILE__)}/../helper"
 
-class TestAction < Test::Unit::TestCase
+class ActionTest < Test::Unit::TestCase
   should "instantiate a simple action and execute it" do
     agent = Madmass::Agent::ProxyAgent.new
     status = agent.execute(:cmd => 'madmass::test::simple')

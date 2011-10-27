@@ -1,4 +1,6 @@
+# TODO: check if singleton is needed!
 require 'singleton'
+require "madmass/engine"
 
 MADMASS_ROOT = File.dirname(__FILE__) unless defined?(MADMASS_ROOT)
 

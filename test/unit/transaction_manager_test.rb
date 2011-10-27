@@ -1,6 +1,6 @@
-require "#{File.dirname(__FILE__)}/helper"
+require "helper"
 
-class TestTransactionManager < Test::Unit::TestCase
+class TransactionManagerTest < Test::Unit::TestCase
   should "use active record adapter" do
     Madmass.config.tx_adapter
     Madmass.config.load(File.join(Madmass.root, 'madmass', 'test', 'config', 'madmass_config.yml'))
