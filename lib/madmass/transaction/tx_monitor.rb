@@ -7,10 +7,11 @@ module Madmass
 
         Madmass.transaction do
           block.call
+         # raise Errors::WrongInputException, "Arghhhhhhhhhh"
          end
 
       rescue Exception => exc
-        Madmass.logger(exc)
+        Madmass.logger(exc.message + "\n" + exc.backtrace.join("\n"))
         policy = Madmass.rescues[exc.class]
         if Madmass.rescues[exc.class]
           policy.call
