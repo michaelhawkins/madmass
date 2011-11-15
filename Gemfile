@@ -1,19 +1,22 @@
 source "http://rubygems.org"
-# Add dependencies required to use your gem here.
-# Example:
-#   gem "activesupport", ">= 2.3.5"
 
-# Add dependencies to develop your gem here.
-# Include everything needed to run rake, tests, features, etc.
-group :development do
-  gem "shoulda", ">= 0"
-  gem "bundler", "~> 1.0.0"
-  gem "jeweler", "~> 1.6.4"
-  gem "rcov", ">= 0"
-  gem 'i18n'
-  gem "activesupport"
-end
+# Declare your gem's dependencies in madmass.gemspec.
+# Bundler will treat runtime dependencies like base dependencies, and
+# development dependencies will be added by default to the :development group.
+gemspec
 
-group :test, :development do
-  gem 'activerecord', ">= 3.0.0"
-end
+# jquery-rails is used by the dummy application
+gem "jquery-rails"
+gem 'sqlite3'
+
+# Declare any dependencies that are still in development here instead of in
+# your gemspec. These might include edge Rails or gems from your path or
+# Git. Remember to move these dependencies to your gemspec before releasing
+# your gem to rubygems.org.
+
+# To use debugger
+# gem 'ruby-debug'
+
+gem "socky-client", "0.4.3"
+gem "socky-client-rails", "0.4.5"
+gem "socky-server", "0.4.1"

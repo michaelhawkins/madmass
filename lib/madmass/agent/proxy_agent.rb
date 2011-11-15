@@ -4,7 +4,7 @@
 module Madmass
   module Agent
     class ProxyAgent
-      include Madmass::Agent
+      include Madmass::Agent::Executor
       def initialize
         @status = :none
       end

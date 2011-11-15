@@ -3,7 +3,7 @@ module Madmass
 
     class InstallGenerator < ::Rails::Generators::Base
       source_root File.expand_path('../templates', __FILE__)
-      desc "Installs gem files in the newly creted rails application"
+      desc "Installs gem files in the newly created rails application"
 
       argument :keys, :type => :string
       argument :values, :type => :string
@@ -13,16 +13,9 @@ module Madmass
         # FIXME Really can not do it differently??
         @options = Hash[*keys.split(',').zip(values.split(',')).flatten]
       end
-
+      
       def install_js_core
         copy_file "config.js", "app/assets/javascripts/madmass/config.js"
-      end
-
-      def install_styles
-        directory "../../../../../vendor/assets/stylesheets/ui-darkness", "app/assets/stylesheets/ui-darkness"
-        directory "../../../../assets/stylesheets", "app/assets/stylesheets"
-        remove_file "app/assets/stylesheets/application.css"
-        copy_file "application.css", "app/assets/stylesheets/application.css"
       end
 
       def setup_socky
@@ -34,9 +27,25 @@ module Madmass
         end
       end
 
-      def store_install_confs
-        create_file 'config/install_settings.yml', %Q{# THIS IS AN AUTOMATICALLY GENERATED\n# DO NOT EDIT MANUALLY \n
-        } + @options.to_yaml
+      def setup_devise
+        begin
+        # Setup Devise only if it is enabled
+        return if(@options['devise'] != "true")
+        inject_into_file "app/controllers/application_controller.rb",
+            "\n  include Madmass::ApplicationHelper",
+            :after => "protect_from_forgery"
+        rescue Exception => ex
+          puts ex.message
+          puts ex.backtrace.join("\n")
+        end
+      end
+
+      def add_engine_route
+        route("mount Madmass::Engine => '/madmass', :as => 'madmass_engine'")
+      end
+
+      def add_torquebox_confs
+         copy_file "torquebox.yml", "config/torquebox.yml" if @options['torquebox']
       end
 
     end
