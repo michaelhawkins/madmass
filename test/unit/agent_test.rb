@@ -1,6 +1,6 @@
-require "#{File.dirname(__FILE__)}/helper"
+require "helper"
 
-class TestAgent < Test::Unit::TestCase
+class AgentTest < Test::Unit::TestCase
   should "use the global access for the current agent" do
     agent = Madmass::Test::RealAgent.new
     #FIXME is somehow already set sometimes -> assert_nil Madmass.current_agent

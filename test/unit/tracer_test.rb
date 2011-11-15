@@ -1,6 +1,6 @@
-require "#{File.dirname(__FILE__)}/helper"
+require "helper"
 
-class TestTracer < Test::Unit::TestCase
+class TracerTest < Test::Unit::TestCase
   should "find version attribute in simple traceable object" do
     obj = TraceableObject.new
     assert_nil obj.version
