@@ -27,14 +27,27 @@ module Madmass
         end
       end
 
+      def setup_devise
+        begin
+        # Setup Devise only if it is enabled
+        return if(@options['devise'] != "true")
+        inject_into_file "app/controllers/application_controller.rb",
+            "\n  include Madmass::ApplicationHelper",
+            :after => "protect_from_forgery"
+        rescue Exception => ex
+          puts ex.message
+          puts ex.backtrace.join("\n")
+        end
+      end
+
+      def add_engine_route
+        route("mount Madmass::Engine => '/madmass', :as => 'madmass_engine'")
+      end
+
       def add_torquebox_confs
          copy_file "torquebox.yml", "config/torquebox.yml" if @options['torquebox']
       end
 
-      def store_install_confs
-        create_file 'config/install_settings.yml', %Q{# THIS IS AN AUTOMATICALLY GENERATED\n# DO NOT EDIT MANUALLY \n
-        } + @options.to_yaml
-      end
     end
 
   end

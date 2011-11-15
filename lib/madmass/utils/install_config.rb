@@ -9,7 +9,6 @@ module Madmass
 
         # Returns the options for the given type.
         def options type
-          #HashWithIndifferentAccess.new @options[type]
           @options[type]
         end
 

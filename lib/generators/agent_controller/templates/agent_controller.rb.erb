@@ -7,7 +7,7 @@ class <%=file_name.camelize%>Controller < ApplicationController
   include ApplicationHelper
   include ActionView::Helpers::JavaScriptHelper
 
-  before_filter :get_agent
+  before_filter :authenticate_agent
 
   def execute
       return unless params[:agent]
@@ -18,25 +18,13 @@ class <%=file_name.camelize%>Controller < ApplicationController
       format.html {render :execute, :status => status}
       format.json {render :json => @perception.to_json, :status => status}
     end
- <% if Madmass.install_options('devise') == true%>
+ <% if Madmass.install_options(:devise) == true %>
  rescue Madmass::Errors::StateMismatchError
     # redirect_to :action => current_user.state
- <%end%>
+ <%  end %>
  end
 
 
-  private
-
-  def get_agent
-   <%unless Madmass.install_options('devise') == true%>
-      Madmass.current_agent = Madmass::Agent::ProxyAgent.new
-   <%else%>
-      authenticate_user!
-      current_user.create_agent!(:status => 'init') unless current_user.agent
-      current_user.save!
-      Madmass.current_agent = current_user.agent
-   <%end%>
-  end
 
 end
 
