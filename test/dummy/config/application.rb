@@ -13,6 +13,8 @@ module Dummy
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
+
+	  config.autoload_paths += Dir["#{config.root}/lib/**/"]
     # config.autoload_paths += %W(#{config.root}/extras)
 
     # Only load the plugins named here, in the order given (default is alphabetical).
