@@ -3,10 +3,6 @@
  * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
  * the top of the compiled file, but it's generally better to create a new file per style scope.
  *= require_self
-<<<<<<< HEAD
  *= require madmass/ui-darkness/jquery-ui-1.8.16
-=======
- *= require ui-darkness/jquery-ui-1.8.16
->>>>>>> c0c42f90b990a880f3b144a0a00188e4c105632d
  *= require madmass/index
 */
