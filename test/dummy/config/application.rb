@@ -7,14 +7,22 @@ require "madmass"
 
 module Dummy
   class Application < Rails::Application
+<<<<<<< HEAD
+=======
+	 #config.logger = TorqueBox::Logger.new
+>>>>>>> c0c42f90b990a880f3b144a0a00188e4c105632d
 	 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
+<<<<<<< HEAD
 
 	  config.autoload_paths += Dir["#{config.root}/lib/**/"]
+=======
+	 config.autoload_paths += Dir["#{config.root}/lib/**/"]
+>>>>>>> c0c42f90b990a880f3b144a0a00188e4c105632d
     # config.autoload_paths += %W(#{config.root}/extras)
 
     # Only load the plugins named here, in the order given (default is alphabetical).
