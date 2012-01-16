@@ -1,6 +1,0 @@
-
-queues:
-  /queues/execute:
-
-messaging:
-  /queues/execute:   JmsExecutor
