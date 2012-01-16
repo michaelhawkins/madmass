@@ -19,7 +19,7 @@ module Madmass
         end
 
         grouper.for_topics.each do |topic, percepts|
-          @sender.send(percepts, :topics => topic)
+          @sender.send(percepts, :topic => topic)
         end
 
       end

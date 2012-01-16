@@ -4,10 +4,10 @@ module Madmass
     module Executor
       include Madmass::Transaction::TxMonitor
      
-      def execute(usr_opts={})
+      def execute(usr_opts = {})
                 
         #prepare opts
-        opts=usr_opts.clone
+        opts = usr_opts.clone
         opts[:agent] = self
         #opts[:cmd] = "Actions::"+ opts[:cmd]
 
@@ -37,7 +37,7 @@ module Madmass
       def do_it opts
 
         #create the action
-        action = Madmass::Action::ActionFactory.make(opts)
+        action = create_action(opts)
 
         tx_monitor do
           # we are in a transaction!
@@ -89,6 +89,16 @@ module Madmass
       end
 
       private
+
+      def create_action(opts)
+        # when the remote option is passed other options are translated to create a remote action
+        if opts.delete(:remote)
+          data = opts.clone
+          cmd = "madmass::action::remote"
+          opts = {:cmd => cmd, :data => data}
+        end
+        Madmass::Action::ActionFactory.make(opts)
+      end
       
       def error_percept_factory(action, error, opts)
 

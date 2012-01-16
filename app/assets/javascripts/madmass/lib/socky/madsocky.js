@@ -9,7 +9,7 @@
  */
 
 // Set URL of your WebSocketMain.swf here:
-WEB_SOCKET_SWF_LOCATION = "/assets/lib/socky/WebSocketMain.swf";
+WEB_SOCKET_SWF_LOCATION = "/assets/madmass/lib/socky/WebSocketMain.swf";
 // Set this to dump debug message from Flash to console.log:
 WEB_SOCKET_DEBUG = false;
 
@@ -31,7 +31,10 @@ Socky.prototype.connect = function() {
   var instance = this;
   instance.state = Socky.CONNECTING;
 
-  var ws = new WebSocket(this.host + ':' + this.port + '/?' + this.params);
+// Hack to manage websockets with Mozilla Firefox (the WebSocket class has a different name!)
+  var MadmassWebSocket = window.WebSocket || MozWebSocket;
+  if(!MadmassWebSocket) return;
+  var ws = new MadmassWebSocket(this.host + ':' + this.port + '/?' + this.params);
   ws.onopen    = function()    { instance.onopen(); };
   ws.onmessage = function(evt) { instance.onmessage(evt); };
   ws.onclose   = function()    { instance.onclose(); };
@@ -1225,8 +1228,9 @@ ASProxy.prototype =
 // Reference: http://tools.ietf.org/html/draft-hixie-thewebsocketprotocol
 
 (function() {
-  
-  if (window.WebSocket) return;
+
+  if (Modernizr.websockets) return;
+  //if (window.WebSocket) return;
 
   var console = window.console;
   if (!console) console = {log: function(){ }, error: function(){ }};

@@ -3,7 +3,7 @@ module Madmass
 
     # This is the Singleton class that holds the current perception instance.
     class CurrentAccessor
-      include Singleton
+      #include Singleton
       attr_accessor :perception
     end
 
@@ -11,11 +11,14 @@ module Madmass
     # action in execution, in all classes by invoking Madmass.current_perception.
     module Current
       def current_perception
-        Perception::CurrentAccessor.instance.perception #HACK TODO in a better way
+        #Perception::CurrentAccessor.instance.perception #HACK TODO in a better way
+        #Perception::CurrentAccessor.perception #HACK TODO in a better way
+	@percept ||= Madmass::Perception::Percept.new
       end
 
       def current_perception=(perception)
-        Perception::CurrentAccessor.instance.perception = perception
+        #Perception::CurrentAccessor.instance.perception = perception
+        @percept = perception
       end
     end
 

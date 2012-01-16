@@ -13,11 +13,11 @@ module Madmass
       end
 
       def initialize(context = nil)
-          base_header = {:agent_id => "#{Madmass.current_agent.id}"}
-          base_header.merge!({:action => context.class.name}) if context
-          @header = HashWithIndifferentAccess.new(base_header)
-          @data = HashWithIndifferentAccess.new
-          @status = HashWithIndifferentAccess.new(:code => 'ok')
+        base_header = {:agent_id => "#{Madmass.current_agent.id}"}
+        base_header.merge!({:action => context.class.name}) if context
+        @header = HashWithIndifferentAccess.new(base_header)
+        @data = HashWithIndifferentAccess.new
+        @status = HashWithIndifferentAccess.new(:code => 'ok')
       end
 
       #Deep copy of the percept

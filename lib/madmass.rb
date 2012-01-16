@@ -1,4 +1,3 @@
-# TODO: check if singleton is needed!
 require 'singleton'
 require "madmass/engine"
 
@@ -39,6 +38,7 @@ module Madmass
 
   module Action
     autoload :Action, 'madmass/action/action'
+    autoload :RemoteAction, 'madmass/action/remote_action'
     autoload :ActionFactory, 'madmass/action/action_factory'
     autoload :Stateful, 'madmass/action/stateful'
     autoload :ClassMethods, 'madmass/action/stateful'
@@ -51,6 +51,7 @@ module Madmass
     autoload :DummySender, 'madmass/comm/dummy_sender'
     autoload :PerceptGrouper, 'madmass/comm/percept_grouper'
     autoload :SockySender, 'madmass/comm/socky_sender'
+    autoload :JmsSender, 'madmass/comm/jms_sender'
   end
 
   module Errors
@@ -77,6 +78,7 @@ module Madmass
 
   module Transaction
     autoload :ActiveRecordAdapter, 'madmass/transaction/active_record_adapter'
+    autoload :TorqueBoxAdapter, 'madmass/transaction/torque_box_adapter'
     autoload :NoneAdapter, 'madmass/transaction/none_adapter'
     autoload :TransactionManager, 'madmass/transaction/transaction_manager'
     autoload :TxMonitor, 'madmass/transaction/tx_monitor'
@@ -91,6 +93,17 @@ module Madmass
     autoload :Loggable, 'madmass/utils/logger'
   end
 
+  module AgentFarm
+    module Agent
+      autoload :AutonomousAgent, 'madmass/agent_farm/agent/autonomous_agent'
+    end
+
+   module Domain
+     autoload :UpdaterFactory, 'madmass/agent_farm/domain/updater_factory'
+     autoload :AbstractUpdater, 'madmass/agent_farm/domain/abstract_updater'
+   end
+
+  end
 end
 
 module Madmass

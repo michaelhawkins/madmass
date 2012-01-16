@@ -20,3 +20,4 @@ gem 'sqlite3'
 gem "socky-client", "0.4.3"
 gem "socky-client-rails", "0.4.5"
 gem "socky-server", "0.4.1"
+

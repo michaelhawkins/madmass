@@ -13,9 +13,14 @@
 //= require madmass/client/core.transitions
 //= require madmass/client/core.fsm
 //= require madmass/client/madmass.controller
-//= require madmass/client/madmass.socky
 //= require madmass/client/madmass.perceptor
 //= require madmass/client/madmass.sniffer
 //= require madmass/client/madmass.gui
 //= require madmass/client/madmass.helpers
+//= require madmass/lib/jquery.cookie
+//= require madmass/lib/modernizr
+
+//= require madmass/client/madmass.socky
 //= require madmass/lib/socky/madsocky
+//= require madmass/client/madmass.stomp
+//= require madmass/lib/stilts-stomp/stilts-stomp

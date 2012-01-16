@@ -1,0 +1,22 @@
+messaging:
+  /queue/commands:
+    Madmass::Agent::JmsExecutor:
+      concurrency: 50
+
+topics:
+  /topic/perceptions:
+
+queues:
+  /queue/commands:
+
+<% if @options[:ws_client] == :stilts %>
+stomp:
+  stomplets:
+    test_stomplet:
+      class: Madmass::CommandsStomplet
+      concurrency: 50
+      route: '<%= @options[:stomplet_topic] %>'
+      config:
+        perceptions_destination: /topic/perceptions
+        commands_destination: /queue/commands
+<% end %>

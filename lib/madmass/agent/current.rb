@@ -3,7 +3,7 @@ module Madmass
 
     # This is the Singleton class that holds the current agent instance.
     class CurrentAccessor
-      include Singleton
+      #include Singleton
       attr_accessor :agent
     end
 
@@ -11,11 +11,13 @@ module Madmass
     # action in all classes by invoking Madmass.current_agent.
     module Current
       def current_agent
-        Agent::CurrentAccessor.instance.agent
+        #Agent::CurrentAccessor.instance.agent
+        @agent ||= Madmass::Agent::ProxyAgent.new
       end
 
       def current_agent=(agent)
-        Agent::CurrentAccessor.instance.agent = agent
+        #Agent::CurrentAccessor.instance.agent = agent
+        @agent = agent
       end
     end
   end

@@ -12,7 +12,7 @@ module Madmass
           @options[type]
         end
 
-        # Loads the game configuration maintained in config/game_options.yml
+        # Loads the install configuration maintained in config/install_settings.yml
         def init
           @options = {}
           @options_path = File.join(Rails.root, 'config', 'install_settings.yml')

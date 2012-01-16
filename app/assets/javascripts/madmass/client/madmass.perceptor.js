@@ -28,6 +28,7 @@ Madmass.Perceptor = new Class.Singleton({
         status: percept.status,
         header: percept.header
       }
+      $log("Madmass.Perceptor percept: " + JSON.stringify(percept));
       $H(percept.data).each(function(perception, name){
         try {
           strategy = new Madmass.PerceptStrategy[name];
@@ -35,7 +36,8 @@ Madmass.Perceptor = new Class.Singleton({
           blindPercept.data = perception;
           strategy.onPercept(blindPercept);
         } catch(err){
-          $log('Madmass.Perceptor: no percept strategy for: "' + name + '"', {level: 'warn'});
+          $log('Madmass.Perceptor: no percept strategy for: "' + name + ' - exc: ' + err + '"', {level: 'warn'});
+          console.error(err.stack);
         }
       }, this);
     }, this)
