@@ -1,4 +1,5 @@
 source "http://rubygems.org"
+source "http://rubygems.torquebox.org"
 
 # Declare your gem's dependencies in madmass.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
@@ -16,8 +17,3 @@ gem 'sqlite3'
 
 # To use debugger
 # gem 'ruby-debug'
-
-gem "socky-client", "0.4.3"
-gem "socky-client-rails", "0.4.5"
-gem "socky-server", "0.4.1"
-
