@@ -7,7 +7,6 @@ module Madmass
 
         Madmass.transaction do
           block.call
-         # raise Errors::WrongInputException, "Arghhhhhhhhhh"
          end
 
       rescue Exception => exc
