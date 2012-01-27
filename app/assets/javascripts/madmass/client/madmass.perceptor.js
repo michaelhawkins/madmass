@@ -37,7 +37,6 @@ Madmass.Perceptor = new Class.Singleton({
           strategy.onPercept(blindPercept);
         } catch(err){
           $log('Madmass.Perceptor: no percept strategy for: "' + name + ' - exc: ' + err + '"', {level: 'warn'});
-          console.error(err.stack);
         }
       }, this);
     }, this)

@@ -47,7 +47,9 @@ module Madmass
           behavioral_validation(action)
 
           # check action specific applicability
-          raise Madmass::Errors::NotApplicableError unless action.applicable?
+          unless action.applicable?
+            raise Madmass::Errors::NotApplicableError
+          end
 
           # execute action
           action.execute
@@ -102,7 +104,7 @@ module Madmass
       
       def error_percept_factory(action, error, opts)
 
-        Madmass.logger.error("#{error.class}: #{error.message}")
+        Madmass.logger.error("#{action} #{error.class}: #{error.message}")
 
         e = Madmass::Perception::Percept.new(action)
         e.status = {:code => opts[:code], :exception => error.class.name}
