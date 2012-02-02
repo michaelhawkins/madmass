@@ -69,13 +69,17 @@ module Madmass
         self.valid_params += params.map(&:to_s).to_set
       end
 
+      # Define a list of communication private channels (symbols or strings)
+      attr_accessor :clients, :channels
+
       # Validates parameters declared using #action_params and calls process_params method (that you can override to add parameters preprocessing
       # or any computation to be performed before execution)
       def initialize parameters = {}
         validate parameters # raises Madmass::Errors::WrongInputError
         @parameters = parameters
         @why_not_applicable = nil
-
+        @clients = Set.new
+        @channels = Set.new
         process_params
       end
 

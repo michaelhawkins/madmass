@@ -16,7 +16,7 @@ module Madmass
               retry
               return
             },
-            ActiveRecord::StaleObjectError => Proc.new {
+           ActiveRecord::StaleObjectError => Proc.new {
               sleep(rand(1)/4.0)
 #              Game.current.reload if Game.current
 #              Player.current.reload if Player.current

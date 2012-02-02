@@ -104,7 +104,9 @@ module Madmass
       
       def error_percept_factory(action, error, opts)
 
-        Madmass.logger.error("#{action} #{error.class}: #{error.message}")
+        error_msg = "#{action} #{error.class}: #{error.message}"
+        error_msg += " - #{action.why_not_applicable.messages}" if action.why_not_applicable.any?
+        Madmass.logger.error(error_msg)
 
         e = Madmass::Perception::Percept.new(action)
         e.status = {:code => opts[:code], :exception => error.class.name}

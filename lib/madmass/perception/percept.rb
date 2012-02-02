@@ -14,7 +14,11 @@ module Madmass
 
       def initialize(context = nil)
         base_header = {:agent_id => "#{Madmass.current_agent.id}"}
-        base_header.merge!({:action => context.class.name}) if context
+        if context
+          base_header.merge!({:action => context.class.name.split("::").map(&:underscore).join("::")})
+          # set who must receive the perceptions for the action
+          base_header.merge!({:topics => context.channels.map(&:to_s), :clients => context.clients.map(&:to_s)})
+        end
         @header = HashWithIndifferentAccess.new(base_header)
         @data = HashWithIndifferentAccess.new
         @status = HashWithIndifferentAccess.new(:code => 'ok')
