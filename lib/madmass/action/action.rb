@@ -102,6 +102,10 @@ module Madmass
         true
       end
 
+      def remote?
+        false
+      end
+      
       private
       
       # Check if the parameters are a subset of accepted parameters for the action.

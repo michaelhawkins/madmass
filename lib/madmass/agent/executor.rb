@@ -39,27 +39,18 @@ module Madmass
         #create the action
         action = create_action(opts)
 
-        tx_monitor do
-          # we are in a transaction!
-
-          # check if the action is consistent with behavioral specification
-          # e.g., FSA, PNP, etc ...
-          behavioral_validation(action)
-
-          # check action specific applicability
-          unless action.applicable?
-            raise Madmass::Errors::NotApplicableError
+        # FIXME: NativeException: java.lang.Error: Nested transactions not supported yet...
+        # current hack: if the action is remote we don't open a transaction (because the transaction is already opened by
+        # code that invoke the action
+        if action.remote?
+          process(action)
+        else
+          tx_monitor do
+            # we are in a transaction!
+            process(action)
           end
-
-          # execute action
-          action.execute
-
-          # change user state
-          action.change_state
-
-          # generate percept (in Madmass.current_percept)
-          action.build_result
         end
+          
         return 'ok' #http status
 
       rescue Madmass::Errors::StateMismatchError => exc
@@ -92,6 +83,26 @@ module Madmass
 
       private
 
+      def process(action)
+        # check if the action is consistent with behavioral specification
+        # e.g., FSA, PNP, etc ...
+        behavioral_validation(action)
+
+        # check action specific applicability
+        unless action.applicable?
+          raise Madmass::Errors::NotApplicableError
+        end
+
+        # execute action
+        action.execute
+
+        # change user state
+        action.change_state
+
+        # generate percept (in Madmass.current_percept)
+        action.build_result
+      end
+      
       def create_action(opts)
         # when the remote option is passed other options are translated to create a remote action
         if opts.delete(:remote)
@@ -117,7 +128,7 @@ module Madmass
       end
 
       def behavioral_validation action
-         return true;
+        return true;
       end
  
     end

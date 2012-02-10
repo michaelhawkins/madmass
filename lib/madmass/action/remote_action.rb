@@ -28,6 +28,10 @@ module Madmass
 
       def build_result
       end
+
+      def remote?
+        true
+      end
       
     end
     
