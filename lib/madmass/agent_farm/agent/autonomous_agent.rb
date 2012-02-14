@@ -37,7 +37,7 @@ module Madmass
             end
             Madmass.logger.error "Retry #{@stop_retry} for stop reached (10) - exception was: #{ex}"
             @stop_retry += 1
-            sleep(rand(1)/4.0)
+            sleep(rand/4.0)
             retry
           end
 
@@ -51,7 +51,7 @@ module Madmass
             end
             Madmass.logger.error "Retry #{@pause_retry} for pause reached (10) - exception was: #{ex}"
             @pause_retry += 1
-            sleep(rand(1)/4.0)
+            sleep(rand/4.0)
             retry
           end
 

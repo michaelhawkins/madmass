@@ -12,12 +12,12 @@ module Madmass
 
         def rescues
           {ActiveRecord::Rollback => Proc.new {
-              sleep(rand(1)/4.0)
+              sleep(rand/4.0)
               retry
               return
             },
             ActiveRecord::StaleObjectError => Proc.new {
-              sleep(rand(1)/4.0)
+              sleep(rand/4.0)
 #              Game.current.reload if Game.current
 #              Player.current.reload if Player.current
               retry
