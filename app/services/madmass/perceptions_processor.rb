@@ -33,14 +33,30 @@ class PerceptionsProcessor < TorqueBox::Messaging::MessageProcessor
   def on_message(body)
     begin
       perceptions = JSON(body)
-      agents_queue = TorqueBox::Messaging::Queue.new('/queue/agents')
+      #agents_queue = TorqueBox::Messaging::Queue.new('/queue/agents')
       perceptions.each do |perception|
-        agents_queue.publish(perception, :tx => false)
+        Madmass::AgentFarm::Domain::UpdaterFactory.updater.update_domain(perception)
+        #agents_queue.publish(perception, :tx => false)
+        #puts "AGENT: #{agent.id} published start"
         ActiveSupport::Notifications.instrument("geograph-generator.agent_queue_sent")
       end
     rescue Exception => ex
       Madmass.logger.debug ex
     end
   end
+
+#  def on_message(body)
+#    begin
+#      perceptions = JSON(body)
+#      agents_queue = TorqueBox::Messaging::Queue.new('/queue/agents')
+#      perceptions.each do |perception|
+#        agents_queue.publish(perception, :tx => false)
+#        puts "AGENT: #{agent.id} published start"
+#        ActiveSupport::Notifications.instrument("geograph-generator.agent_queue_sent")
+#      end
+#    rescue Exception => ex
+#      Madmass.logger.debug ex
+#    end
+#  end
 
 end

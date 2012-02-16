@@ -1,6 +1,9 @@
 madmass
 -------
 
+This project is part of the Specific Targeted Research Project (STReP) [Cloud-TM](http://www.cloudtm.eu) and is partially funded by the
+European Commission under the Seventh Framework Programme for Research and Technological Development (FP7 - 2007-2013) with contract no. 257784.
+
 MADMASS is an open-source Ruby on Rails gem for developing MAssively Distributed
 Multi Agent System Simulators. MADMASS is a framework for developing web
 applications that featuring scalability and real-time interactions among users.

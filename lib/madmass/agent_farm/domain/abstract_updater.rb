@@ -36,6 +36,10 @@ module AgentFarm
         #Madmass.logger.debug "Update #{perception.inspect}"
         #raise "AbstractUpdater::update_domain: you must override this method, this is an abstract class!"
       end
+
+      def run(options)
+        
+      end
     end
 
   end
