@@ -9,12 +9,11 @@ topics:
 queues:
   /queue/commands:
 
-<% if @options[:ws_client] == :stilts %>
+<% if @options[:ws_client] == 'stilts' %>
 stomp:
   stomplets:
     test_stomplet:
       class: Madmass::CommandsStomplet
-      concurrency: 50
       route: '<%= @options[:stomplet_topic] %>'
       config:
         perceptions_destination: /topic/perceptions
