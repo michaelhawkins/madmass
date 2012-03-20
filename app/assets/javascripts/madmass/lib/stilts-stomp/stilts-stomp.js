@@ -1,5 +1,5 @@
 // (c) 2010 Jeff Mesnil -- http://jmesnil.net/
-// stilts-stomp-client.js 0.1.24
+// stilts-stomp-client.js 0.1.25
 
 (function(window) {
 
@@ -141,12 +141,12 @@
 
 		that.connect = function(login_, passcode_, connectCallback, errorCallback) {
 			debug("Opening Web Socket...");
-      var wsClass = null;
-      if ( typeof WebSocket != 'undefined' ) {
-        wsClass = WebSocket;
-      } else if ( typeof MozWebSocket != 'undefined' ) {
-        wsClass = MozWebSocket;
-      }
+                        var wsClass = null;
+                        if ( typeof WebSocket != 'undefined' ) {
+                          wsClass = WebSocket;
+                        } else if ( typeof MozWebSocket != 'undefined' ) {
+                          wsClass = MozWebSocket;
+                        }
 
 			ws = new wsClass(url);
 			ws.onmessage = onmessage;
