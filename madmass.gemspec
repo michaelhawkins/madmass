@@ -25,7 +25,7 @@ Transaction Processing Systems, Location-based Mobile Social Networks (or geo-so
 
   # specify any dependencies here; for example:
   s.add_dependency "shoulda", ">= 0"
-  s.add_dependency "bundler", "1.0.0"
+  s.add_dependency "bundler"
   s.add_dependency "rcov", "~> 0.9.11"
   s.add_dependency "torquebox-rake-support", "2.0.0.beta3"
   s.add_dependency "torquebox", "2.0.0.beta3"
