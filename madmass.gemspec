@@ -35,5 +35,4 @@ Transaction Processing Systems, Location-based Mobile Social Networks (or geo-so
   #s.add_dependency 'i18n'
   #s.add_dependency "activesupport"
   s.add_dependency "rails", "3.1.3"
-  s.add_dependency 'sass-rails', "3.1.4"
 end
