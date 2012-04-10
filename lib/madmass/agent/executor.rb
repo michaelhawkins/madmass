@@ -159,9 +159,7 @@ module Madmass
   end
 
   def behavioral_validation action
-    return true;
+    return true
   end
 
-end
-end
 end
