@@ -109,57 +109,58 @@ module Madmass
                               :message => exc.message)
         return :service_unavailable #http status
       end
+
+
+      private
+
+      def process(action)
+        # check if the action is consistent with behavioral specification
+        # e.g., FSA, PNP, etc ...
+        behavioral_validation(action)
+
+        # check action specific applicability
+        unless action.applicable?
+          raise Madmass::Errors::NotApplicableError
+        end
+
+        # execute action
+        action.execute
+
+        # change user state
+        action.change_state
+
+        # generate percept (in Madmass.current_percept)
+        action.build_result
+      end
+
+      def create_action(opts)
+        # when the remote option is passed other options are translated to create a remote action
+        if opts.delete(:remote)
+          data = opts.clone
+          cmd = "madmass::action::remote"
+          opts = {:cmd => cmd, :data => data}
+        end
+        Madmass::Action::ActionFactory.make(opts)
+      end
+
+      def error_percept_factory(action, error, opts)
+
+        error_msg = "#{action} #{error.class}: #{error.message}"
+        error_msg += " - #{action.why_not_applicable.messages}" if action and action.why_not_applicable.any?
+        Madmass.logger.error(error_msg)
+
+        e = Madmass::Perception::Percept.new(action)
+        e.status = {:code => opts[:code], :exception => error.class.name}
+        e.data.merge!({:message => opts[:message]}) if opts[:message]
+        e.data.merge!({:why_not_applicable => opts[:why_not_applicable]}) if opts[:why_not_applicable]
+
+        Madmass.current_perception << e
+      end
+
+      def behavioral_validation action
+        return true
+      end
+
     end
   end
-
-  private
-
-  def process(action)
-    # check if the action is consistent with behavioral specification
-    # e.g., FSA, PNP, etc ...
-    behavioral_validation(action)
-
-    # check action specific applicability
-    unless action.applicable?
-      raise Madmass::Errors::NotApplicableError
-    end
-
-    # execute action
-    action.execute
-
-    # change user state
-    action.change_state
-
-    # generate percept (in Madmass.current_percept)
-    action.build_result
-  end
-
-  def create_action(opts)
-    # when the remote option is passed other options are translated to create a remote action
-    if opts.delete(:remote)
-      data = opts.clone
-      cmd = "madmass::action::remote"
-      opts = {:cmd => cmd, :data => data}
-    end
-    Madmass::Action::ActionFactory.make(opts)
-  end
-
-  def error_percept_factory(action, error, opts)
-
-    error_msg = "#{action} #{error.class}: #{error.message}"
-    error_msg += " - #{action.why_not_applicable.messages}" if action and action.why_not_applicable.any?
-    Madmass.logger.error(error_msg)
-
-    e = Madmass::Perception::Percept.new(action)
-    e.status = {:code => opts[:code], :exception => error.class.name}
-    e.data.merge!({:message => opts[:message]}) if opts[:message]
-    e.data.merge!({:why_not_applicable => opts[:why_not_applicable]}) if opts[:why_not_applicable]
-
-    Madmass.current_perception << e
-  end
-
-  def behavioral_validation action
-    return true
-  end
-
 end
