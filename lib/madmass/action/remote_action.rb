@@ -38,11 +38,12 @@ module Madmass
       
       def initialize params = {}
         super
-        @queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue))
-        @queue.connect_options = {
-          :naming_host => Madmass.install_options(:naming_host),
-          :naming_port => Madmass.install_options(:naming_port)
-        }
+        set_connection_options
+        @queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), :host => @host, :port => @port)
+#        @queue.connect_options = {
+#          :naming_host => Madmass.install_options(:naming_host),
+#          :naming_port => Madmass.install_options(:naming_port)
+#        }
       end
 
       def execute
@@ -50,6 +51,7 @@ module Madmass
         # With transactions enabled all publish will send the data at the end of job operations.
         @parameters[:data][:agent] = {:id => @parameters[:data][:agent].id}
         Madmass.logger.debug "RemoteAction data: #{@parameters[:data].inspect}"
+        # TODO: add host + port
         @queue.publish((@parameters[:data] || {}).to_json, :tx => false)
         # notify that a remote command is sent
         ActiveSupport::Notifications.instrument("madmass.command_sent")
@@ -60,6 +62,21 @@ module Madmass
 
       def remote?
         true
+      end
+
+      private
+
+      def set_connection_options
+        if Madmass.install_options(:cluster_nodes) and Madmass.install_options(:cluster_nodes)[:geograph_nodes]
+          # NOTE: it is available in Ruby 1.9, so if using an earlier version, require "backports".
+          # Note that in Ruby 1.8.7 it exists under the unfortunate name choice; it was renamed in later version so you shouldn't use it.
+          # In jruby sample don't exists.
+          @host = Madmass.install_options(:cluster_nodes)[:geograph_nodes].choice
+          @port = Madmass.install_options(:remote_messaging_port)
+        else
+          @host = 'localhost'
+          @port = 5445
+        end
       end
       
     end
