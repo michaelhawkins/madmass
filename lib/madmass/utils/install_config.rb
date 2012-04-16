@@ -45,6 +45,7 @@ module Madmass
         def init
           @options = {}
           @options_path = File.join(Rails.root, 'config', 'install_settings.yml')
+          @nodes_path = File.join("/tmp", "cluster_nodes.yml")
           load_options
         end
 
@@ -53,6 +54,21 @@ module Madmass
         def load_options
           raise "Cannot find install config file at #{@options_path}" unless File.file?(@options_path)
           @options = File.open(@options_path) { |yf| YAML::load(yf) }
+
+          #Load cluster nodes IPs
+           if File.file?(@nodes_path)
+             @nodes = File.open(@nodes_path) { |yf| YAML::load(yf) }
+             @options.merge! @nodes
+           else
+             Madmass.logger.warn "Cannot find cluster nodes file at #{@nodes_path}, reverting to localhost"
+             @options[:cluster_nodes] ={
+               :geograph_nodes =>["localhost"],
+               :agent_farm_nodes =>["localhost"],
+               :agent_farm_modcluster_nodes=>["localhost"],
+               :geograph_modcluster_nodes =>["localhost"],
+               :db_nodes =>["localhost"]
+             }
+             end
         end
       end
     end

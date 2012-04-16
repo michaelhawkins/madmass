@@ -39,7 +39,19 @@ module Madmass
       def initialize params = {}
         super
         set_connection_options
-        @queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), :host => @host, :port => @port)
+        #FIXME: workaround for TB2.0.0 fixed in TB2.0.1
+        connect_opts = { "host" => @host, "port" =>  @port }
+        transport_config =
+        org.hornetq.api.core.TransportConfiguration.new("org.hornetq.core.remoting.impl.netty.NettyConnectorFactory",
+        connect_opts)
+        connection_factory =
+        org.hornetq.api.jms.HornetQJMSClient.createConnectionFactoryWithoutHA(
+        org.hornetq.api.jms::JMSFactoryType::CF, transport_config )
+        @queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), connection_factory)
+
+        #FIXME:this is the correct way@queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), :host => @host, :port => @port)
+
+#        This is the JNDI way ...
 #        @queue.connect_options = {
 #          :naming_host => Madmass.install_options(:naming_host),
 #          :naming_port => Madmass.install_options(:naming_port)
@@ -71,6 +83,7 @@ module Madmass
           # NOTE: it is available in Ruby 1.9, so if using an earlier version, require "backports".
           # Note that in Ruby 1.8.7 it exists under the unfortunate name choice; it was renamed in later version so you shouldn't use it.
           # In jruby sample don't exists.
+
           @host = Madmass.install_options(:cluster_nodes)[:geograph_nodes].choice
           @port = Madmass.install_options(:remote_messaging_port)
         else
