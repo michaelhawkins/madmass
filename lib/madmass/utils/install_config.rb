@@ -58,7 +58,7 @@ module Madmass
           #Load cluster nodes IPs
            if File.file?(@nodes_path)
              @nodes = File.open(@nodes_path) { |yf| YAML::load(yf) }
-             @options.merge! @nodes
+             @options[:cluster_nodes] = @nodes
            else
              Madmass.logger.warn "Cannot find cluster nodes file at #{@nodes_path}, reverting to localhost"
              @options[:cluster_nodes] ={

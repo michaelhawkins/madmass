@@ -41,14 +41,15 @@ module Madmass
         set_connection_options
         #FIXME: workaround for TB2.0.0 fixed in TB2.0.1
         connect_opts = { "host" => @host, "port" =>  @port }
-        transport_config =
-        org.hornetq.api.core.TransportConfiguration.new("org.hornetq.core.remoting.impl.netty.NettyConnectorFactory",
-        connect_opts)
-        connection_factory =
-        org.hornetq.api.jms.HornetQJMSClient.createConnectionFactoryWithoutHA(
-        org.hornetq.api.jms::JMSFactoryType::CF, transport_config )
-        @queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), connection_factory)
-
+        #puts "XXXXXXXXXX #{@host} -- #{@port}"
+         begin
+          transport_config = org.hornetq.api.core.TransportConfiguration.new("org.hornetq.core.remoting.impl.netty.NettyConnectorFactory", connect_opts)
+          connection_factory = org.hornetq.api.jms.HornetQJMSClient.createConnectionFactoryWithoutHA( org.hornetq.api.jms::JMSFactoryType::CF, transport_config )
+          @queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), connection_factory)
+        rescue Exception => ex
+          Madmass.logger.error "Exception opening remote commands queue: #{ex}"
+          Madmass.logger.error ex.backtrace.join("\n")
+        end
         #FIXME:this is the correct way@queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), :host => @host, :port => @port)
 
 #        This is the JNDI way ...
@@ -64,7 +65,14 @@ module Madmass
         @parameters[:data][:agent] = {:id => @parameters[:data][:agent].id}
         Madmass.logger.debug "RemoteAction data: #{@parameters[:data].inspect}"
         # TODO: add host + port
-        @queue.publish((@parameters[:data] || {}).to_json, :tx => false)
+        begin
+          @queue.publish((@parameters[:data] || {}).to_json, :tx => false)
+        rescue Exception => ex
+          Madmass.logger.error "Exception publishing to remote commands queue: #{ex}"
+          Madmass.logger.error "Cause: #{ex.cause.cause}"
+          Madmass.logger.error ex.backtrace.join("\n")
+        end
+
         # notify that a remote command is sent
         ActiveSupport::Notifications.instrument("madmass.command_sent")
       end
@@ -82,7 +90,7 @@ module Madmass
         if Madmass.install_options(:cluster_nodes) and Madmass.install_options(:cluster_nodes)[:geograph_nodes]
           # NOTE: it is available in Ruby 1.9, so if using an earlier version, require "backports".
           # Note that in Ruby 1.8.7 it exists under the unfortunate name choice; it was renamed in later version so you shouldn't use it.
-          # In jruby sample don't exists.
+          # In jruby sample does not exists!
 
           @host = Madmass.install_options(:cluster_nodes)[:geograph_nodes].choice
           @port = Madmass.install_options(:remote_messaging_port)
