@@ -35,28 +35,30 @@ module Madmass
       action_params :data
       #action_states :none
       #next_state :none
-      
+
       def initialize params = {}
         super
         set_connection_options
         #FIXME: workaround for TB2.0.0 fixed in TB2.0.1
-        connect_opts = { "host" => @host, "port" =>  @port }
+        #connect_opts = { "host" => @host, "port" =>  @port }
         #puts "XXXXXXXXXX #{@host} -- #{@port}"
-         begin
-          transport_config = org.hornetq.api.core.TransportConfiguration.new("org.hornetq.core.remoting.impl.netty.NettyConnectorFactory", connect_opts)
-          connection_factory = org.hornetq.api.jms.HornetQJMSClient.createConnectionFactoryWithoutHA( org.hornetq.api.jms::JMSFactoryType::CF, transport_config )
-          @queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), connection_factory)
+        begin
+          # transport_config = org.hornetq.api.core.TransportConfiguration.new("org.hornetq.core.remoting.impl.netty.NettyConnectorFactory", connect_opts)
+          #  connection_factory = org.hornetq.api.jms.HornetQJMSClient.createConnectionFactoryWithoutHA( org.hornetq.api.jms::JMSFactoryType::CF, transport_config )
+          # @queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), connection_factory)
+          @queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), :host => @host, :port => @port)
+
         rescue Exception => ex
           Madmass.logger.error "Exception opening remote commands queue: #{ex}"
           Madmass.logger.error ex.backtrace.join("\n")
         end
-        #FIXME:this is the correct way@queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), :host => @host, :port => @port)
+        #FIXME:this is the correct way
 
-#        This is the JNDI way ...
-#        @queue.connect_options = {
-#          :naming_host => Madmass.install_options(:naming_host),
-#          :naming_port => Madmass.install_options(:naming_port)
-#        }
+        #        This is the JNDI way ...
+        #        @queue.connect_options = {
+        #          :naming_host => Madmass.install_options(:naming_host),
+        #          :naming_port => Madmass.install_options(:naming_port)
+        #        }
       end
 
       def execute
@@ -64,7 +66,6 @@ module Madmass
         # With transactions enabled all publish will send the data at the end of job operations.
         @parameters[:data][:agent] = {:id => @parameters[:data][:agent].id}
         Madmass.logger.debug "RemoteAction data: #{@parameters[:data].inspect}"
-        # TODO: add host + port
         begin
           @queue.publish((@parameters[:data] || {}).to_json, :tx => false)
         rescue Exception => ex
@@ -99,9 +100,9 @@ module Madmass
           @port = 5445
         end
       end
-      
+
     end
-    
+
   end
 end
 
