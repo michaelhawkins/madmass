@@ -29,8 +29,14 @@
 
 require 'forwardable'
 
+#Ensure adapters are loaded
+adapters = Dir.glob(File.join(File.dirname(__FILE__), '*_adapter.rb'))
+adapters.each { |adapter| require adapter }
+
+
 module Madmass
   module Transaction
+
 
     def transaction &block
       Madmass::Transaction::TransactionManager.instance.transaction do
@@ -46,7 +52,8 @@ module Madmass
     class TransactionManager
       include Singleton
       extend Forwardable
-      
+
+
       def_delegators :@adapter, :transaction, :rescues
 
       def initialize
@@ -59,13 +66,11 @@ module Madmass
         class_name = Madmass.config.tx_adapter.to_s.classify
         @adapter = "#{class_name}".constantize
       rescue NameError => nerr
-        msg = "TransactionManager: error when setting the adapter: #{Madmass.config.tx_adapter}, class #{class_name} don't exists!"
+        msg = "TransactionManager: error when setting the adapter: #{Madmass.config.tx_adapter}, class #{class_name} doesn't exist!"
         Madmass.logger.error msg
         raise "#{msg} -- #{nerr.message}"
       end
-
     end
-
   end
 end
 

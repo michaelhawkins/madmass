@@ -31,47 +31,112 @@ module Madmass
   module AgentFarm
     module Agent
       module AutonomousAgent
-
         include Madmass::Agent::Executor
         include Madmass::Transaction::TxMonitor
-      
+
         def self.included(base)
           base.send(:include, InstanceMethods)
         end
 
         module InstanceMethods
+          include TorqueBox::Messaging::Backgroundable
+          always_background :simulate
 
-          def start(options = {:force => false})
-            init_status if options[:force]
 
-            if(running? and completed?)
-              action = choose_action
-              Madmass.logger.debug "Executing action: #{action.inspect}"
-              persist_last_action action
-              execute(action)
-            end
+          #TODO: set_plan plan #e.g. override in geograph_agent-farm with set_plan ({:type=> gpx, :data =>path/to/data)
+
+
+          #To control the agents
+
+          # Launches an autonomous agent simulation
+          def boot delay
+            init_status
+            simulate delay
+          end
+
+          #Shuts down the simulation
+          def shutdown
+            monitor { self.status = 'zombie' }
+          end
+
+          def play
+            monitor { self.status = 'running' }
+          end
+
+          def stop
+            monitor { self.status = 'stopped' }
+          end
+
+          def pause
+            monitor { self.status = 'paused' }
+          end
+
+          private
+
+          def execute_step(options = {:force => false})
+            #FIXME: remove?  init_status if options[:force]
+            action = choose_action
+            #persist_last_action action
+            execute(action)
 
           rescue Exception => ex
             on_error(ex)
           end
 
-          def stop
-            self.status = 'stopped'
-          rescue Exception => ex
-            @stop_retry ||= 1
-            if @stop_retry >= 10
-              Madmass.logger.error "Max retries for stop reached (10) - exception was: #{ex}"
-              Madmass.logger.error ex.backtrace.join("\n")
-              return
+          #Simulates the agent at a given step (in seconds)
+          def simulate step
+            perception = nil
+            alive = true
+            while alive
+              #The transaction must be inside the while loop or it will be impossible to
+              #have access to the updated state of the action.
+              #The tx is already opened in the controller, but this code is executed in a
+              #message processor that is executed outside that transaction. TODO: Check if true.
+              tx_monitor do
+                execute_step() if running? #perception = execute_step(perception)
+                Madmass.logger.info "agent -- type: #{self.type}  -- state: #{self.status} -- id: #{self.oid}"
+                self.status = 'dead' if self.status == 'zombie'
+                alive = (self.status != 'dead')
+              end
+              java.lang.Thread.sleep(step*1000);
             end
-            Madmass.logger.error "Retry #{@stop_retry} for stop reached (10) - exception was: #{ex}"
-            @stop_retry += 1
-            sleep(rand/4.0)
-            retry
+            #TODO Destroy Agent
           end
 
-          def pause
-            self.status = 'paused'
+          def init_status
+            monitor { self.status = 'stopped' }
+          end
+
+          #def persist_last_action action
+          #  self.status = 'running'
+          #  self.perception_status = action[:perception_status]
+          #end
+
+          #def completed?
+          #  return true unless perception_status
+          #  return (with_success? or with_failure?)
+          #end
+
+          #def with_success?
+          #  perception_status == 'ok'
+          #end
+          #
+          #def with_failure?
+          #  perception_status == 'precondition_failed'
+          #end
+
+          def running?
+            #return true unless perception_status
+            return (self.status == 'running')
+          end
+
+
+          #TODO is this needed?
+          def monitor &block
+
+            new_state = block.call
+
+            Madmass.logger.info("Setting new state #{new_state} for #{self.oid}")
           rescue Exception => ex
             @pause_retry ||= 1
             if @pause_retry >= 10
@@ -82,36 +147,6 @@ module Madmass
             @pause_retry += 1
             sleep(rand/4.0)
             retry
-          end
-
-          private
-
-
-          def init_status
-            self.status = 'idle'
-          end
-
-          def persist_last_action action
-            self.status = 'running'
-            self.perception_status = action[:perception_status]
-          end
-
-          def completed?
-            return true unless perception_status
-            return (with_success? or with_failure?)
-          end
-
-          def with_success?
-            perception_status == 'ok'
-          end
-
-          def with_failure?
-            perception_status == 'precondition_failed'
-          end
-
-          def running?
-            #return true unless perception_status
-            return ((status != 'stopped') and (status != 'paused'))
           end
         end
 

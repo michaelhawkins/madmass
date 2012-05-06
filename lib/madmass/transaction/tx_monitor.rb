@@ -31,23 +31,46 @@
 module Madmass
   module Transaction
     module TxMonitor
-     
+      MAX_ATTEMPTS =10 #FIXME must be configurable
+
       def tx_monitor &block
+        attempts = 0
 
-        Madmass.transaction do
-          block.call
-         end
+        begin
+          Madmass.transaction do
+            block.call
+            #raise Java::OrgInfinispan::CacheException.new #REMOVE ME FOR DEBUGGING
+          end
+        rescue Exception => exc
+          cause = main_cause exc
+          policy = Madmass.rescues[cause.class]
+          if Madmass.rescues[cause.class]
+            Madmass.logger.warn("Recovering through policy for #{cause.class}")
+            if policy.call(attempts) == :retry
+              attempts += 1
+              Madmass.logger.warn("Retrying for the **#{ActiveSupport::Inflector.ordinalize(attempts)}** time!")
+              retry if attempts <= MAX_ATTEMPTS
+              Madmass.logger.error "Aborting, max number of retries (#{MAX_ATTEMPTS}) reached"
 
-      rescue Exception => exc
-        policy = Madmass.rescues[exc.class]
-        if Madmass.rescues[exc.class]
-          policy.call
-        else
-          raise exc;
+            end
+          else
+            Madmass.logger.error("Raising up the stack! No recovery policy for: #{cause.class} ** MESSAGE:\n #{cause.message} ")
+            raise exc;
+          end
         end
       end
 
-      
+      private
+      def main_cause exc
+        main_causes_class = [Java::OrgInfinispan::CacheException]
+        current = exc
+        while current
+          return current if main_causes_class.detect() { |c| c == current.class }
+          current = current.cause
+        end
+
+        return exc
+      end
     end
   end
 end

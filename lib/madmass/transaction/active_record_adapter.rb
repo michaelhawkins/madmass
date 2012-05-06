@@ -39,7 +39,7 @@ module Madmass
           end
         end
 
-        def rescues
+        def rescues #FIXME see CloudTM Adapter
           {ActiveRecord::Rollback => Proc.new {
               sleep(rand/4.0)
               retry

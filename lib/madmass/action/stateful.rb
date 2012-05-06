@@ -50,7 +50,7 @@ module Madmass
         # Check if the current user state is allowed. Any is a special state that allow
         # every user state.
         def state_match?
-          # without the current agent the flow don't exists
+          # without the current agent the flow doesn't exists
           return true unless Madmass.current_agent
           applicable_states.include?('any') or applicable_states.include?(Madmass.current_agent.status.to_s)
         end
