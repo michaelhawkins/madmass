@@ -32,15 +32,61 @@ module Madmass
     module Agent
       module AutonomousAgent
         include Madmass::Agent::Executor
-        include Madmass::Transaction::TxMonitor
+        #include Madmass::Transaction::TxMonitor
 
         def self.included(base)
+          base.extend ClassMethods
+          base.extend(Madmass::Transaction::TxMonitor)
+          base.extend(TorqueBox::Messaging::Backgroundable)
           base.send(:include, InstanceMethods)
         end
 
+        module ClassMethods
+
+          # Simulates the agent at a given step (in seconds)
+          def simulate(opts)
+            # initialize agent status
+            Madmass.logger.info("Simulating with params #{opts.inspect}")
+            tx_monitor do
+              ##FIXME
+              my_manager = CloudTm::TxSystem.getManager
+              root = my_manager.getRoot
+              Madmass.logger.info("Root #{root.oid}")
+              groups = root.getAgentGroups
+              Madmass.logger.info("Groups #{groups.map(&:inspect)}")
+
+              agent = CloudTm::Agent.where_agent(opts)
+              Madmass.logger.warn("Agent not found, All agents are: #{CloudTm::Agent.all_agents(opts).map(&:inspect)}") unless agent
+              agent.status = 'stopped'
+            end
+
+            perception = nil
+            alive = true
+            while alive
+              #The transaction must be inside the while loop or it will be impossible to
+              #have access to the updated state of the action.
+              #The tx is already opened in the controller, but this code is executed in a
+              #message processor that is executed outside that transaction. TODO: Check if true.
+              tx_monitor do
+                agent = self.where_agent(opts)
+                #Madmass.logger.info "Simulate found: #{agent.inspect}"
+                #FIXME agent.execute_step() if agent.running? #perception = execute_step(perception)
+                Madmass.logger.info "Step executed by: #{agent.inspect}"
+                agent.status = 'dead' if agent.status == 'zombie'
+                alive = (agent.status != 'dead')
+              end
+
+
+              java.lang.Thread.sleep(opts[:step]*1000);
+            end
+            #TODO Destroy Agent
+          end
+
+        end
+
         module InstanceMethods
-          include TorqueBox::Messaging::Backgroundable
-          always_background :simulate
+          #include TorqueBox::Messaging::Backgroundable
+          #always_background :simulate
 
 
           #TODO: set_plan plan #e.g. override in geograph_agent-farm with set_plan ({:type=> gpx, :data =>path/to/data)
@@ -48,30 +94,23 @@ module Madmass
 
           #To control the agents
 
-          # Launches an autonomous agent simulation
-          def boot delay
-            init_status
-            simulate delay
-          end
-
           #Shuts down the simulation
           def shutdown
-            monitor { self.status = 'zombie' }
+            self.status = 'zombie'
           end
 
           def play
-            monitor { self.status = 'running' }
+            self.status = 'running'
           end
 
           def stop
-            monitor { self.status = 'stopped' }
+            self.status = 'stopped'
           end
 
           def pause
-            monitor { self.status = 'paused' }
+            self.status = 'paused'
           end
 
-          private
 
           def execute_step(options = {:force => false})
             #FIXME: remove?  init_status if options[:force]
@@ -83,71 +122,12 @@ module Madmass
             on_error(ex)
           end
 
-          #Simulates the agent at a given step (in seconds)
-          def simulate step
-            perception = nil
-            alive = true
-            while alive
-              #The transaction must be inside the while loop or it will be impossible to
-              #have access to the updated state of the action.
-              #The tx is already opened in the controller, but this code is executed in a
-              #message processor that is executed outside that transaction. TODO: Check if true.
-              tx_monitor do
-                execute_step() if running? #perception = execute_step(perception)
-                Madmass.logger.info "agent -- type: #{self.type}  -- state: #{self.status} -- id: #{self.oid}"
-                self.status = 'dead' if self.status == 'zombie'
-                alive = (self.status != 'dead')
-              end
-              java.lang.Thread.sleep(step*1000);
-            end
-            #TODO Destroy Agent
-          end
-
-          def init_status
-            monitor { self.status = 'stopped' }
-          end
-
-          #def persist_last_action action
-          #  self.status = 'running'
-          #  self.perception_status = action[:perception_status]
-          #end
-
-          #def completed?
-          #  return true unless perception_status
-          #  return (with_success? or with_failure?)
-          #end
-
-          #def with_success?
-          #  perception_status == 'ok'
-          #end
-          #
-          #def with_failure?
-          #  perception_status == 'precondition_failed'
-          #end
-
           def running?
             #return true unless perception_status
             return (self.status == 'running')
           end
 
 
-          #TODO is this needed?
-          def monitor &block
-
-            new_state = block.call
-
-            Madmass.logger.info("Setting new state #{new_state} for #{self.oid}")
-          rescue Exception => ex
-            @pause_retry ||= 1
-            if @pause_retry >= 10
-              Madmass.logger.error "Max retries for pause reached (10) - exception was: #{ex}"
-              return
-            end
-            Madmass.logger.error "Retry #{@pause_retry} for pause reached (10) - exception was: #{ex}"
-            @pause_retry += 1
-            sleep(rand/4.0)
-            retry
-          end
         end
 
       end
