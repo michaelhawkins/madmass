@@ -69,7 +69,6 @@ module Madmass
           return current if main_causes_class.detect() { |c| c == current.class }
           current =  current.class.method_defined?(:cause) ? current.cause : nil
         end
-
         return exc
       end
     end

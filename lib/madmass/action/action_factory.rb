@@ -50,6 +50,7 @@ module Madmass
           msg = "ActionFactory: action #{klass_name} doesn't exists!"
           Madmass.logger.error msg
           raise ex
+        rescue LoadError => ex
         end
       end
 

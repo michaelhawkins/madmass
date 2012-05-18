@@ -54,12 +54,6 @@ module Madmass
         Madmass.current_agent = Madmass::Agent::ProxyAgent.new(message.delete('agent'))
         Madmass.current_agent.execute(message)
       end
-      
-      #def on_error(exception)
-      # You may optionally override this to interrogate the exception. If you do,
-      # you're responsible for re-raising it to force a retry.
-      #end
-
     end
   end
 end

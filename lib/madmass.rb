@@ -127,15 +127,14 @@ module Madmass
       autoload :AutonomousAgent, 'madmass/agent_farm/agent/autonomous_agent'
     end
 
-   module Domain
-     autoload :UpdaterFactory, 'madmass/agent_farm/domain/updater_factory'
-     autoload :AbstractUpdater, 'madmass/agent_farm/domain/abstract_updater'
-   end
+    module Domain
+      autoload :UpdaterFactory, 'madmass/agent_farm/domain/updater_factory'
+      autoload :AbstractUpdater, 'madmass/agent_farm/domain/abstract_updater'
+    end
+
 
   end
-end
 
-module Madmass
   class << self
     include Madmass::Utils::Loggable
     include Madmass::Utils::Env
@@ -145,6 +144,7 @@ module Madmass
     include Madmass::Perception::Current
     include Madmass::Comm::Dispatcher
   end
+
 end
 
 # Every object can be traceable
