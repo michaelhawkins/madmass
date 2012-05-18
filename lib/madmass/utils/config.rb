@@ -61,6 +61,16 @@ module Madmass
 
       def setup &block
         yield(config)
+
+
+
+          puts ("Rails.root  is #{Rails.root}")
+          Dir.glob(File.join(Rails.root, 'lib', 'actions', '*.rb')).each do |action_path|
+            klass = action_path.split(File::SEPARATOR).last.sub(/\.rb$/, '').classify
+            #autoload "Actions::#{klass}".to_sym, action_path
+            load action_path
+          end
+
       end
     end
 
