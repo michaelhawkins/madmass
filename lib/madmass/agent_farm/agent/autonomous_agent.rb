@@ -46,36 +46,29 @@ module Madmass
           # Simulates the agent at a given step (in seconds)
           def simulate(opts)
             # initialize agent status
-            Madmass.logger.info("Simulating with params #{opts.inspect}")
-            tx_monitor do
-              ##FIXME
-              my_manager = CloudTm::TxSystem.getManager
-              root = my_manager.getRoot
-              Madmass.logger.info("Root #{root.oid}")
-              groups = root.getAgentGroups
-              Madmass.logger.info("Groups #{groups.map(&:inspect)}")
-
-              agent = CloudTm::Agent.where_agent(opts)
-              Madmass.logger.warn("Agent not found, All agents are: #{CloudTm::Agent.all_agents(opts).map(&:inspect)}") unless agent
-              agent.status = 'stopped'
-            end
 
             perception = nil
             alive = true
+            fails = 0
             while alive
               #The transaction must be inside the while loop or it will be impossible to
               #have access to the updated state of the action.
               #The tx is already opened in the controller, but this code is executed in a
               #message processor that is executed outside that transaction. TODO: Check if true.
-              tx_monitor do
-                agent = self.where_agent(opts)
-                #Madmass.logger.info "Simulate found: #{agent.inspect}"
-                #FIXME agent.execute_step() if agent.running? #perception = execute_step(perception)
-                Madmass.logger.info "Step executed by: #{agent.inspect}"
-                agent.status = 'dead' if agent.status == 'zombie'
-                alive = (agent.status != 'dead')
+              TorqueBox::transaction(:requires_new => true) do
+                tx_monitor do
+                  agent = self.where_agent(opts)
+                  if agent
+                    agent.execute_step() if agent.running? #perception = execute_step(perception)
+                    Madmass.logger.info "Step executed by: #{agent.inspect}"
+                    agent.status = 'dead' if agent.status == 'zombie'
+                    alive = (agent.status != 'dead')
+                  else
+                    fails = fails + 1
+                    Madmass.logger.warn "Agent with opts #{opts.inspect} does not exist! Tried #{fails} times!"
+                  end
+                end
               end
-
 
               java.lang.Thread.sleep(opts[:step]*1000);
             end
@@ -85,9 +78,6 @@ module Madmass
         end
 
         module InstanceMethods
-          #include TorqueBox::Messaging::Backgroundable
-          #always_background :simulate
-
 
           #TODO: set_plan plan #e.g. override in geograph_agent-farm with set_plan ({:type=> gpx, :data =>path/to/data)
 
@@ -113,17 +103,11 @@ module Madmass
 
 
           def execute_step(options = {:force => false})
-            #FIXME: remove?  init_status if options[:force]
             action = choose_action
-            #persist_last_action action
             execute(action)
-
-          rescue Exception => ex
-            on_error(ex)
           end
 
           def running?
-            #return true unless perception_status
             return (self.status == 'running')
           end
 
