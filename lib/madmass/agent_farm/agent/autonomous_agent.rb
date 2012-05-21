@@ -55,24 +55,32 @@ module Madmass
               #have access to the updated state of the action.
               #The tx is already opened in the controller, but this code is executed in a
               #message processor that is executed outside that transaction. TODO: Check if true.
+              Madmass.logger.info "SIMULATE: Waiting to open transactions for #{opts.inspect}"
               TorqueBox::transaction(:requires_new => true) do
+                Madmass.logger.info "SIMULATE: Opened TORQUEBOX transaction for #{opts.inspect}"
                 tx_monitor do
+                  Madmass.logger.info "SIMULATE: Opened CLOUD-TM  transaction for #{opts.inspect}"
                   agent = self.where_agent(opts)
                   if agent
                     agent.execute_step() if agent.running? #perception = execute_step(perception)
-                    Madmass.logger.info "Step executed by: #{agent.inspect}"
+                    Madmass.logger.info "SIMULATE: Step executed by: #{agent.inspect}"
                     agent.status = 'dead' if agent.status == 'zombie'
                     alive = (agent.status != 'dead')
                   else
                     fails = fails + 1
-                    Madmass.logger.warn "Agent with opts #{opts.inspect} does not exist! Tried #{fails} times!"
+                    Madmass.logger.warn "SIMULATE: Agent with opts #{opts.inspect} does not exist! Tried #{fails} times!"
+                    if fails > 4
+                      Madmass.logger.warn "SIMULATE: Tried to find agent #{opts.inspect} #{fails} times. Giving up!"
+                      return
+                    end
                   end
                 end
+                Madmass.logger.info "SIMULATE: Closed CLOUD-TM  transaction for #{opts.inspect}"
               end
+              Madmass.logger.info "SIMULATE: Closed TORQUEBOX transaction for #{opts.inspect}"
 
               java.lang.Thread.sleep(opts[:step]*1000);
             end
-            #TODO Destroy Agent
           end
 
         end
