@@ -65,14 +65,14 @@ module Madmass
         # Disable transactions because this method is invoked by a backgroundable method.
         # With transactions enabled all publish will send the data at the end of job operations.
         @parameters[:data][:agent] = {:id => @parameters[:data][:agent].id}
-        Madmass.logger.debug "RemoteAction data: #{@parameters[:data].inspect}"
-        begin
+        # Madmass.logger.debug "RemoteAction data: #{@parameters[:data].inspect}"
+        #begin
           @queue.publish((@parameters[:data] || {}).to_json, :tx => false)
-        rescue Exception => ex
-          Madmass.logger.error "Exception publishing to remote commands queue: #{ex}"
-          Madmass.logger.error "Cause: #{ex.cause.cause}"
-          Madmass.logger.error ex.backtrace.join("\n")
-        end
+        #rescue Exception => ex
+        #  Madmass.logger.error "Exception publishing to remote commands queue: #{ex}"
+        #  Madmass.logger.error "Cause: #{ex.cause.cause}"
+        #  Madmass.logger.error ex.backtrace.join("\n")
+        #end
 
         # notify that a remote command is sent
         ActiveSupport::Notifications.instrument("madmass.command_sent")

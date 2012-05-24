@@ -47,6 +47,7 @@ module Madmass
           def simulate(opts)
             # initialize agent status
 
+
             perception = nil
             alive = true
             fails = 0
@@ -57,9 +58,9 @@ module Madmass
               #message processor that is executed outside that transaction. TODO: Check if true.
               Madmass.logger.info "SIMULATE: Waiting to open transactions for #{opts.inspect}"
               TorqueBox::transaction(:requires_new => true) do
-                Madmass.logger.info "SIMULATE: Opened TORQUEBOX transaction for #{opts.inspect}"
+                #Madmass.logger.info "SIMULATE: Opened TORQUEBOX transaction for #{opts.inspect}"
                 tx_monitor do
-                  Madmass.logger.info "SIMULATE: Opened CLOUD-TM  transaction for #{opts.inspect}"
+                 # Madmass.logger.info "SIMULATE: Opened CLOUD-TM  transaction for #{opts.inspect}"
                   agent = self.where_agent(opts)
                   if agent
                     agent.execute_step() if agent.running? #perception = execute_step(perception)
@@ -75,9 +76,9 @@ module Madmass
                     end
                   end
                 end
-                Madmass.logger.info "SIMULATE: Closed CLOUD-TM  transaction for #{opts.inspect}"
+                #Madmass.logger.info "SIMULATE: Closed CLOUD-TM  transaction for #{opts.inspect}"
               end
-              Madmass.logger.info "SIMULATE: Closed TORQUEBOX transaction for #{opts.inspect}"
+              #Madmass.logger.info "SIMULATE: Closed TORQUEBOX transaction for #{opts.inspect}"
 
               java.lang.Thread.sleep(opts[:step]*1000);
             end
