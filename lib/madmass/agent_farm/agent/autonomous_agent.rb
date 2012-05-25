@@ -48,6 +48,7 @@ module Madmass
             # initialize agent status
 
 
+            thread = Thread.new{
             perception = nil
             alive = true
             fails = 0
@@ -57,7 +58,7 @@ module Madmass
               #The tx is already opened in the controller, but this code is executed in a
               #message processor that is executed outside that transaction. TODO: Check if true.
               Madmass.logger.info "SIMULATE: Waiting to open transactions for #{opts.inspect}"
-              TorqueBox::transaction(:requires_new => true) do
+              #TorqueBox::transaction(:requires_new => true) do
                 #Madmass.logger.info "SIMULATE: Opened TORQUEBOX transaction for #{opts.inspect}"
                 tx_monitor do
                  # Madmass.logger.info "SIMULATE: Opened CLOUD-TM  transaction for #{opts.inspect}"
@@ -77,11 +78,13 @@ module Madmass
                   end
                 end
                 #Madmass.logger.info "SIMULATE: Closed CLOUD-TM  transaction for #{opts.inspect}"
-              end
+              #end
               #Madmass.logger.info "SIMULATE: Closed TORQUEBOX transaction for #{opts.inspect}"
 
               java.lang.Thread.sleep(opts[:step]*1000);
             end
+           }
+           thread
           end
 
         end

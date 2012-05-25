@@ -52,7 +52,11 @@ module Madmass
         #agent = Madmass.current_agent || ProxyAgent.new
         message = JSON(body)
         Madmass.current_agent = Madmass::Agent::ProxyAgent.new(message.delete('agent'))
-        Madmass.current_agent.execute(message)
+
+        #Exit the (messagging) transactional context by launching a new thread
+        #or you could have duplicate perceptions when rollbacking
+        #Access to data is already transactional in the execute method;
+        Thread.new{Madmass.current_agent.execute(message)}
       end
     end
   end
