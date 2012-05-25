@@ -93,10 +93,11 @@ module Madmass
           # Note that in Ruby 1.8.7 it exists under the unfortunate name choice; it was renamed in later version so you shouldn't use it.
           # In jruby sample does not exists!
 
+          #FIXME: Geograph nodes should not be mentioned here! Refactor to  domain nodes ....
           @host = Madmass.install_options(:cluster_nodes)[:geograph_nodes].choice
           @port = Madmass.install_options(:remote_messaging_port)
         else
-          @host = 'localhost'
+          @host = 'madmass-node'
           @port = 5445
         end
       end

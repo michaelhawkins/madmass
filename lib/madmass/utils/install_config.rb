@@ -62,11 +62,11 @@ module Madmass
            else
              Madmass.logger.warn "Cannot find cluster nodes file at #{@nodes_path}, reverting to localhost"
              @options[:cluster_nodes] ={
-               :geograph_nodes =>["localhost"],
-               :agent_farm_nodes =>["localhost"],
-               :agent_farm_modcluster_nodes=>["localhost"],
-               :geograph_modcluster_nodes =>["localhost"],
-               :db_nodes =>["localhost"]
+               :geograph_nodes =>["madmass-node"],
+               :agent_farm_nodes =>["madmass-node"],
+               :agent_farm_modcluster_nodes=>["madmass-node"],
+               :geograph_modcluster_nodes =>["madmass-node"],
+               :db_nodes =>["madmass-node"]
              }
              end
         end
