@@ -68,6 +68,7 @@ module Madmass
                     Madmass.logger.info "SIMULATE: Step executed by: #{agent.inspect}"
                     agent.status = 'dead' if agent.status == 'zombie'
                     alive = (agent.status != 'dead')
+                    agent.last_execution = java.util.Date.new
                   else
                     fails = fails + 1
                     Madmass.logger.warn "SIMULATE: Agent with opts #{opts.inspect} does not exist! Tried #{fails} times!"
