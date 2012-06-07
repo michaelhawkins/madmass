@@ -82,10 +82,10 @@ module Madmass
               #end
               #Madmass.logger.info "SIMULATE: Closed TORQUEBOX transaction for #{opts.inspect}"
 
-              java.lang.Thread.sleep(opts[:step]*1000);
+              java.lang.Thread.sleep(opts[:step]);
             end
            }
-           thread
+           return true
           end
 
         end

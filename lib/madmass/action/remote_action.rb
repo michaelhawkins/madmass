@@ -67,7 +67,7 @@ module Madmass
         @parameters[:data][:agent] = {:id => @parameters[:data][:agent].id}
         # Madmass.logger.debug "RemoteAction data: #{@parameters[:data].inspect}"
         #begin
-          @queue.publish((@parameters[:data] || {}).to_json, :tx => false)
+          @queue.publish((@parameters[:data] || {}).to_json, :tx => false, :persistent => false)
         #rescue Exception => ex
         #  Madmass.logger.error "Exception publishing to remote commands queue: #{ex}"
         #  Madmass.logger.error "Cause: #{ex.cause.cause}"
