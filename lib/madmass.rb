@@ -125,6 +125,7 @@ module Madmass
   module AgentFarm
     module Agent
       autoload :AutonomousAgent, 'madmass/agent_farm/agent/autonomous_agent'
+      autoload :Behavior, 'madmass/agent_farm/agent/behavior'
     end
 
     module Domain

@@ -27,6 +27,8 @@
 ###############################################################################
 ###############################################################################
 
+#require Madmass::AgentFarm::Agent::Behavior
+
 module Madmass
   module AgentFarm
     module Agent
@@ -48,44 +50,41 @@ module Madmass
             # initialize agent status
 
 
-            thread = Thread.new{
-            perception = nil
-            alive = true
-            fails = 0
-            while alive
-              #The transaction must be inside the while loop or it will be impossible to
-              #have access to the updated state of the action.
-              #The tx is already opened in the controller, but this code is executed in a
-              #message processor that is executed outside that transaction. TODO: Check if true.
-              Madmass.logger.info "SIMULATE: Waiting to open transactions for #{opts.inspect}"
-              #TorqueBox::transaction(:requires_new => true) do
-                #Madmass.logger.info "SIMULATE: Opened TORQUEBOX transaction for #{opts.inspect}"
+            thread = Thread.new {
+              perception = nil
+              alive = true
+              fails = 0
+
+
+              while alive
+                #The transaction must be inside the while loop or it will be impossible to
+                #have access to the updated state of the action.
+                #The tx is already opened in the controller, but this code is executed in a
+                #message processor that is executed outside that transaction. TODO: Check if true.
+                #Madmass.logger.debug "SIMULATE: Waiting to open CLOUD-TM transactions for #{opts.inspect}"
+                #TorqueBox::transaction(:requires_new => true) do
+                #Madmass.logger.debug "SIMULATE: Opened TORQUEBOX transaction for #{opts.inspect}"
                 tx_monitor do
-                 # Madmass.logger.info "SIMULATE: Opened CLOUD-TM  transaction for #{opts.inspect}"
+                 #Madmass.logger.debug "SIMULATE: Opened CLOUD-TM  transaction for #{opts.inspect}"
                   agent = self.where_agent(opts)
+                  #Madmass.logger.debug "SIMULATE: Agent #{agent.inspect}"
                   if agent
                     agent.execute_step() if agent.running? #perception = execute_step(perception)
-                    Madmass.logger.info "SIMULATE: Step executed by: #{agent.inspect}"
+                    #Madmass.logger.debug "SIMULATE: Step executed by: #{agent.inspect}"
                     agent.status = 'dead' if agent.status == 'zombie'
                     alive = (agent.status != 'dead')
-                    agent.last_execution = java.util.Date.new
+                    # agent.last_execution = java.util.Date.new
                   else
-                    fails = fails + 1
-                    Madmass.logger.warn "SIMULATE: Agent with opts #{opts.inspect} does not exist! Tried #{fails} times!"
-                    if fails > 4
-                      Madmass.logger.warn "SIMULATE: Tried to find agent #{opts.inspect} #{fails} times. Giving up!"
-                      return
-                    end
+                    raise Madmass::Exception::CatastrophicError("SIMULATE: Agent #{opts} not found!")
                   end
                 end
-                #Madmass.logger.info "SIMULATE: Closed CLOUD-TM  transaction for #{opts.inspect}"
-              #end
-              #Madmass.logger.info "SIMULATE: Closed TORQUEBOX transaction for #{opts.inspect}"
+                #Madmass.logger.debug "SIMULATE: Closed CLOUD-TM  transaction for #{opts.inspect}"
 
-              java.lang.Thread.sleep(opts[:step]);
-            end
-           }
-           return true
+
+                java.lang.Thread.sleep(opts[:step]);
+              end
+            }
+            return true
           end
 
         end
@@ -114,13 +113,31 @@ module Madmass
             self.status = 'paused'
           end
 
+          def set_behavior
+            raise Madmass::Exception::CatastrophicError("set_behavior is an abstract method, please override it!")
+          end
 
-          def execute_step(options = {:force => false})
-            action = choose_action
-            execute(action)
+          def execute_step()
+            #Madmass.logger.debug "SIMULATE: Executing step"
+
+            if @current_behavior.nil?
+              #Madmass.logger.debug "SIMULATE: about to set Behavior "
+              set_behavior
+              #Madmass.logger.debug "SIMULATE: Behavior #{@current_behavior.class.name} set "
+            end
+
+            unless @current_behavior.defined?
+              @current_behavior.choose!
+              #Madmass.logger.debug "SIMULATE: Current Behavior choosen "
+            end
+
+            next_action = @current_behavior.next_action
+            #Madmass.logger.debug "SIMULATE: before execution #{next_action}"
+            execute(next_action)
           end
 
           def running?
+            #Madmass.logger.debug "SIMULATE: running?"
             return (self.status == 'running')
           end
 
