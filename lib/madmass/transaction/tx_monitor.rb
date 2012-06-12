@@ -31,7 +31,7 @@
 module Madmass
   module Transaction
     module TxMonitor
-      MAX_ATTEMPTS =10 #FIXME must be configurable
+      MAX_ATTEMPTS = 10 #FIXME must be configurable
 
       def tx_monitor &block
         attempts = 0
@@ -54,7 +54,7 @@ module Madmass
 
             end
           else
-            Madmass.logger.error("Raising up the stack! No recovery policy for: #{cause.class} ** MESSAGE:\n #{cause.message} ")
+           # Madmass.logger.error("Raising up the stack! No recovery policy for: #{cause.class} ** MESSAGE:\n #{cause.message} ")
             raise exc;
           end
         end
@@ -65,7 +65,7 @@ module Madmass
         main_causes_class = [Java::OrgInfinispan::CacheException]
         current = exc
         while current
-          Madmass.logger.warn("Inspecting exception: #{current.class} --  #{current.message}")
+         # Madmass.logger.warn("Inspecting exception: #{current.class} --  #{current.message}")
           return current if main_causes_class.detect() { |c| c == current.class }
           current =  current.class.method_defined?(:cause) ? current.cause : nil
         end

@@ -34,7 +34,6 @@ module Madmass
     module Agent
       module AutonomousAgent
         include Madmass::Agent::Executor
-        #include Madmass::Transaction::TxMonitor
 
         def self.included(base)
           base.extend ClassMethods
@@ -49,50 +48,102 @@ module Madmass
           def simulate(opts)
             # initialize agent status
 
-
+            #Madmass.logger.error "PUT BACK THE Thread!"
             thread = Thread.new {
-              perception = nil
-              alive = true
-              fails = 0
+              begin
+
+                perception = nil
+                alive = true
+                fails = 0
+
+                #@parameters[:data][:agent] = {:id => @parameters[:data][:agent].oid}
+                queue_opts = host_and_port
+
+                queue =nil;
+
+                queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), queue_opts)
 
 
-              while alive
-                #The transaction must be inside the while loop or it will be impossible to
-                #have access to the updated state of the action.
-                #The tx is already opened in the controller, but this code is executed in a
-                #message processor that is executed outside that transaction. TODO: Check if true.
-                #Madmass.logger.debug "SIMULATE: Waiting to open CLOUD-TM transactions for #{opts.inspect}"
-                #TorqueBox::transaction(:requires_new => true) do
-                #Madmass.logger.debug "SIMULATE: Opened TORQUEBOX transaction for #{opts.inspect}"
-                tx_monitor do
-                 #Madmass.logger.debug "SIMULATE: Opened CLOUD-TM  transaction for #{opts.inspect}"
-                  agent = self.where_agent(opts)
-                  #Madmass.logger.debug "SIMULATE: Agent #{agent.inspect}"
-                  if agent
-                    agent.execute_step() if agent.running? #perception = execute_step(perception)
-                    #Madmass.logger.debug "SIMULATE: Step executed by: #{agent.inspect}"
-                    agent.status = 'dead' if agent.status == 'zombie'
-                    alive = (agent.status != 'dead')
-                    # agent.last_execution = java.util.Date.new
-                  else
-                    raise Madmass::Exception::CatastrophicError("SIMULATE: Agent #{opts} not found!")
+                queue.with_session(:tx => false) { |session|
+                  destination = queue
+                  options = queue.normalize_options(:persistent => false)
+
+                  producer = session.instance_variable_get('@jms_session').create_producer(
+                    session.java_destination(destination))
+                  #Madmass.logger.debug "Getting behavior"
+
+                  current_behavior = nil
+
+                  tx_monitor do
+                    current_behavior = behavior
                   end
-                end
-                #Madmass.logger.debug "SIMULATE: Closed CLOUD-TM  transaction for #{opts.inspect}"
 
+                  #Madmass.logger.debug "Got behavior #{current_behavior.inspect}"
+                  while alive
+                    #The transaction must be inside the while loop or it will be impossible to
+                    #have access to the updated state of the action.
+                    #The tx is already opened in the controller, but this code is executed in a
+                    #message processor that is executed outside that transaction. TODO: Check if true.
+                    tx_monitor do
+                      agent = self.where_agent(opts)
+                      if agent
+                        current_behavior.agent = agent
+                        agent.behavior = current_behavior
 
-                java.lang.Thread.sleep(opts[:step]);
+                        jms_opts = {:queue => queue,
+                                    :session => session,
+                                    :producer => producer,
+                                    :jms_options => options}
+                        agent.execute_step(jms_opts) if agent.running? #perception = execute_step(perception)
+                                                                       #Madmass.logger.debug "SIMULATE: Step executed by: #{agent.inspect}"
+                        agent.status = 'dead' if agent.status == 'zombie'
+                        alive = (agent.status != 'dead')
+                        # agent.last_execution = java.util.Date.new
+                      else
+                        raise Madmass::Errors::CatastrophicError.new("SIMULATE: Agent #{opts} not found!")
+                      end
+                    end
+
+                    java.lang.Thread.sleep(opts[:step]);
+                  end
+                }
+              rescue Exception => ex
+                Madmass.logger.error "AGENT ABORTED due to:  #{ex}"
+                Madmass.logger.error ex.backtrace.join("\n")
+                Madmass.logger.error ex.backtrace.join("\n")
+                Madmass.logger.error "cause #{ex.cause.backtrace.join("\n")}" if ex.cause
+                return false
               end
             }
-            return true
+
+            return true #FIXME return something meaningful
+          end
+
+          def behavior
+            raise Madmass::Errors::CatastrophicError.new("behavior is an abstract method, please override it!")
+          end
+
+
+          def host_and_port
+            opts = {}
+
+            if (Madmass.install_options(:cluster_nodes) and Madmass.install_options(:cluster_nodes)[:geograph_nodes])
+              # NOTE: sample is available in Ruby 1.9, so if using an earlier version, require "backports".
+              # Note that in Ruby 1.8.7 it exists under the unfortunate name choice; it was renamed in later version so you shouldn't use it.
+              # In jruby sample does not exists!
+              #FIXME: Geograph nodes should not be mentioned here! Refactor to  domain nodes ....
+              opts[:host] = Madmass.install_options(:cluster_nodes)[:geograph_nodes].choice
+              opts[:port] = Madmass.install_options(:remote_messaging_port)
+            else
+              opts[:host] = 'madmass-node'
+              opts[:port] = 5445
+            end
+            return opts
           end
 
         end
 
         module InstanceMethods
-
-          #TODO: set_plan plan #e.g. override in geograph_agent-farm with set_plan ({:type=> gpx, :data =>path/to/data)
-
 
           #To control the agents
 
@@ -113,17 +164,17 @@ module Madmass
             self.status = 'paused'
           end
 
-          def set_behavior
-            raise Madmass::Exception::CatastrophicError("set_behavior is an abstract method, please override it!")
+
+          def behavior= behavior
+            @current_behavior = behavior
           end
 
-          def execute_step()
+          def execute_step(opts)
             #Madmass.logger.debug "SIMULATE: Executing step"
 
-            if @current_behavior.nil?
+            unless @current_behavior
               #Madmass.logger.debug "SIMULATE: about to set Behavior "
-              set_behavior
-              #Madmass.logger.debug "SIMULATE: Behavior #{@current_behavior.class.name} set "
+              raise Madmass::Errors::CatastrophicError.new "Did not find behavior! "
             end
 
             unless @current_behavior.defined?
@@ -132,7 +183,8 @@ module Madmass
             end
 
             next_action = @current_behavior.next_action
-            #Madmass.logger.debug "SIMULATE: before execution #{next_action}"
+            next_action.merge!(opts)
+            #Madmass.logger.debug "SIMULATE: before execution #{next_action.inspect}"
             execute(next_action)
           end
 

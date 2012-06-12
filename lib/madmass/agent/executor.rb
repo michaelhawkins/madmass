@@ -114,9 +114,6 @@ module Madmass
       private
 
       def process(action)
-        # check if the action is consistent with behavioral specification
-        # e.g., FSA, PNP, etc ...
-        behavioral_validation(action)
 
         # check action specific applicability
         unless action.applicable?
@@ -136,9 +133,20 @@ module Madmass
       def create_action(opts)
         # when the remote option is passed other options are translated to create a remote action
         if opts.delete(:remote)
+          queue = opts.delete(:queue)
+          session = opts.delete(:session)
+          producer = opts.delete(:producer)
+          jms_options = opts.delete(:jms_options)
+
           data = opts.clone
           cmd = "madmass::action::remote"
-          opts = {:cmd => cmd, :data => data}
+          opts = {:cmd => cmd,
+                  :data => data,
+                  :queue => queue,
+                  :session => session,
+                  :producer => producer,
+                  :jms_options => jms_options
+          }
         end
         Madmass::Action::ActionFactory.make(opts)
       end
@@ -147,7 +155,7 @@ module Madmass
 
         error_msg = "#{action} #{error.class}: #{error.message}"
         error_msg += " - #{action.why_not_applicable.messages}" if action and action.why_not_applicable.any?
-        Madmass.logger.error(error_msg)
+        #FIXME  restore when logging levels work! --> Madmass.logger.error(error_msg)
 
         e = Madmass::Perception::Percept.new(action)
         e.status = {:code => opts[:code], :exception => error.class.name}
@@ -157,9 +165,6 @@ module Madmass
         Madmass.current_perception << e
       end
 
-      def behavioral_validation action
-        return true
-      end
 
     end
   end

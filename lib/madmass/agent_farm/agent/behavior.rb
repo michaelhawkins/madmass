@@ -32,17 +32,20 @@ module Madmass
     module Agent
       class Behavior
         def choose!
-          raise Madmass::Exception::CatastrophicError("choose! is an abstract method, please override it!")
+          raise Madmass::Exception::CatastrophicError.new("choose! is an abstract method, please override it!")
         end
 
         def defined?
-          raise Madmass::Exception::CatastrophicError("defined? is an abstract method, please override it!")
+          raise Madmass::Exception::CatastrophicError.new("defined? is an abstract method, please override it!")
         end
 
         def next_action
-          raise Madmass::Exception::CatastrophicError("next_action is an abstract method, please override it!")
+          raise Madmass::Exception::CatastrophicError.new("next_action is an abstract method, please override it!")
         end
 
+        def agent= agent
+          @agent = agent
+        end
       end
     end
   end

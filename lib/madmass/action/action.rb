@@ -148,7 +148,7 @@ module Madmass
       end
 
 
-      # Override this method to add parameters preprocessing code (if needed)
+      # Override this method to add parameters pre-processing code (if needed)
       def process_params
       end
 
