@@ -60,6 +60,7 @@ module Madmass
                 queue_opts = host_and_port
 
                 queue =nil;
+                min_logging_interval = 5 #5sec
 
                 queue = TorqueBox::Messaging::Queue.new(Madmass.install_options(:commands_queue), queue_opts)
 
@@ -74,9 +75,19 @@ module Madmass
 
                   current_behavior = nil
 
-                  tx_monitor do
-                    current_behavior = behavior
+                  begin
+                    tx_monitor do
+                      current_behavior = behavior
+                      agent = self.where_agent(opts)
+                      agent.execution_time = -1
+                    end
+                  rescue Exception => ex
+                    Madmass.logger.warn("error retriving agent #{ex.message}. Retrying ...")
+                    java.lang.Thread.sleep(opts[:step])
+                    retry
                   end
+
+                  last_iteration_update = Time.now
 
                   #Madmass.logger.debug "Got behavior #{current_behavior.inspect}"
                   while alive
@@ -84,8 +95,14 @@ module Madmass
                     #have access to the updated state of the action.
                     #The tx is already opened in the controller, but this code is executed in a
                     #message processor that is executed outside that transaction. TODO: Check if true.
+                    iteration_start_time = Time.now
                     tx_monitor do
                       agent = self.where_agent(opts)
+                      unless agent
+                        Madmass.logger.warn "Agent #{opts.inspect} not found. Retrying later .."
+                        java.lang.Thread.sleep(opts[:step])
+                        next
+                      end
                       if agent
                         current_behavior.agent = agent
                         agent.behavior = current_behavior
@@ -98,13 +115,31 @@ module Madmass
                                                                        #Madmass.logger.debug "SIMULATE: Step executed by: #{agent.inspect}"
                         agent.status = 'dead' if agent.status == 'zombie'
                         alive = (agent.status != 'dead')
-                        # agent.last_execution = java.util.Date.new
                       else
                         raise Madmass::Errors::CatastrophicError.new("SIMULATE: Agent #{opts} not found!")
                       end
                     end
 
-                    java.lang.Thread.sleep(opts[:step]);
+                    #we sample the time it takes for the agent to execute a step (in ms)
+                    if ((iteration_start_time-last_iteration_update) > min_logging_interval)
+                      tx_monitor do
+                        agent = self.where_agent(opts)
+                        if agent
+                          agent.execution_time = (Time.now- iteration_start_time)*1000
+                        else
+                          raise Madmass::Errors::CatastrophicError.new("SIMULATE: Agent #{opts} not found!")
+                        end
+                        # Madmass.logger.info "Updated exec duration to #{agent.execution_time}"
+                      end
+                      last_iteration_update = Time.now
+                      #else
+                      #Madmass.logger.info "Skipping exec duration update"
+                      #Madmass.logger.info "Iteration Start Time #{iteration_start_time}"
+                      #Madmass.logger.info "Last Update #{last_iteration_update}"
+                      #Madmass.logger.info "Elapsed #{(iteration_start_time-last_iteration_update)}"
+                    end
+                    sleep_time = opts[:step]+((opts[:step]/3)*(0.5-rand))
+                    java.lang.Thread.sleep(sleep_time)
                   end
                 }
               rescue Exception => ex
@@ -123,6 +158,10 @@ module Madmass
             raise Madmass::Errors::CatastrophicError.new("behavior is an abstract method, please override it!")
           end
 
+
+          def update_cycle_stats
+
+          end
 
           def host_and_port
             opts = {}

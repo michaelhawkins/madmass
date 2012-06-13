@@ -43,7 +43,7 @@ module Madmass
 
       def on_message(body)
         # notify that a command is received
-        ActiveSupport::Notifications.instrument("madmass.command_received")
+        #ActiveSupport::Notifications.instrument("madmass.command_received")
 
         # The body will be of whatever type was published by the Producer
         # the entire JMS message is available as a member variable called message()
@@ -57,6 +57,7 @@ module Madmass
         #or you could have duplicate perceptions when rollbacking
         #Access to data is already transactional in the execute method;
         Thread.new{Madmass.current_agent.execute(message)}
+        return true
       end
     end
   end

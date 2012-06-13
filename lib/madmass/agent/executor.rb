@@ -155,7 +155,7 @@ module Madmass
 
         error_msg = "#{action} #{error.class}: #{error.message}"
         error_msg += " - #{action.why_not_applicable.messages}" if action and action.why_not_applicable.any?
-        #FIXME  restore when logging levels work! --> Madmass.logger.error(error_msg)
+        Madmass.logger.error(error_msg)
 
         e = Madmass::Perception::Percept.new(action)
         e.status = {:code => opts[:code], :exception => error.class.name}
