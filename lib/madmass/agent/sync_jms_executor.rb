@@ -27,36 +27,38 @@
 ###############################################################################
 ###############################################################################
 
-# AgentFarm
-class PerceptionsProcessor < TorqueBox::Messaging::MessageProcessor
+module Madmass
+  module Agent
 
-  def on_message(body)
-    begin
-      perceptions = JSON(body)
-      #agents_queue = TorqueBox::Messaging::Queue.new('/queue/agents')
-      perceptions.each do |perception|
-        Madmass::AgentFarm::Domain::UpdaterFactory.updater.update_domain(perception)
-        #agents_queue.publish(perception, :tx => false)
-        #puts "AGENT: #{agent.id} published start"
-        ActiveSupport::Notifications.instrument("geograph-generator.agent_queue_sent")
+    #The actions performed by this agent are executed in the background
+    #*NOTE* requires Torquebox 2
+    #FIXME use generator instead!
+
+    class JmsExecutor < TorqueBox::Messaging::MessageProcessor
+      #include Madmass::Agent::Executor
+
+      def initialize
+        super
       end
-    rescue Exception => ex
-      Madmass.logger.debug ex
+
+      def on_message(body)
+        # notify that a command is received
+        #ActiveSupport::Notifications.instrument("madmass.command_received")
+
+        # The body will be of whatever type was published by the Producer
+        # the entire JMS message is available as a member variable called message()
+        #code = execute(body)
+        #raise "action did not succeed" unless code == 'ok'
+        #agent = Madmass.current_agent || ProxyAgent.new
+        message = JSON(body)
+        Madmass.current_agent = Madmass::Agent::ProxyAgent.new(message.delete('agent'))
+
+        #Exit the (messagging) transactional context by launching a new thread
+        #or you could have duplicate perceptions when rollbacking
+        #Access to data is already transactional in the execute method;
+        Thread.new{Madmass.current_agent.execute(message)}
+        return true
+      end
     end
   end
-
-#  def on_message(body)
-#    begin
-#      perceptions = JSON(body)
-#      agents_queue = TorqueBox::Messaging::Queue.new('/queue/agents')
-#      perceptions.each do |perception|
-#        agents_queue.publish(perception, :tx => false)
-#        puts "AGENT: #{agent.id} published start"
-#        ActiveSupport::Notifications.instrument("geograph-generator.agent_queue_sent")
-#      end
-#    rescue Exception => ex
-#      Madmass.logger.debug ex
-#    end
-#  end
-
 end
