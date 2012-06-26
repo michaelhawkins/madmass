@@ -40,6 +40,7 @@ module Madmass
       # Action instantiation can raise if there are errors in the given parameters.
       def self.make params
         begin
+          Madmass.logger.debug "making action with params #{params.to_yaml}"
           options = process_params params
           cmd = options.delete(:cmd).to_s
           klass_name = "#{cmd.split('::').map(&:camelize).join('::')}Action"
@@ -66,25 +67,9 @@ module Madmass
         raise(Madmass::Errors::WrongInputError, "#{self.name}: you did not specify any command!") if options[:cmd].blank?
         # set the global current agent
         Madmass.current_agent = options.delete(:agent)
-
-        # FIXME: move this outside
-        # Some global conversion. Action factory should not know about these params, but it's the
-        # most convenient place to put them.
-#        if options[:target]
-#          raise Madmass::Errors::WrongInputError, "#{self.name}: target must be an array of coordinates!" unless options[:target].class == Array
-#          options[:target].map!(&:to_i) # NOTE to_i makes it Fixnum, so all decimal values are ignored
-#        end
-#
-#        truefalseify(options, [:initial_placement, :ready])
-
         return options
       end
 
-      def self.truefalseify(options, booleans)
-        booleans.each do |bool|
-          options[bool] = (options[bool].to_s == 'true' ? true : false) if options[bool]
-        end
-      end
 
     end
   end

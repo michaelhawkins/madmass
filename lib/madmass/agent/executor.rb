@@ -33,14 +33,14 @@ module Madmass
     module Executor
       include Madmass::Transaction::TxMonitor
 
+      # Executes a given action as specified in the usr_opts
       def execute(usr_opts = {})
 
         #prepare opts
         opts = usr_opts.clone
         opts[:agent] = self
-        #opts[:cmd] = "Actions::"+ opts[:cmd]
 
-        #Reset perception, that will be populated by the following actions
+        #Reset perception, that will later be populated by the action
         Madmass.current_perception = []
 
         #execute the command (transactional)
@@ -49,10 +49,14 @@ module Madmass
         #dispatch generated percepts
         Madmass.dispatch_percepts
 
-        #return the I18n perception
+        #return the request status
+        #the actual perception is stored in
+        #in Madmass.current_perception
         return status
       end
 
+
+      private
 
       # This is the method that fires the action execution. Any action instance previously created through the Action::ActionFactory, can be executed by calling this method.
       # This method essentially checks the action preconditions by calling #applicable? method, then if the action is applicable call the #execute method,
@@ -62,22 +66,35 @@ module Madmass
       #
       # Raises: Madmass::Errors::NotApplicableError
 
-
       def do_it opts
 
         #create the action
-        action = create_action(opts)
+        action = Madmass::Action::ActionFactory.make(opts)
+        Madmass.logger.debug "Created action with\n #{opts.to_yaml}\n"
 
-        # FIXME: NativeException: java.lang.Error: Nested transactions not supported yet...
-        # current hack: if the action is remote we don't open a transaction (because the transaction is already opened by
-        # code that invoke the action
-        if action.remote?
-          process(action)
-        else
-          tx_monitor do
-            # we are in a transaction!
-            process(action)
+        #Check if action is executable in the current state
+        #FIXME behavioral_validation action
+
+        tx_monitor do
+
+          # check action specific applicability
+          unless action.applicable?
+            Madmass.logger.debug "action not applicable: #{action.inspect}"
+            raise Madmass::Errors::NotApplicableError
           end
+
+          # execute action
+          action.execute
+          Madmass.logger.debug "Action Executed"
+
+          # change user state
+          action.change_state
+          Madmass.logger.debug "Change State"
+
+          # generate percept (in Madmass.current_perception)
+          action.build_result
+          Madmass.logger.debug "Percept generated \n #{Madmass.current_perception.to_yaml}\n"
+
         end
 
         return 'ok' #http status
@@ -108,54 +125,17 @@ module Madmass
                               :code => 'service_unavailable',
                               :message => exc.message)
         return :service_unavailable #http status
+
       end
 
-
-      private
-
-      def process(action)
-
-        # check action specific applicability
-        unless action.applicable?
-          raise Madmass::Errors::NotApplicableError
-        end
-
-        # execute action
-        action.execute
-
-        # change user state
-        action.change_state
-
-        # generate percept (in Madmass.current_percept)
-        action.build_result
-      end
-
-      def create_action(opts)
-        # when the remote option is passed other options are translated to create a remote action
-        if opts.delete(:remote)
-          queue = opts.delete(:queue)
-          session = opts.delete(:session)
-          producer = opts.delete(:producer)
-          jms_options = opts.delete(:jms_options)
-
-          data = opts.clone
-          cmd = "madmass::action::remote"
-          opts = {:cmd => cmd,
-                  :data => data,
-                  :queue => queue,
-                  :session => session,
-                  :producer => producer,
-                  :jms_options => jms_options
-          }
-        end
-        Madmass::Action::ActionFactory.make(opts)
-      end
 
       def error_percept_factory(action, error, opts)
 
         error_msg = "#{action} #{error.class}: #{error.message}"
         error_msg += " - #{action.why_not_applicable.messages}" if action and action.why_not_applicable.any?
-        Madmass.logger.error(error_msg)
+        Madmass.logger.error("Error during processing: #{$!}, #{error_msg}")
+        Madmass.logger.debug("Backtrace:\n\t#{error.backtrace.join("\n\t")}")
+
 
         e = Madmass::Perception::Percept.new(action)
         e.status = {:code => opts[:code], :exception => error.class.name}

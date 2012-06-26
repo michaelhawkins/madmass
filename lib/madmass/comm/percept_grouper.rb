@@ -41,6 +41,7 @@ module Madmass
         @clients = {}
         # Splits all topics
         percepts.each do |perc|
+          next unless perc
           topics = perc.header[:topics]
           clients = perc.header[:clients]
           topics.each {|t| @topics[t] ? @topics[t] << perc : @topics[t] = [perc]} unless topics.blank?

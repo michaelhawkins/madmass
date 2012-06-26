@@ -31,7 +31,6 @@ module Madmass
   module Agent
 
     #The actions performed by this agent are executed in the background
-    #*NOTE* requires Torquebox 2
     #FIXME use generator instead!
 
     class JmsExecutor < TorqueBox::Messaging::MessageProcessor
@@ -50,7 +49,10 @@ module Madmass
         #code = execute(body)
         #raise "action did not succeed" unless code == 'ok'
         #agent = Madmass.current_agent || ProxyAgent.new
+        Madmass.logger.debug "\n******************* ASYNC message received***************\n}"
+
         message = JSON(body)
+        Madmass.logger.debug "ASYNC message received: #{message.inspect}"
         Madmass.current_agent = Madmass::Agent::ProxyAgent.new(message.delete('agent'))
 
         #Exit the (messagging) transactional context by launching a new thread

@@ -42,7 +42,7 @@ module Madmass
       def current_perception
         #Perception::CurrentAccessor.instance.perception #HACK TODO in a better way
         #Perception::CurrentAccessor.perception #HACK TODO in a better way
-	@percept ||= Madmass::Perception::Percept.new
+        @percept ||= Madmass::Perception::Percept.new
       end
 
       def current_perception=(perception)

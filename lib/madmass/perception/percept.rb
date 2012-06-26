@@ -42,7 +42,7 @@ module Madmass
       end
 
       def initialize(context = nil)
-        base_header = {:agent_id => "#{Madmass.current_agent.id}"}
+        base_header = {:agent_id => "#{Madmass.current_agent.object_id}"}
         if context
           base_header.merge!({:action => context.class.name.split("::").map(&:underscore).join("::")})
           # set who must receive the perceptions for the action

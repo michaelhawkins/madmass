@@ -125,6 +125,8 @@ module Madmass
   module AgentFarm
     module Agent
       autoload :AutonomousAgent, 'madmass/agent_farm/agent/autonomous_agent'
+      autoload :JmsMessenger, 'madmass/agent_farm/agent/jms_messenger'
+      autoload :Controllable, 'madmass/agent_farm/agent/controllable'
       autoload :Behavior, 'madmass/agent_farm/agent/behavior'
     end
 

@@ -31,10 +31,11 @@ module Madmass
   module Agent
 
     #The actions performed by this agent are executed in the background
-    #*NOTE* requires Torquebox 2
     #FIXME use generator instead!
 
-    class JmsExecutor < TorqueBox::Messaging::MessageProcessor
+    #sync messaging reference => http://blog.bob.sh/2012/06/torquebox-making-message-processors.html
+
+    class SyncJmsExecutor < TorqueBox::Messaging::MessageProcessor
       #include Madmass::Agent::Executor
 
       def initialize
@@ -42,23 +43,38 @@ module Madmass
       end
 
       def on_message(body)
-        # notify that a command is received
-        #ActiveSupport::Notifications.instrument("madmass.command_received")
+        Madmass.logger.debug "\n**************************SYNC Message received********************\n"
+        # The synchronous methods always put the user message inside
+        # a :message parameter, hence the need to descend here.
+        Madmass.logger.debug "BODY:  \n #{body.to_yaml}\n"
+        #json_message = JSON.parse(body) #body[:message] #FIXME is JSON needed?
+        #Madmass.logger.debug "Objectified version of message received: #{json_message.to_yaml}"
 
-        # The body will be of whatever type was published by the Producer
-        # the entire JMS message is available as a member variable called message()
-        #code = execute(body)
-        #raise "action did not succeed" unless code == 'ok'
-        #agent = Madmass.current_agent || ProxyAgent.new
-        message = JSON(body)
-        Madmass.current_agent = Madmass::Agent::ProxyAgent.new(message.delete('agent'))
+        message_hash = JSON(body[:message])
 
-        #Exit the (messagging) transactional context by launching a new thread
-        #or you could have duplicate perceptions when rollbacking
-        #Access to data is already transactional in the execute method;
-        Thread.new{Madmass.current_agent.execute(message)}
-        return true
+        Madmass.logger.debug "MESSAGE \n #{message_hash.inspect}\n"
+
+        Madmass.current_agent = Madmass::Agent::ProxyAgent.new(message_hash.delete('agent'))
+
+        Madmass.current_agent.execute(message_hash)
+
+        sync_reply(Madmass.current_perception)
       end
+
+      def sync_reply(reply)
+        Madmass.logger.debug "Reply perception is \n#{message.to_yaml}\n"
+        queue_name = message.jms_message.jms_destination.name
+        jms_message_id = message.jms_message.jms_message_id
+        Madmass.logger.debug("sender queue_name #{queue_name}  and message_id #{jms_message_id}\n")
+        queue = TorqueBox::Messaging::Queue.new(queue_name)
+
+        queue.publish(reply, {
+          :correlation_id => jms_message_id,
+          :encoding => :json,
+          :properties => {:perception => 'true'}}
+        )
+      end
+
     end
   end
 end

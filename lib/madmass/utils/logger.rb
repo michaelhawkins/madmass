@@ -56,7 +56,7 @@ module Madmass
     module Loggable
       def logger
         if defined?(Rails)
-          Rails.logger
+          Rails.logger ||=  Logger.new(STDOUT)
         else
           Logger.instance
         end

@@ -46,7 +46,7 @@
 #    why a certain action is not applicable through  #why_not_applicable method that returns an ActiveModel::Errors.
 # 5. MANDATORY: Override the #execute method. All the action side effects on the current state of the world have to be performed here.
 #    The execution of #applicable? and #execute will be executed by the system in a single transaction .
-# 6. MANDATORY: Override #build_result method. Any executed action returns a percept. The percept content can be defined in the #build_result method accessing Madmass.current_percept.
+# 6. MANDATORY: Override #build_result method. Any executed action returns a percept. The percept content can be defined in the #build_result method accessing Madmass.current_perception.
 #
 # So the workflow is:
 #
@@ -79,7 +79,7 @@
 #     end
 #
 #     def build_result
-#        Madmass.current_percept[:players] = Player.all
+#        Madmass.current_perception[:players] = Player.all
 #     end
 #
 #   end
@@ -131,10 +131,7 @@ module Madmass
         true
       end
 
-      def remote?
-        false
-      end
-      
+
       private
       
       # Check if the parameters are a subset of accepted parameters for the action.

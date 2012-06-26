@@ -41,12 +41,18 @@ module Madmass
       include Singleton
 
       def dispatch_percepts
+        Madmass.logger.debug "Trying to dispatch #{Madmass.current_perception.inspect}"
+        return unless Madmass.current_perception
+
+
         grouper = PerceptGrouper.new(Madmass.current_perception)
 
+        Madmass.logger.debug "Sending to clients #{grouper.for_clients.inspect}"
         grouper.for_clients.each do |client, percepts|
           @sender.send(percepts, :client => client)
         end
 
+        Madmass.logger.debug "Sending to topics #{grouper.for_topics.inspect}"
         grouper.for_topics.each do |topic, percepts|
           @sender.send(percepts, :topic => topic)
         end

@@ -36,7 +36,6 @@ module Madmass
 
         module ClassMethods
 
-
           #returns the commands queue
           def commands_queue
             queue_opts = host_and_port
@@ -46,8 +45,8 @@ module Madmass
             queue
           end
 
+         #Retreive current agent and set current behavior
           def prepare_agent opts
-            #Retreive current agent and set current behavior
             current_behavior = nil
             agent = nil
             begin
