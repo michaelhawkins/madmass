@@ -55,137 +55,106 @@ module Madmass
             #context. Messaging is used to load balance agent creation
             Thread.new {
               begin
-                alive = true
 
+                alive = true
                 queue = commands_queue
+                stats = Madmass::AgentFarm::Agent::ExecutionStats.new
 
                 queue.with_session(:tx => false) { |session|
 
-                  current_behavior = prepare_agent opts
-                  last_iteration_update = Time.now
+                  #Set the appropriate behavior (as specified by agent implementation)
+                  current_behavior = behavior
+                  jms = jms_endpoint(session, queue)
+                  #Register the agent to the domain
+                  register_agent opts, jms
 
-                  ##################################
-                  # Main loop
                   #################################
-                  #The transactions must be inside the while loop or it will be impossible to
-                  #have access to the updated state of the action.
-
+                  # Main loop.The transactions must be inside the while loop or it will be impossible to
+                  # have access to the updated state of the action.
                   while alive
+                    Madmass.logger.debug "Simulation opts are \n#{opts.to_yaml}\n"
 
-                    iteration_start_time = Time.now
+                    tx_monitor do
 
-                    #Execute a Simulation Step
-                    simulate_step current_behavior, opts, :session => session, :queue => queue
+                      #Execute a Simulation Step
+                      alive = stats.measure lambda {
 
-                    # sample the time it takes for the agent to execute a step (in ms)
-                    last_iteration_update = Time.now if update_exec_stats(iteration_start_time, last_iteration_update, opts)
+                        agent = fetch_agent opts
+
+                        #Link Agent to Behavior and Stats
+                        current_behavior.agent = stats.agent = agent
+                        agent.behavior = current_behavior
+                        Madmass.logger.debug "Linked Agent to Behavior and Stats"
+
+                        #Execute Step
+                        agent.execute_step(jms)
+
+                        return (agent.status != 'dead')
+
+                      }
+                    end
+                    Madmass.logger.debug "Agent alive: #{alive}"
 
                     # sleep before the next step, with some noise to avoid
                     # many "synchronized" requests when you start multiple agents together
                     sleep_time = opts[:step]+((opts[:step]/3)*(0.5-rand))
                     java.lang.Thread.sleep(sleep_time)
+
                   end
                 }
+
               rescue Exception => ex
                 Madmass.logger.error "AGENT ABORTED"
                 Madmass.logger.error("Error during processing: #{$!}, message \n #{ex.message}")
                 Madmass.logger.debug("Backtrace:\n\t#{ex.backtrace.join("\n\t")}")
                 Madmass.logger.error "CAUSE \n\t#{ex.cause.backtrace.join("\n\t")}" if ex.cause
                 return false
+
               end
-            }
+              true #FIXME return something meaningful
 
-            true #FIXME return something meaningful
+            } #Thread end
           end
-
 
           private
-          # @param [Time] iteration_start_time
-          # @param [Time] last_iteration_update
-          # @param [HashWithIndifferentAccess] opts
-          def update_exec_stats(iteration_start_time, last_iteration_update, opts)
 
-            logging_interval = 5 #5sec
-
-            if (iteration_start_time-last_iteration_update) > logging_interval
-              tx_monitor do
-                agent = self.where_agent(opts)
-                if agent
-                  agent.execution_time = (Time.now - iteration_start_time)*1000
-                else
-                  msg = "SIMULATE: Agent #{opts.inspect} not found!"
-                  Madmass.logger.error msg
-                  raise Madmass::Errors::CatastrophicError.new(msg)
-                end
-                Madmass.logger.debug "Updated exec duration to #{agent.execution_time}"
-              end
-              return true
+          def register_agent opts, jms
+            tx_monitor do
+              agent = fetch_agent opts
+              agent.execute({
+                              :cmd => "madmass::action::remote",
+                              :data => {
+                                :cmd => 'actions::register_agent',
+                                :sync => true,
+                                :user => {:id => agent.oid}
+                              }
+                            }.merge(jms))
             end
-            return false
-
           end
 
-
-          def prepare_agent opts
+          def fetch_agent opts
             #Retreive current agent and set current behavior
-            current_behavior = nil
             agent = nil
             begin
-              tx_monitor do
-                current_behavior = behavior
-                agent = self.where_agent(opts)
-                agent.execution_time = -1
-              end
+              agent = self.where_agent(opts)
+              agent.execution_time ||= -1
             rescue Exception => ex
+              # FIXME: it happens also with single node, there is a bug in the cloud-tm platform
+              # If we cannot find the agent, we wait to see if we find it later
+              # This may happen in a clustered environment if changes are not yet
+              # propagated to all nodes.
+
+              # FIXME: should not sleep in a tx
               Madmass.logger.warn("#{ex.message}\n ********* Retrying later ... *********")
               java.lang.Thread.sleep(opts[:step])
               retry
             end
-            Madmass.logger.debug "Agent: #{agent.inspect} with behavior #{current_behavior.inspect}"
-            return current_behavior
+            Madmass.logger.debug "Fetched Agent: #{agent.inspect}"
+            agent
           end
 
-          def simulate_step current_behavior, opts, jms
-            Madmass.logger.debug "Simulation opts are \n#{opts.to_yaml}\n"
-
-            tx_monitor do
-
-              #Look for agent
-              agent = self.where_agent(opts)
-              # If we cannot find the agent, we wait to see if we find it later
-              # This may happen in a clustered environment if changes are not yet
-              # propagated to all nodes.
-              # FIXME: it happens also with single node, there is a bug in the cloud-tm platform
-              # FIXME: should not sleep in a tx
-              unless agent
-                Madmass.logger.warn "Agent #{opts.inspect} not found. Retrying later .."
-                java.lang.Thread.sleep(opts[:step])
-                next
-              end
-
-              #Execute a simulation step
-              if agent
-                current_behavior.agent = agent
-                agent.behavior = current_behavior
-
-                #Exectue a step if agent running
-                #Percept is in Madmass.current_perception (if any)
-                agent.execute_step(jms_endpoint(jms[:session], jms[:queue])) if agent.running?
-                Madmass.logger.debug "SIMULATE: Step executed by: #{agent.inspect}"
-
-                #Check if agent has been killed
-                #FIXME: give the possibility to perform a last action if
-                #between zombie and dead state
-                agent.status = 'dead' if agent.status == 'zombie'
-                alive = (agent.status != 'dead')
-              else
-                raise Madmass::Errors::CatastrophicError.new("SIMULATE: Agent #{opts} not found!")
-              end
-
-            end
-
-          end
         end
+
       end
     end
   end

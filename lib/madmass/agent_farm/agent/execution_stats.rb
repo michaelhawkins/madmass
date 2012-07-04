@@ -27,31 +27,40 @@
 ###############################################################################
 ###############################################################################
 
+
 module Madmass
   module AgentFarm
     module Agent
-      class Behavior
+      class ExecutionStats
+        include Madmass::Transaction::TxMonitor
+        attr_accessor :agent
+        LOGGING_INTERVAL = 5 #sec
 
-        #override, to define the behavior of agent before dying
-        def last_wish
+        def initialize
+          @last_iteration_update = Time.now.ago(LOGGING_INTERVAL+1)
+          @iteration_start_time = nil
         end
 
-        def choose!
-          raise Madmass::Exception::CatastrophicError.new("choose! is an abstract method, please override it!")
+
+        def measure step
+
+          @iteration_start_time = Time.now
+
+          alive = step.call #Execute a Simulation Step
+
+          # sample the time it takes for the agent to execute a step (in ms)
+          if (@iteration_start_time-@last_iteration_update) > LOGGING_INTERVAL
+            @agent.execution_time = (Time.now - @iteration_start_time)*1000
+            Madmass.logger.debug "Updated exec duration to #{@agent.execution_time}"
+          end
+          @last_iteration_update = Time.now
+
+          alive
         end
 
-        def defined?
-          raise Madmass::Exception::CatastrophicError.new("defined? is an abstract method, please override it!")
-        end
 
-        def next_action
-          raise Madmass::Exception::CatastrophicError.new("next_action is an abstract method, please override it!")
-        end
-
-        def agent= agent
-          @agent = agent
-        end
       end
+
     end
   end
 end

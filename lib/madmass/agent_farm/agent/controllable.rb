@@ -70,12 +70,24 @@ module Madmass
             Madmass.logger.debug "SIMULATE: Current Behavior choosen "
           end
 
-          next_action = @current_behavior.next_action
+          to_kill = false
+          #Exectue a step if the agent is running
+          if self.status == 'zombie'
+            next_action = @current_behavior.last_wish
+            to_kill = true
+            Madmass.logger.debug "Agent killed"
+          else
+            #Note: results (if any) are in Madmass.current_perception
+            next_action = @current_behavior.next_action
+          end
+
           next_action.merge!(opts)
 
-          Madmass.logger.debug "SIMULATE: will execute \n #{next_action.to_yaml}"
+          Madmass.logger.debug "SIMULATE: will execute \n #{next_action.inspect}"
 
-          self.execute(next_action)
+          self.execute(next_action)  if self.running?
+
+          self.status = 'dead' if to_kill
 
           Madmass.logger.info "***********************************************"
           Madmass.logger.info "SIMULATE: Executed \n\t #{next_action.inspect}\n\t"
@@ -90,7 +102,7 @@ module Madmass
 
         def running?
           #Madmass.logger.debug "SIMULATE: running?"
-          (self.status == 'running')
+          (self.status == 'running' || self.status == 'zombie')
         end
 
       end

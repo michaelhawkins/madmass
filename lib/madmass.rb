@@ -127,6 +127,7 @@ module Madmass
       autoload :AutonomousAgent, 'madmass/agent_farm/agent/autonomous_agent'
       autoload :JmsMessenger, 'madmass/agent_farm/agent/jms_messenger'
       autoload :Controllable, 'madmass/agent_farm/agent/controllable'
+      autoload :ExecutionStats, 'madmass/agent_farm/agent/execution_stats'
       autoload :Behavior, 'madmass/agent_farm/agent/behavior'
     end
 

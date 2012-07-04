@@ -22,12 +22,14 @@ Contributing to MadMass
 * Start a feature/bugfix branch
 * Commit and push until you are happy with your contribution
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-* Please try not to mess with the Rakefile, version, or history. If you want to have your own version, or is otherwise necessary, that is fine, but please isolate to its own commit so I can cherry-pick around it.
+
+**Note:** MADMASS is currently an experimental project. If you are willing to contribute please contact the developers first. They will
+be happy to introduce you to the project and guide you in the learning process.
 
 Credits
 -------
 
-![Algorithmica](http://algorithmica.it/images/rounded-logo.png)
+![Algorithmica](http://algorithmica.it/images/logo.png)
 
 Madmass is maintained and funded by [Algorithmica Srl](http://algorithmica.it)
 
