@@ -39,8 +39,8 @@ class ActionGenerator < Rails::Generators::NamedBase
   end
 
   #Adds in the test/unit directory  a "file_name action" unit test template
-  def generate_test
-    template "action_unit_test.rb.erb", "test/unit/#{file_name}_action_test.rb"
-  end
+  #def generate_test
+  #  template "action_unit_test.rb.erb", "test/unit/#{file_name}_action_test.rb"
+  #end
 
 end

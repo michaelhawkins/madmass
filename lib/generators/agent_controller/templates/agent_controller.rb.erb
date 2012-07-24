@@ -1,4 +1,4 @@
-class Controller < ApplicationController
+class <%=file_name.camelize%>Controller < ApplicationController
   protect_from_forgery
 
   respond_to :json, :html
@@ -8,26 +8,21 @@ class Controller < ApplicationController
 
   before_filter :authenticate_agent
 
-  # The agent controller, retrieves the agent specified  by the user
-  # and requests him to execute a given action. Both the agent and the
-  # action (with parameters) are specified in the request parameters.
-  # The resulting percept is dispatched to the appropriate recipients
-  # and returned into the view in the @perception variable.
-
   def execute
-    return unless params[:agent]
-    status = Madmass.current_agent.execute(params[:agent])
-    @perception = Madmass.current_perception;
+      return unless params[:agent]
+      status = Madmass.current_agent.execute(params[:agent])
+      @perception = Madmass.current_perception
 
     respond_to do |format|
-      format.html { render :execute, :status => status }
-      format.json { render :json => @perception.to_json, :status => status }
+      format.html {render :execute, :status => status}
+      format.json {render :json => @perception.to_json, :status => status}
     end
+ <% if Madmass.install_options(:devise) == true %>
+ rescue Madmass::Errors::StateMismatchError
+    # redirect_to :action => current_user.state
+ <%  end %>
+ end
 
-  rescue Madmass::Errors::StateMismatchError
-    #FIXME redirect_to :action => current_user.state
-
-  end
 
 
 end

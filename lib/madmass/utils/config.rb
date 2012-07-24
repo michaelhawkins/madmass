@@ -34,7 +34,7 @@ module Madmass
       include Singleton
 
       attr_accessor :tx_adapter, :perception_sender, :domain_updater
-      
+
       def initialize
         @tx_adapter = :"Madmass::Transaction::NoneAdapter"
         @perception_sender = :"Madmass::Comm::DummySender"
@@ -51,7 +51,7 @@ module Madmass
         @perception_sender = conf['perception_sender'] if conf['perception_sender']
         @domain_updater = conf['domain_updater'] if conf['domain_updater']
       end
-      
+
     end
 
     module Configurable
@@ -61,15 +61,13 @@ module Madmass
 
       def setup &block
         yield(config)
-
-
-
-          puts ("Rails.root  is #{Rails.root}")
-          Dir.glob(File.join(Rails.root, 'lib', 'actions', '*.rb')).each do |action_path|
-            klass = action_path.split(File::SEPARATOR).last.sub(/\.rb$/, '').classify
-            #autoload "Actions::#{klass}".to_sym, action_path
-            load action_path
-          end
+        Madmass.logger.debug("Rails.root  is #{Rails.root}")
+        Dir.glob(File.join(Rails.root, 'lib', 'actions', '*.rb')).each do |action_path|
+          klass = action_path.split(File::SEPARATOR).last.sub(/\.rb$/, '').classify
+          #autoload "Actions::#{klass}".to_sym, action_path
+          Madmass.logger.debug("Loading #{action_path}")
+          load action_path
+        end
 
       end
     end

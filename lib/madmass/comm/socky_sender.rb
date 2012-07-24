@@ -39,9 +39,8 @@ module Madmass
           Socky.send(percepts.to_json.html_safe, opts)
 
           # push messages to JMS clients via stomplet
-          topic.publish(JSON(percepts), :properties => opts)
-          # notify that a perception is sent
-          ActiveSupport::Notifications.instrument("madmass.perception_sent")
+          #FIXME topic.publish(JSON(percepts), :properties => opts)
+
         end
 
         private 

@@ -33,6 +33,7 @@ module Madmass
 
     # Use Devise to authenticate the user and set the Madmass Current Agent for actions execution.
     def authenticate_agent
+      Madmass.logger.debug "Authenticating Agent"
       authenticate_user!
 #      unless current_user.agent
 #        current_user.create_agent!(:status => 'init')

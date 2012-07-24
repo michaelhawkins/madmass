@@ -40,10 +40,10 @@ module Madmass
       # Action instantiation can raise if there are errors in the given parameters.
       def self.make params
         begin
-          Madmass.logger.debug "making action with params #{params.to_yaml}"
+         # Madmass.logger.debug "making action with params #{params.to_yaml}"
           options = process_params params
           cmd = options.delete(:cmd).to_s
-          klass_name = "#{cmd.split('::').map(&:camelize).join('::')}Action"
+          klass_name = "Actions::#{cmd.split('::').map(&:camelize).join('::')}Action"
           klass = klass_name.constantize
           raise "#{klass_name} is not a subclass of Madmass::Action::Action" unless klass.ancestors.include?(Madmass::Action::Action)
           return klass.new(options)

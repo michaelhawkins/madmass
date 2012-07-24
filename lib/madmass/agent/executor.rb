@@ -72,9 +72,6 @@ module Madmass
         action = Madmass::Action::ActionFactory.make(opts)
         Madmass.logger.debug "Created action with\n #{opts.to_yaml}\n"
 
-        #Check if action is executable in the current state
-        #FIXME behavioral_validation action
-
         tx_monitor do
 
           # check action specific applicability
@@ -87,17 +84,12 @@ module Madmass
           action.execute
           Madmass.logger.debug "Action Executed"
 
-          # change user state
-          action.change_state
-          Madmass.logger.debug "Change State"
-
           # generate percept (in Madmass.current_perception)
           action.build_result
           Madmass.logger.debug "Percept generated \n #{Madmass.current_perception.to_yaml}\n"
-
         end
 
-        return 'ok' #http status
+        return :ok #http status
 
       rescue Madmass::Errors::StateMismatchError => exc
         raise exc
@@ -132,6 +124,7 @@ module Madmass
       def error_percept_factory(action, error, opts)
 
         error_msg = "#{action} #{error.class}: #{error.message}"
+        Madmass.logger.error error_msg
         error_msg += " - #{action.why_not_applicable.messages}" if action and action.why_not_applicable.any?
         Madmass.logger.error("Error during processing: #{$!}, #{error_msg}")
         Madmass.logger.debug("Backtrace:\n\t#{error.backtrace.join("\n\t")}")

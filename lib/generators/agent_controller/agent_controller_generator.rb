@@ -42,9 +42,11 @@ class AgentControllerGenerator < Rails::Generators::Base
 
     controller_path ="app/controllers/#{file_name}_controller.rb"
 
+    #FIXME add --no-test-framework
     template "agent_controller.rb.erb", controller_path
 
     route("match '#{file_name}', :to => '#{file_name}#execute', :via => [:post]")
+    generate("integration_test",file_name)
   end
 
   def generate_view

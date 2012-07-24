@@ -32,33 +32,25 @@
 
 module Madmass
   module Agent
-    module FSAExecutor
-
-      def self.included(base)
-        base.send(:include, Madmass::Agent::Executor)
-      end
-
-      private
+    class FSA
 
 
-      #fsa_spec is a hash of labeled directed edges:
-      # example
-      #[
-      #:init => :first_state
-      #:init => :second_state
-      #:first_stat => :second_state
-      #}
-      def load(fsa_spec)
-        @fsa_spec = fsa_spec
+      def current_state
+        return self.status
       end
 
       def next_states
 
       end
 
+      def transition
+
+      end
+
+
       #######OLD STUFF############
       # Verify that che class that implements the agent has the required attributes.
-      def check_status args = nil
+      def allowed? args = nil
         # attribute id status required
         self.status
       rescue NoMethodError

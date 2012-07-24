@@ -40,30 +40,32 @@ module Madmass
 
       private
 
-   def execute otps
-     #check if allowed in current state
-      #raise Madmass::Errors:: unless allowed?(opts[:action])
+      def monitor otps
+        check_if_valid(opts[:action])
 
-     #execute action
-     super.execute opts
+        #execute action
+        execute opts
 
-     #update state
-     transition_state opts[:action]
+        #update state
+        transition_state(opts[:action])
+      end
 
-   end
+      private
 
+      def transition_state opts
+        #do something
+      end
 
-      #######OLD STUFF############
       # Verify that che class that implements the agent has the required attributes.
-      def check_status args = nil
+      def current_state
         # attribute id status required
         self.status
       rescue NoMethodError
         raise Madmass::Errors::WrongInputError, "#{self.class} must have the required attribute 'status'!"
       end
 
-      def behavioral_validation action
-        check_status
+      def check_if_valid action
+
         unless action.state_match? or action.applicable_states.empty?
           raise Madmass::Errors::StateMismatchError, I18n.t(:'action.state_mistmatch',
                                                             {:agent_state => Madmass.current_agent.status,
