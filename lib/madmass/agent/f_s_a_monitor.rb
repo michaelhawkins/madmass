@@ -32,14 +32,28 @@
 
 module Madmass
   module Agent
-    module FSAExecutor
+    module FSAMonitor
 
       def self.included(base)
         base.send(:include, Madmass::Agent::Executor)
       end
-    
+
       private
-      
+
+   def execute otps
+     #check if allowed in current state
+      #raise Madmass::Errors:: unless allowed?(opts[:action])
+
+     #execute action
+     super.execute opts
+
+     #update state
+     transition_state opts[:action]
+
+   end
+
+
+      #######OLD STUFF############
       # Verify that che class that implements the agent has the required attributes.
       def check_status args = nil
         # attribute id status required
@@ -52,11 +66,11 @@ module Madmass
         check_status
         unless action.state_match? or action.applicable_states.empty?
           raise Madmass::Errors::StateMismatchError, I18n.t(:'action.state_mistmatch',
-            {:agent_state => Madmass.current_agent.status,
-              :action_states => action.applicable_states.join(", ")})
+                                                            {:agent_state => Madmass.current_agent.status,
+                                                             :action_states => action.applicable_states.join(", ")})
         end
       end
-      
+
     end
   end
 end
