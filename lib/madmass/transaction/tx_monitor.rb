@@ -62,7 +62,8 @@ module Madmass
 
       private
       def main_cause exc
-        main_causes_class = [Java::OrgInfinispan::CacheException]
+        main_causes_class = [Exception]
+        main_causes_class = [Java::OrgInfinispan::CacheException] if defined?(Java::Org::Infinispan)
         current = exc
         while current
          # Madmass.logger.warn("Inspecting exception: #{current.class} --  #{current.message}")

@@ -37,9 +37,11 @@ class Madmass::Transaction::CloudTmAdapter
     end
 
     def rescues
-      {
-        Java::OrgInfinispan::CacheException => retry_proc
-      }
+      if defined?(Java::Org::Infinispan)
+        { Java::OrgInfinispan::CacheException => retry_proc }
+      else
+       {}
+      end
     end
 
     private
