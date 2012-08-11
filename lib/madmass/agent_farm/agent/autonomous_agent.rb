@@ -124,7 +124,7 @@ module Madmass
               agent.execute({
                               :cmd => "madmass::action::remote",
                               :data => {
-                                :cmd => 'actions::register_agent',
+                                :cmd => 'register_agent',
                                 :sync => true,
                                 :user => {:id => agent.oid}
                               }

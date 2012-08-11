@@ -42,8 +42,13 @@ module Madmass
         begin
          # Madmass.logger.debug "making action with params #{params.to_yaml}"
           options = process_params params
-          cmd = options.delete(:cmd).to_s
-          klass_name = "Actions::#{cmd.split('::').map(&:camelize).join('::')}Action"
+          cmd = options.delete(:cmd).to_s.strip
+          klass_name = "#{cmd.split('::').map(&:camelize).join('::')}Action"
+          simple_name =klass_name.downcase
+          is_normalized = (simple_name.start_with?("madmass::action::") or simple_name.start_with?("actions::"))#FIXME HACK for RemoteAction
+          Madmass.logger.debug "Classname before normalization #{klass_name} \n Normalized #{is_normalized}"
+          klass_name = "Actions::" + klass_name unless is_normalized
+          Madmass.logger.debug "Will constantize classname #{klass_name}"
           klass = klass_name.constantize
           raise "#{klass_name} is not a subclass of Madmass::Action::Action" unless klass.ancestors.include?(Madmass::Action::Action)
           return klass.new(options)
