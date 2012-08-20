@@ -91,6 +91,7 @@ module Madmass
     autoload :NotApplicableError, 'madmass/errors/not_applicable_error'
     autoload :StateMismatchError, 'madmass/errors/state_mismatch_error'
     autoload :WrongInputError, 'madmass/errors/wrong_input_error'
+    autoload :RollbackError, 'madmass/errors/rollback_error'
   end
 
   module Perception

@@ -39,7 +39,7 @@ module Madmass
         begin
           Madmass.transaction do
             block.call
-            #raise Java::OrgInfinispan::CacheException.new #REMOVE ME FOR DEBUGGING
+            #raise Java::OrgInfinispan::CacheException.new #REMOVE ME (USED ONLY FOR DEBUGGING)
           end
         rescue Exception => exc
           cause = main_cause exc

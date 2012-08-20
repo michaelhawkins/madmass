@@ -27,51 +27,12 @@
 ###############################################################################
 ###############################################################################
 
-
-require 'forwardable'
-
-#Ensure adapters are loaded
-adapters = Dir.glob(File.join(File.dirname(__FILE__), '*_adapter.rb'))
-adapters.each { |adapter| require adapter }
-
-
+# This error is an unrecoverable error, mainly detection of inconsistent states.
+# This is the worst error possible and should be raised only if one knows there
+# is no easy way to handle the error.
 module Madmass
-  module Transaction
-
-
-    def transaction &block
-      Madmass::Transaction::TransactionManager.instance.transaction do
-        block.call
-      end
-    end
-
-    def rescues
-      Madmass::Transaction::TransactionManager.instance.rescues
-    end
-
-
-    class TransactionManager
-      include Singleton
-      extend Forwardable
-
-
-      def_delegators :@adapter, :transaction, :rescues
-
-      def initialize
-        set_adapter
-      end
-
-      private
-
-      def set_adapter
-        class_name = Madmass.config.tx_adapter.to_s.classify
-        @adapter = "#{class_name}".constantize
-      rescue NameError => nerr
-        msg = "TransactionManager: error when setting the adapter: #{Madmass.config.tx_adapter}, class #{class_name} doesn't exist!"
-        Madmass.logger.error msg
-        raise "#{msg} -- #{nerr.message}"
-      end
+  module Errors
+    class RollbackError < Madmass::Errors::MadmassError
     end
   end
 end
-

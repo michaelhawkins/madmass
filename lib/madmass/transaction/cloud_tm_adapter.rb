@@ -31,24 +31,25 @@
 class Madmass::Transaction::CloudTmAdapter
   class << self
     def transaction &block
+      Madmass.logger.debug "[Madmass::Transaction::CloudTmAdapter::transaction] manager is #{CloudTm::TxSystem.getManager.inspect}"
       CloudTm::TxSystem.getManager.withTransaction do
         block.call
       end
     end
 
     def rescues
+      rescues = {Madmass::Errors::RollbackError => retry_proc} #TODO
       if defined?(Java::Org::Infinispan)
-        { Java::OrgInfinispan::CacheException => retry_proc }
-      else
-       {}
+        rescues.merge!({ Java::OrgInfinispan::CacheException => retry_proc })
       end
+      rescues
     end
 
     private
 
     def retry_proc
       Proc.new { |attempts|
-        Madmass.logger.warn("Retrying because of Exception if class: Java::OrgInfinispan::CacheException")
+        Madmass.logger.warn("Retrying transaction")
         #FIXME there should be a maximum number of attempts and a quadratic backoff
         sleep_time = (1000*rand/4.0)**attempts #polynomial backoff in ms
         Madmass.logger.warn("Sleeping for #{sleep_time}")
