@@ -35,7 +35,11 @@ module Madmass
 
       # Executes a given action as specified in the usr_opts
       def execute(usr_opts = {})
-
+        Madmass.logger.debug "\n\n\n***********************************************************************"
+        Madmass.logger.debug "***********************************************************************"
+        Madmass.logger.debug "*  EXECUTING COMMAND #{usr_opts.inspect}"
+        Madmass.logger.debug "***********************************************************************"
+        Madmass.logger.debug "***********************************************************************\n"
         #prepare opts
         opts = usr_opts.clone
         opts[:agent] = self
@@ -52,6 +56,8 @@ module Madmass
         #return the request status
         #the actual perception is stored in
         #in Madmass.current_perception
+        Madmass.logger.debug "\n#########################################################################"
+        Madmass.logger.debug "#########################################################################\n\n\n"
         return status
       end
 

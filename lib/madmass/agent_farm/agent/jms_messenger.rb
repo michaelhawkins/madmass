@@ -45,20 +45,18 @@ module Madmass
             queue
           end
 
-         #Retreive current agent and set current behavior
+          #Retreive current agent and set current behavior
           def prepare_agent opts
             current_behavior = nil
             agent = nil
-            begin
-              tx_monitor do
-                current_behavior = behavior
-                agent = self.where_agent(opts)
-                agent.execution_time = -1
+            tx_monitor do
+              current_behavior = behavior
+              agent = self.where_agent(opts)
+              unless agent
+                Madmass.logger.warn("\n ********* Agent not found: Retrying later for #{opts.inspect}... *********")
+                raise Madmass::Errors::RollbackError.new("Error while fetching agent: #{opts.inspect}")
               end
-            rescue Exception => ex
-              Madmass.logger.warn("#{ex.message}\n ********* Retrying later ... *********")
-              java.lang.Thread.sleep(opts[:step])
-              retry
+              agent.execution_time = -1
             end
             Madmass.logger.debug "Agent: #{agent.inspect} with behavior #{current_behavior.inspect}"
             return current_behavior

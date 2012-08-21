@@ -126,7 +126,8 @@ module Madmass
                               :data => {
                                 :cmd => 'register_agent',
                                 :sync => true,
-                                :user => {:id => agent.oid}
+                                :user => {:id => agent.oid},
+                                :data => {:type => agent.class.name.demodulize}
                               }
                             }.merge(jms))
             end
@@ -137,24 +138,19 @@ module Madmass
             agent = nil
             begin
               agent = self.where_agent(opts)
+              unless agent
+                Madmass.logger.warn("\n ********* Agent not found: Retrying later for #{opts.inspect}... *********")
+                raise Madmass::Errors::RollbackError.new("Error while fetching agent: #{opts.inspect}")
+              end
               agent.execution_time ||= -1
-            rescue Exception => ex
-              # FIXME: it happens also with single node, there is a bug in the cloud-tm platform
-              # If we cannot find the agent, we wait to see if we find it later
-              # This may happen in a clustered environment if changes are not yet
-              # propagated to all nodes.
 
-              # FIXME: should not sleep in a tx
-              Madmass.logger.warn("#{ex.message}\n ********* Retrying later ... *********")
-              java.lang.Thread.sleep(opts[:step])
-              retry
+              Madmass.logger.debug "Fetched Agent: #{agent.inspect}"
+              agent
             end
-            Madmass.logger.debug "Fetched Agent: #{agent.inspect}"
-            agent
+
           end
 
         end
-
       end
     end
   end

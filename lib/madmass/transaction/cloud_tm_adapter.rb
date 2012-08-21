@@ -38,7 +38,7 @@ class Madmass::Transaction::CloudTmAdapter
     end
 
     def rescues
-      rescues = {Madmass::Errors::RollbackError => retry_proc} #TODO
+      rescues = {Madmass::Errors::RollbackError => retry_proc, NativeException => retry_proc} #HACK (NativeException -- it won't recognize RollbackErrors --)
       if defined?(Java::Org::Infinispan)
         rescues.merge!({ Java::OrgInfinispan::CacheException => retry_proc })
       end
@@ -51,7 +51,7 @@ class Madmass::Transaction::CloudTmAdapter
       Proc.new { |attempts|
         Madmass.logger.warn("Retrying transaction")
         #FIXME there should be a maximum number of attempts and a quadratic backoff
-        sleep_time = (1000*rand/4.0)**attempts #polynomial backoff in ms
+        sleep_time = (1000*rand/4.0)+ (attempts)**3 #polynomial backoff in ms
         Madmass.logger.warn("Sleeping for #{sleep_time}")
         java.lang.Thread.sleep(sleep_time)
         Madmass.logger.warn("Woke up #{sleep_time}")

@@ -31,7 +31,7 @@
 module Madmass
   module Transaction
     module TxMonitor
-      MAX_ATTEMPTS = 10 #FIXME must be configurable
+      MAX_ATTEMPTS = 100 #FIXME must be configurable
 
       def tx_monitor &block
         attempts = 0
@@ -42,9 +42,11 @@ module Madmass
             #raise Java::OrgInfinispan::CacheException.new #REMOVE ME (USED ONLY FOR DEBUGGING)
           end
         rescue Exception => exc
+          Madmass.logger.warn "Exception in transaction"
           cause = main_cause exc
+          Madmass.logger.warn "Main Cause is #{cause}"
           policy = Madmass.rescues[cause.class]
-          if Madmass.rescues[cause.class]
+          if policy
             Madmass.logger.warn("Recovering through policy for #{cause.class}")
             if policy.call(attempts) == :retry
               attempts += 1
@@ -62,12 +64,12 @@ module Madmass
 
       private
       def main_cause exc
-        main_causes_class = [Exception]
-        main_causes_class = [Java::OrgInfinispan::CacheException] if defined?(Java::Org::Infinispan)
+        main_causes_class = [Madmass::Errors::RollbackError, NativeException]
+        main_causes_class = [Madmass::Errors::RollbackError, NativeException, Java::OrgInfinispan::CacheException] if defined?(Java::Org::Infinispan)
         current = exc
         while current
-         # Madmass.logger.warn("Inspecting exception: #{current.class} --  #{current.message}")
-          return current if main_causes_class.detect() { |c| c == current.class }
+          Madmass.logger.warn("======== Inspecting exception: #{current.class.name}")
+          return current if main_causes_class.detect() { |c| c.class.name == current.class.name}
           current =  current.class.method_defined?(:cause) ? current.cause : nil
         end
         return exc
