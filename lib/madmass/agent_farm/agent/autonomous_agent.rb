@@ -106,7 +106,7 @@ module Madmass
               rescue Exception => ex
                 Madmass.logger.error "AGENT ABORTED"
                 Madmass.logger.error("Error during processing: #{$!}, message \n #{ex.message}")
-                Madmass.logger.debug("Backtrace:\n\t#{ex.backtrace.join("\n\t")}")
+                Madmass.logger.error("Backtrace:\n\t#{ex.backtrace.join("\n\t")}")
                 Madmass.logger.error "CAUSE \n\t#{ex.cause.backtrace.join("\n\t")}" if ex.cause
                 return false
 

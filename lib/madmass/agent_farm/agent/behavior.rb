@@ -48,6 +48,7 @@ module Madmass
           raise Madmass::Exception::CatastrophicError.new("next_action is an abstract method, please override it!")
         end
 
+
         def agent= agent
           @agent = agent
         end

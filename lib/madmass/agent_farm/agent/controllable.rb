@@ -89,9 +89,9 @@ module Madmass
 
           self.status = 'dead' if to_kill
 
-          Madmass.logger.info "***********************************************"
-          Madmass.logger.info "SIMULATE: Executed \n\t #{next_action.inspect}\n\t"
-          Madmass.logger.info "***********************************************"
+          Madmass.logger.debug "***********************************************"
+          Madmass.logger.debug "SIMULATE: Executed \n\t #{next_action.inspect}\n\t"
+          Madmass.logger.debug "***********************************************"
         end
 
         # @return [Madmass::AgentFarm::Agent::Behavior]
