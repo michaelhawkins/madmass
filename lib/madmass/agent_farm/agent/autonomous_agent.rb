@@ -114,6 +114,7 @@ module Madmass
               true #FIXME return something meaningful
 
             } #Thread end
+            true #to avoid error on marshaling threads
           end
 
           private
