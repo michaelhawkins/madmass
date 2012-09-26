@@ -97,7 +97,7 @@ module Madmass
 
                     # sleep before the next step, with some noise to avoid
                     # many "synchronized" requests when you start multiple agents together
-                    sleep_time = opts[:step]+((opts[:step]/3)*(0.5-rand))
+                    sleep_time = opts[:step]+((opts[:step]/3.0)*(0.5-rand))
                     java.lang.Thread.sleep(sleep_time)
 
                   end

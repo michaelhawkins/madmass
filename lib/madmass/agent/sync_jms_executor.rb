@@ -43,13 +43,13 @@ module Madmass
       end
 
       def on_message(body)
+
         Madmass.logger.debug "\n**************************SYNC Message received********************\n"
         # The synchronous methods always put the user message inside
         # a :message parameter, hence the need to descend here.
         Madmass.logger.debug "BODY:  \n #{body.to_yaml}\n"
         #json_message = JSON.parse(body) #body[:message] #FIXME is JSON needed?
         #Madmass.logger.debug "Objectified version of message received: #{json_message.to_yaml}"
-
         message_hash = JSON(body[:message])
 
         Madmass.logger.debug "MESSAGE \n #{message_hash.inspect}\n"
@@ -59,6 +59,7 @@ module Madmass
         Madmass.current_agent.execute(message_hash)
 
         sync_reply(Madmass.current_perception)
+
       end
 
       def sync_reply(reply)

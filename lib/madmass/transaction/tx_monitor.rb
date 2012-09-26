@@ -34,6 +34,7 @@ module Madmass
       MAX_ATTEMPTS = 20 #FIXME must be configurable
 
       def tx_monitor &block
+        Madmass.logger.debug "############################# TX_MONITOR START #############################"
         attempts = 0
 
         begin
@@ -58,13 +59,13 @@ module Madmass
               Madmass.logger.warn("Retrying for the **#{ActiveSupport::Inflector.ordinalize(attempts)}** time!")
               retry if attempts <= MAX_ATTEMPTS
               Madmass.logger.error "Aborting, max number of retries (#{MAX_ATTEMPTS}) reached"
-
             end
           else
             # Madmass.logger.error("Raising up the stack! No recovery policy for: #{cause.class} ** MESSAGE:\n #{cause.message} ")
             raise exc;
           end
         end
+        Madmass.logger.debug "############################# TX_MONITOR END #############################"
       end
 
       private
@@ -74,6 +75,8 @@ module Madmass
         current = exc
         while current
           Madmass.logger.warn("======== Inspecting exception: #{current.class.name}")
+          Madmass.logger.warn("Message \n #{current.message}")
+          Madmass.logger.warn("Backtrace:\n\t#{current.backtrace.join("\n\t")}")
           return current if main_causes_class.detect() { |c| c.class.name == current.class.name }
           current = current.class.method_defined?(:cause) ? current.cause : nil
         end

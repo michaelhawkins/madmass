@@ -58,8 +58,8 @@ module Madmass
         #Exit the (messagging) transactional context by launching a new thread
         #or you could have duplicate perceptions when rollbacking
         #Access to data is already transactional in the execute method;
-        #Thread.new{Madmass.current_agent.execute(message)}
-        Madmass.current_agent.execute(message)
+        Thread.new{Madmass.current_agent.execute(message)}
+        #Madmass.current_agent.execute(message)
         return true
       end
     end

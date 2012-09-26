@@ -50,6 +50,7 @@ module Madmass
         @payload = (@parameters[:data] || {})
         Madmass.logger.debug %Q{Initialized Remote action with payload:\n #{@payload.to_yaml}\n}
         @payload = @payload.to_json
+        @remote_perception = []
       end
 
       def execute
@@ -113,10 +114,11 @@ module Madmass
       def sync_send
         Madmass.logger.debug "SYNC SEND: JMS options #{@options.to_yaml}"
 
-        return @session.publish_and_receive(@queue,
+        result = @session.publish_and_receive(@queue,
                                             @payload,
                                             {:encoding => :json, :timeout => 60000, :tx => false}
         )
+        return (result or [])
       end
 
       def async_send
