@@ -61,7 +61,7 @@ module Madmass
               Madmass.logger.error "Aborting, max number of retries (#{MAX_ATTEMPTS}) reached"
             end
           else
-            # Madmass.logger.error("Raising up the stack! No recovery policy for: #{cause.class} ** MESSAGE:\n #{cause.message} ")
+            Madmass.logger.error("Raising up the stack! No recovery policy for: #{cause.class} ** MESSAGE:\n #{cause.message} ")
             raise exc;
           end
         end
@@ -69,6 +69,7 @@ module Madmass
       end
 
       private
+
       def main_cause exc
         main_causes_class = [Madmass::Errors::RollbackError, NativeException]
         main_causes_class = [Madmass::Errors::RollbackError, NativeException, Java::OrgInfinispan::CacheException] if defined?(Java::Org::Infinispan)

@@ -54,7 +54,7 @@ class Madmass::Transaction::CloudTmAdapter
         sleep_time = (1000*rand/4.0)+ (attempts)**3 #polynomial backoff in ms
         Madmass.logger.warn("Sleeping for #{sleep_time}")
         java.lang.Thread.sleep(sleep_time)
-        Madmass.logger.warn("Woke up #{sleep_time}")
+        Madmass.logger.warn("Woke up after #{sleep_time}")
         :retry
       }
     end
