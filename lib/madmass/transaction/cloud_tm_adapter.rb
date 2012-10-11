@@ -31,8 +31,8 @@
 class Madmass::Transaction::CloudTmAdapter
   class << self
     def transaction &block
-      Madmass.logger.debug "[Madmass::Transaction::CloudTmAdapter::transaction] manager is #{CloudTm::TxSystem.getManager.inspect}"
-      CloudTm::TxSystem.getTransactionManager.withTransaction do
+      Madmass.logger.debug "[Madmass::Transaction::CloudTmAdapter::transaction] manager is #{CloudTm::FenixFramework.getManager.inspect}"
+      CloudTm::FenixFramework.getTransactionManager.withTransaction do
         block.call
       end
     end
