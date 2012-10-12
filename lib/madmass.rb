@@ -63,6 +63,7 @@ module Madmass
     autoload :FSAExecutor, 'madmass/agent/f_s_a_executor'
     autoload :JmsExecutor, 'madmass/agent/jms_executor'
     autoload :ProxyAgent, 'madmass/agent/proxy_agent'
+    autoload :Association, 'madmass/agent/association'
   end
 
   module Action
@@ -72,6 +73,7 @@ module Madmass
     autoload :Stateful, 'madmass/action/stateful'
     autoload :ClassMethods, 'madmass/action/stateful'
     autoload :InstanceMethods, 'madmass/action/stateful'
+    autoload :WhyNotApplicable, 'madmass/action/why_not_applicable'
   end
 
   module Comm

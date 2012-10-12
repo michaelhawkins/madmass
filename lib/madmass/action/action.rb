@@ -114,7 +114,7 @@ module Madmass
 
      
       def why_not_applicable
-        @why_not_applicable ||= ActiveModel::Errors.new(self)
+        @why_not_applicable ||= Madmass::Action::WhyNotApplicable.new(self)
       end
       
       # Override this method in your action to define the action postconditions.
