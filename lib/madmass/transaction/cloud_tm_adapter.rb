@@ -38,7 +38,7 @@ class Madmass::Transaction::CloudTmAdapter
     end
 
     def rescues
-      rescues = {Madmass::Errors::RollbackError => retry_proc, NativeException => retry_proc} #HACK (NativeException -- it won't recognize RollbackErrors --)
+      rescues = { Madmass::Errors::RollbackError => retry_proc } #HACK (NativeException -- it won't recognize RollbackErrors --)
       if defined?(Java::Org::Infinispan)
         rescues.merge!({ Java::OrgInfinispan::CacheException => retry_proc })
       end
@@ -46,6 +46,7 @@ class Madmass::Transaction::CloudTmAdapter
     end
 
     private
+
 
     def retry_proc
       Proc.new { |attempts|

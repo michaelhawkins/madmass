@@ -83,7 +83,9 @@ module Madmass
           # check action specific applicability
           unless action.applicable?
             Madmass.logger.debug "action not applicable: #{action.inspect}"
-            raise Madmass::Errors::NotApplicableError
+            #raise Madmass::Errors::NotApplicableError
+            not_applicable_percept_factory(action, Madmass::Errors::NotApplicableError.new, :code => 'precondition_failed')
+            return :precondition_failed #http status
           end
 
           # execute action
@@ -100,11 +102,10 @@ module Madmass
       rescue Madmass::Errors::StateMismatchError => exc
         raise exc
 
-      rescue Madmass::Errors::NotApplicableError => exc
-        error_percept_factory(action, exc,
-                              :code => 'precondition_failed',
-                              :why_not_applicable => action.why_not_applicable.as_json)
-        return :precondition_failed #http status
+      #rescue Madmass::Errors::NotApplicableError => exc
+      #  not_applicable_percept_factory(action, exc,
+      #                        :code => 'precondition_failed')
+      #  return :precondition_failed #http status
 
       rescue Madmass::Errors::WrongInputError => exc
         error_percept_factory(action, exc,
@@ -127,6 +128,26 @@ module Madmass
       end
 
 
+      def not_applicable_percept_factory(action, error, opts)
+
+        why_not_applicable = action.why_not_applicable
+        error_msg = "#{action} #{error.class}: #{error.message}"
+        Madmass.logger.error error_msg
+        error_msg += " - #{why_not_applicable.full_messages.join(', ')}" if action and why_not_applicable.any?
+        Madmass.logger.error("Error during processing: #{$!}, #{error_msg}")
+
+        why_not_applicable.messages.each do |name, message|
+          percept = Madmass::Perception::Percept.new(action)
+          percept.status = {:code => opts[:code], :exception => error.class.name}
+          percept.add_headers({:clients => why_not_applicable.recipients[name]})
+          percept.data.merge!({:message => message}) if message
+          percept.data.merge!({:why_not_applicable => name})
+
+          Madmass.current_perception << percept
+        end
+
+      end
+
       def error_percept_factory(action, error, opts)
 
         error_msg = "#{action} #{error.class}: #{error.message}"
@@ -134,7 +155,6 @@ module Madmass
         error_msg += " - #{action.why_not_applicable.messages}" if action and action.why_not_applicable.any?
         Madmass.logger.error("Error during processing: #{$!}, #{error_msg}")
         Madmass.logger.debug("Backtrace:\n\t#{error.backtrace.join("\n\t")}")
-
 
         e = Madmass::Perception::Percept.new(action)
         e.status = {:code => opts[:code], :exception => error.class.name}

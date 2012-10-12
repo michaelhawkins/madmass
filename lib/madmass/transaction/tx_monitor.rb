@@ -52,13 +52,17 @@ module Madmass
           cause = main_cause exc
           Madmass.logger.warn "Main Cause is #{cause}"
           policy = Madmass.rescues[cause.class]
-          if policy
+          # do not retry when the action is not applicable
+          Madmass.logger.error "CAUSE CLASS: #{cause.class}"
+          if policy 
             Madmass.logger.warn("Recovering through policy for #{cause.class}")
             if policy.call(attempts) == :retry
               attempts += 1
               Madmass.logger.warn("Retrying for the **#{ActiveSupport::Inflector.ordinalize(attempts)}** time!")
               retry if attempts <= MAX_ATTEMPTS
-              Madmass.logger.error "Aborting, max number of retries (#{MAX_ATTEMPTS}) reached"
+              msg = "Aborting, max number of retries (#{MAX_ATTEMPTS}) reached"
+              Madmass.logger.error msg
+              raise Madmass::Errors::CatastrophicError.new(msg)
             end
           else
             Madmass.logger.error("Raising up the stack! No recovery policy for: #{cause.class} ** MESSAGE:\n #{cause.message} ")
@@ -71,8 +75,8 @@ module Madmass
       private
 
       def main_cause exc
-        main_causes_class = [Madmass::Errors::RollbackError, NativeException]
-        main_causes_class = [Madmass::Errors::RollbackError, NativeException, Java::OrgInfinispan::CacheException] if defined?(Java::Org::Infinispan)
+        main_causes_class = [Madmass::Errors::RollbackError]
+        main_causes_class << Java::OrgInfinispan::CacheException if defined?(Java::Org::Infinispan)
         current = exc
         while current
           Madmass.logger.warn("======== Inspecting exception: #{current.class.name}")

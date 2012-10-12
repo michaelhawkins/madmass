@@ -26,40 +26,22 @@
 #
 ###############################################################################
 ###############################################################################
-
 module Madmass
-  module Comm
+  module Action
+    class WhyNotApplicable < ActiveModel::Errors
+      attr_reader :recipients
 
-    class SockySender
-      include Singleton
-
-      class << self
-        def send(percepts, opts)
-          # push messages to HTML clients via socky
-          Socky.send(percepts.to_json.html_safe, opts)
-          Madmass.logger.debug "SENDING PERCEPTION WITH OPTS: #{opts.inspect}"
-
-          # push messages to JMS clients via stomplet
-          #FIXME
-          begin
-            topic.publish(JSON(percepts), :properties => opts)
-          rescue Exception => ex
-            Madmass.logger.error ex
-          end
-
-        end
-
-        private
-
-        def topic
-          # FIXME: move destination name in Madmass.config
-          @topic ||= TorqueBox::Messaging::Topic.new('/topic/perceptions')
-        end
-
+      def initialize(base)
+        super(base)
+        @recipients = HashWithIndifferentAccess.new
       end
 
+      # Adds the message (using the ActiveModel::Errors api) and stores
+      # the message recipients for the message
+      def publish(options = {})
+        add(options[:name], options[:message])
+        @recipients[options[:name]] = options[:recipients] || []
+      end
     end
-
   end
 end
-
