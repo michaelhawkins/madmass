@@ -44,14 +44,14 @@ module Madmass
         end
 
         def player=(pl)
-          update_attribute(:agent_id, pl.oid)
+          update_attribute(:agent_id, pl.getExternalId)
           @player = pl
         end
 
         def create_player!
           _player = DataModel::Player.create
           _player.user = self
-          update_attribute(:agent_id, _player.oid)
+          update_attribute(:agent_id, _player.getExternalId)
           @player = _player
         end
 

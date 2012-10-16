@@ -127,7 +127,7 @@ module Madmass
                               :data => {
                                 :cmd => 'register_agent',
                                 :sync => true,
-                                :user => {:id => agent.oid},
+                                :user => {:id => agent.getExternalId},
                                 :data => {:type => agent.class.name.demodulize}
                               }
                             }.merge(jms))
