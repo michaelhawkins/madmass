@@ -47,7 +47,6 @@ module Madmass
           Madmass.logger.warn "Exception in transaction"
           Madmass.logger.warn("Error during processing: #{$!}, message \n #{exc.message}")
           Madmass.logger.warn("Backtrace:\n\t#{exc.backtrace.join("\n\t")}")
-          Madmass.logger.warn "Cause: \n\t#{exc.cause.backtrace.join("\n\t")}" if exc.cause
           Madmass.logger.warn "\n********************************************************\n\n\n"
           cause = main_cause exc
           Madmass.logger.warn "Main Cause is #{cause}"
