@@ -138,7 +138,7 @@ module Madmass
             #Retreive current agent and set current behavior
             agent = nil
             begin
-              agent = self.where_agent(opts)
+              agent = self.find_by_id(opts)
               unless agent
                 Madmass.logger.warn("\n ********* Agent not found: Retrying later for #{opts.inspect}... *********")
                 raise Madmass::Errors::RollbackError.new("Error while fetching agent: #{opts.inspect}")
