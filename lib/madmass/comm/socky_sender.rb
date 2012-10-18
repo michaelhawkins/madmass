@@ -41,10 +41,12 @@ module Madmass
 
           # push messages to JMS clients via stomplet
           #FIXME
-          begin
-            topic.publish(JSON(percepts), :properties => opts)
-          rescue Exception => ex
-            Madmass.logger.error ex
+          if defined?(TorqueBox::Messaging)
+            begin
+              topic.publish(JSON(percepts), :properties => opts)
+            rescue Exception => ex
+              Madmass.logger.error ex
+            end
           end
 
         end

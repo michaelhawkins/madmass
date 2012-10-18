@@ -63,7 +63,6 @@ module Madmass
     autoload :FSAExecutor, 'madmass/agent/f_s_a_executor'
     autoload :JmsExecutor, 'madmass/agent/jms_executor'
     autoload :ProxyAgent, 'madmass/agent/proxy_agent'
-    autoload :Association, 'madmass/agent/association'
   end
 
   module Action
