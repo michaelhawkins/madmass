@@ -137,15 +137,22 @@ module Madmass
         Madmass.logger.error("Error during processing: #{$!}, #{error_msg}")
 
         why_not_applicable.messages.each do |name, message|
-          percept = Madmass::Perception::Percept.new(action)
-          percept.status = {:code => opts[:code], :exception => error.class.name}
-          percept.add_headers({:clients => why_not_applicable.recipients[name]})
-          percept.data.merge!({:message => message}) if message
-          percept.data.merge!({:why_not_applicable => name})
+          message.each do |key|
+            percept = Madmass::Perception::Percept.new(action)
+            percept.status = {:code => opts[:code], :exception => error.class.name}
+            percept.add_headers({:clients => why_not_applicable.recipients[name]})
+            percept.data.merge!({
+              :why_not_applicable => name,
+              :event => 'info-mechanics',
+              :level => why_not_applicable.levels[name],
+              :type => why_not_applicable.types[name],
+              :subs => why_not_applicable.subs[name],
+              :key => key
+            })
 
-          Madmass.current_perception << percept
+            Madmass.current_perception << percept
+          end
         end
-
       end
 
       def error_percept_factory(action, error, opts)

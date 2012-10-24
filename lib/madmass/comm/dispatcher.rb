@@ -49,7 +49,7 @@ module Madmass
 
         Madmass.logger.debug "Sending to clients #{grouper.for_clients.inspect}"
         grouper.for_clients.each do |client, percepts|
-          @sender.send(percepts, :client => client)
+          @sender.send(percepts, :clients => client.to_s)
         end
 
         Madmass.logger.debug "Sending to topics #{grouper.for_topics.inspect}"

@@ -29,18 +29,25 @@
 module Madmass
   module Action
     class WhyNotApplicable < ActiveModel::Errors
-      attr_reader :recipients
+      attr_reader :recipients, :levels, :subs, :types
+      attr_reader :levels
 
       def initialize(base)
         super(base)
         @recipients = HashWithIndifferentAccess.new
+        @levels = HashWithIndifferentAccess.new
+        @types = HashWithIndifferentAccess.new
+        @subs = HashWithIndifferentAccess.new
       end
 
       # Adds the message (using the ActiveModel::Errors api) and stores
       # the message recipients for the message
       def publish(options = {})
-        add(options[:name], options[:message])
+        add(options[:name], options[:key])
         @recipients[options[:name]] = options[:recipients] || []
+        @levels[options[:name]] = options[:level] || 0
+        @types[options[:name]] = options[:type] || 'info'
+        @subs[options[:name]] = options[:subs]
       end
     end
   end
