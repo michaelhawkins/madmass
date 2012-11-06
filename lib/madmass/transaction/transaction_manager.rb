@@ -61,16 +61,17 @@ module Madmass
         set_adapter
       end
 
-      private
 
       def set_adapter
         class_name = Madmass.config.tx_adapter.to_s.classify
+        Madmass.logger.debug "Setting TX adapter #{class_name}"
         @adapter = "#{class_name}".constantize
       rescue NameError => nerr
         msg = "TransactionManager: error when setting the adapter: #{Madmass.config.tx_adapter}, class #{class_name} doesn't exist!"
         Madmass.logger.error msg
         raise "#{msg} -- #{nerr.message}"
       end
+
     end
   end
 end

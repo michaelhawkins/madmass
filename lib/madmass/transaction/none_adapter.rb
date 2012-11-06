@@ -33,7 +33,9 @@ module Madmass
 
     class NoneAdapter
       class << self
+
         def transaction &block
+          Madmass.logger.debug "-- Madmass::Transaction::NoneAdapter::transaction --"
           block.call
         end
 

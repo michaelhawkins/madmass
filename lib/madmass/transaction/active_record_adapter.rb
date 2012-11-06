@@ -34,6 +34,7 @@ module Madmass
     class ActiveRecordAdapter
       class << self
         def transaction &block
+          Madmass.logger.debug "-- Madmass::Transaction::ActiveRecordAdapter::transaction --"
           ActiveRecord::Base.transaction do
             block.call
           end

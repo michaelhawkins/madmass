@@ -34,6 +34,7 @@ module Madmass
     class TorqueBoxAdapter
       class << self
         def transaction &block
+          Madmass.logger.debug "-- Madmass::Transaction::TorqueBoxAdapter::transaction --"
           TorqueBox.transaction do
             block.call
           end
