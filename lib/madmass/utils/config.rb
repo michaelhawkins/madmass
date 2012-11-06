@@ -38,7 +38,7 @@ module Madmass
       def initialize
         @tx_adapter = :"Madmass::Transaction::NoneAdapter"
         @perception_sender = :"Madmass::Comm::DummySender"
-        @domain_updater = :"AgentFarm::Domain::AbstractUpdater"
+        @domain_updater = :"AgentFarm::Domain::AbstractUpdater" #FIXME What is this?
       end
 
       # Overrides default values for all configurations in the yaml file passed
@@ -47,9 +47,11 @@ module Madmass
         return unless File.exists?(file_path)
         conf = YAML.load(File.read(file_path))
         # override tx_manager
+        Madmass.logger.debug "Loading setup data from #{file_path}"
         @tx_adapter = conf['tx_adapter'] if conf['tx_adapter']
+        Madmass.logger.debug "Configured tx_adapter #{@tx_adapter} from file value #{conf['tx_adapter']}"
         @perception_sender = conf['perception_sender'] if conf['perception_sender']
-        @domain_updater = conf['domain_updater'] if conf['domain_updater']
+        @domain_updater = conf['domain_updater'] if conf['domain_updater']  #FIXME What is this?
       end
 
     end
@@ -61,7 +63,8 @@ module Madmass
 
       def setup &block
         yield(config)
-        Madmass.logger.debug("Rails.root  is #{Rails.root}")
+        Madmass::Transaction::TransactionManager.instance.set_adapter
+        Madmass.logger.debug("Configured tx_adapter is #{config.tx_adapter}")
         Dir.glob(File.join(Rails.root, 'lib', 'actions', '*.rb')).each do |action_path|
           klass = action_path.split(File::SEPARATOR).last.sub(/\.rb$/, '').classify
           #autoload "Actions::#{klass}".to_sym, action_path
