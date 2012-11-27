@@ -157,3 +157,4 @@ end
 class Object
   include Madmass::Tracer::Tracer
 end
+

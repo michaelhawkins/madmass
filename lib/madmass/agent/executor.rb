@@ -27,6 +27,7 @@
 ###############################################################################
 ###############################################################################
 
+require 'benchmark'
 
 module Madmass
   module Agent
@@ -35,11 +36,16 @@ module Madmass
 
       # Executes a given action as specified in the usr_opts
       def execute(usr_opts = {})
-        Madmass.logger.debug "\n\n\n***********************************************************************"
+
+        Madmass.logger.debug "\n\n\n***********************************************************************" if (Madmass.logger.level_enabled? :debug)
+        Madmass.logger.debug "***********************************************************************" if (Madmass.logger.level_enabled? :debug)
+        Madmass.logger.debug "*  EXECUTING COMMAND #{usr_opts.inspect}" if (Madmass.logger.level_enabled? :debug)
         Madmass.logger.debug "***********************************************************************"
-        Madmass.logger.debug "*  EXECUTING COMMAND #{usr_opts.inspect}"
-        Madmass.logger.debug "***********************************************************************"
-        Madmass.logger.debug "***********************************************************************\n"
+        Madmass.logger.debug "***********************************************************************\n" if (Madmass.logger.level_enabled? :debug)
+
+        #Madmass.logger.info("\n\n\n======= benchmark ===========\n")
+        #Madmass.logger.info("action \tuser \t system \t total \t (real)\n")
+
         #prepare opts
         opts = usr_opts.clone
         opts[:agent] = self
@@ -49,15 +55,18 @@ module Madmass
 
         #execute the command (transactional)
         status = do_it opts
+        #measure = Benchmark.measure do
 
         #dispatch generated percepts
         Madmass.dispatch_percepts
+        #end
+        # Madmass.logger.info("Dispatch Percepts: \t"+ measure.to_s)
 
         #return the request status
         #the actual perception is stored in
         #in Madmass.current_perception
-        Madmass.logger.debug "\n#########################################################################"
-        Madmass.logger.debug "#########################################################################\n\n\n"
+        Madmass.logger.debug "\n#########################################################################" if (Madmass.logger.level_enabled? :debug)
+        Madmass.logger.debug "#########################################################################\n\n\n" if (Madmass.logger.level_enabled? :debug)
         return status
       end
 
@@ -73,16 +82,23 @@ module Madmass
       # Raises: Madmass::Errors::NotApplicableError
 
       def do_it opts
-
+        action = nil
+        #measure = Benchmark.measure do
         #create the action
         action = Madmass::Action::ActionFactory.make(opts)
-        Madmass.logger.debug "Created action with\n #{opts.to_yaml}\n"
+        #Madmass.logger.debug "Created action with\n #{opts.to_yaml}\n"
+        # end
+
+        #Madmass.logger.info("Action Factory: \t"+ measure.to_s)
+
+        #measure = Benchmark.measure do
+
 
         tx_monitor do
 
           # check action specific applicability
           unless action.applicable?
-            Madmass.logger.debug "action not applicable: #{action.inspect}"
+            Madmass.logger.debug "action not applicable: #{action.inspect}" if (Madmass.logger.level_enabled? :debug)
             #raise Madmass::Errors::NotApplicableError
             not_applicable_percept_factory(action, Madmass::Errors::NotApplicableError.new, :code => 'precondition_failed')
             return :precondition_failed #http status
@@ -94,18 +110,21 @@ module Madmass
 
           # generate percept (in Madmass.current_perception)
           action.build_result
-          Madmass.logger.debug "Percept generated \n #{Madmass.current_perception.to_yaml}\n"
+          Madmass.logger.debug "Percept generated \n #{Madmass.current_perception.to_yaml}\n" if (Madmass.logger.level_enabled? :debug)
         end
+        #end
+        # Madmass.logger.info("Transaction: \t"+ measure.to_s)
+
 
         return :ok #http status
 
       rescue Madmass::Errors::StateMismatchError => exc
         raise exc
 
-      #rescue Madmass::Errors::NotApplicableError => exc
-      #  not_applicable_percept_factory(action, exc,
-      #                        :code => 'precondition_failed')
-      #  return :precondition_failed #http status
+          #rescue Madmass::Errors::NotApplicableError => exc
+          #  not_applicable_percept_factory(action, exc,
+          #                        :code => 'precondition_failed')
+          #  return :precondition_failed #http status
 
       rescue Madmass::Errors::WrongInputError => exc
         error_percept_factory(action, exc,
@@ -127,6 +146,12 @@ module Madmass
 
       end
 
+      #The available log levels are: :debug, :info, :warn, :error, and :fatal,
+      #corresponding to the log level numbers from 0 up to 4 respectively.
+      def level_enabled? log_level
+        levels = [:debug, :info, :warn, :error, :fatal]
+        log_level <= levels[logger.level]
+      end
 
       def not_applicable_percept_factory(action, error, opts)
 
@@ -142,13 +167,13 @@ module Madmass
             percept.status = {:code => opts[:code], :exception => error.class.name}
             percept.add_headers({:clients => why_not_applicable.recipients[name]})
             percept.data.merge!({
-              :why_not_applicable => name,
-              :event => 'info-mechanics',
-              :level => why_not_applicable.levels[name],
-              :type => why_not_applicable.types[name],
-              :subs => why_not_applicable.subs[name],
-              :key => key
-            })
+                                  :why_not_applicable => name,
+                                  :event => 'info-mechanics',
+                                  :level => why_not_applicable.levels[name],
+                                  :type => why_not_applicable.types[name],
+                                  :subs => why_not_applicable.subs[name],
+                                  :key => key
+                                })
 
             Madmass.current_perception << percept
           end

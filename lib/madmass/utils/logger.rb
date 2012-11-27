@@ -28,14 +28,21 @@
 ###############################################################################
 
 # This is the module that manages the logging facilities.
-# You can attach the Madmass logger to the Rails logger if you use it or use the
-# internal logger (TODO).
+class ActiveSupport::BufferedLogger
+  #FIXME The available log levels are: :debug, :info, :warn, :error, and :fatal,
+  #corresponding to the log level numbers from 0 up to 4 respectively.
+  def level_enabled? log_level
+    levels = [:debug, :info, :warn, :error, :fatal]
+    levels.index(log_level) <= level
+  end
+end
+
 
 module Madmass
   module Utils
 
     # The internal logger.
-     #This is for be used in gem test environment were Rails logger is not available
+    #This is for be used in gem test environment were Rails logger is not available
     class Logger
       include Singleton
 
@@ -44,6 +51,7 @@ module Madmass
         puts msg
       end
 
+
       def info msg
         puts msg
       end
@@ -51,12 +59,21 @@ module Madmass
       def debug msg
         puts msg
       end
+
+      ##FIXME The available log levels are: :debug, :info, :warn, :error, and :fatal,
+      #      #corresponding to the log level numbers from 0 up to 4 respectively.
+      #      def level_enabled? log_level
+      #        levels = [:debug, :info, :warn, :error, :fatal]
+      #        log_level <= levels[logger.level]
+      #      end
+
     end
+
 
     module Loggable
       def logger
         if defined?(Rails)
-          Rails.logger ||=  Logger.new(STDOUT)
+          Rails.logger ||= Logger.new(STDOUT)
         else
           Logger.instance
         end

@@ -89,11 +89,8 @@ module Madmass
             opts = {}
 
             if Madmass.install_options(:cluster_nodes) and Madmass.install_options(:cluster_nodes)[:geograph_nodes]
-              # NOTE: sample is available in Ruby 1.9, so if using an earlier version, require "backports".
-              # Note that in Ruby 1.8.7 it exists under the unfortunate name choice; it was renamed in later version so you shouldn't use it.
-              # In jruby sample does not exists!
               #FIXME: Geograph nodes should not be mentioned here! Refactor to  domain nodes ....
-              opts[:host] = Madmass.install_options(:cluster_nodes)[:geograph_nodes].choice
+              opts[:host] = Madmass.install_options(:cluster_nodes)[:geograph_nodes].sample
               opts[:port] = Madmass.install_options(:remote_messaging_port)
             else
               opts[:host] = 'madmass-node'

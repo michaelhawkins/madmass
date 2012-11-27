@@ -40,24 +40,47 @@ module Madmass
       # Action instantiation can raise if there are errors in the given parameters.
       def self.make params
         begin
-         # Madmass.logger.debug "making action with params #{params.to_yaml}"
-          options = process_params params
-          cmd = options.delete(:cmd).to_s.strip
-          klass_name = "#{cmd.split('::').map(&:camelize).join('::')}Action"
-          simple_name =klass_name.downcase
-          is_normalized = (simple_name.start_with?("madmass::action::") or simple_name.start_with?("actions::"))#FIXME HACK for RemoteAction
-          Madmass.logger.debug "Classname before normalization #{klass_name} \n Normalized #{is_normalized}"
-          klass_name = "Actions::" + klass_name unless is_normalized
-          Madmass.logger.debug "Will constantize classname #{klass_name}"
-          klass = klass_name.constantize
-          raise "#{klass_name} is not a subclass of Madmass::Action::Action" unless klass.ancestors.include?(Madmass::Action::Action)
-          return klass.new(options)
-        rescue NameError => ex
-          msg = "ActionFactory: action #{klass_name} doesn't exists!"
-          Madmass.logger.error msg
-          raise ex
-        rescue LoadError => ex
+          klass_name = nil
+          options = nil
+          Madmass.logger.debug "making action with params #{params.to_yaml}" if (Madmass.logger.level_enabled? :debug)
+          #measure = Benchmark.measure do
+
+            options = process_params params
+            cmd = options.delete(:cmd).to_s.strip
+            klass_name = "#{cmd.split('::').map(&:camelize).join('::')}Action"
+            simple_name =klass_name.downcase
+            is_normalized = (simple_name.start_with?("madmass::action::") or simple_name.start_with?("actions::")) #FIXME HACK for RemoteAction
+            Madmass.logger.debug "Classname before normalization #{klass_name} \n Normalized #{is_normalized}" if (Madmass.logger.level_enabled? :debug)
+            klass_name = "Actions::" + klass_name unless is_normalized
+          #end
+          #Madmass.logger.info("[make] parameters: \t"+measure.to_s)
+
+          Madmass.logger.debug "Will constantize classname #{klass_name}" if (Madmass.logger.level_enabled? :debug)
+          klass = nil
+         # measure = Benchmark.measure do
+            klass = klass_name.constantize
+         # end
+          #Madmass.logger.info("Constantize: \t"+measure.to_s)
+
+          #measure = Benchmark.measure do
+            raise "#{klass_name} is not a subclass of Madmass::Action::Action" unless klass.ancestors.include?(Madmass::Action::Action)
+          #end
+          #Madmass.logger.info("ancestors: \t"+measure.to_s)
+
+          result = nil
+          #measure = Benchmark.measure do
+            result = klass.new(options)
+          #end
+          #Madmass.logger.info("new: \t"+measure.to_s)
+
+          return result
         end
+
+      rescue NameError => ex
+        msg = "ActionFactory: action #{klass_name} doesn't exists!"
+        Madmass.logger.error msg
+        raise ex
+      rescue LoadError => ex
       end
 
       private
