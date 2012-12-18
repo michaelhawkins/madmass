@@ -35,9 +35,14 @@ Madmass is maintained and funded by [Algorithmica Srl](http://algorithmica.it)
 
 The names and logos for Algorithmica are trademarks of Algorithmica Srl.
 
-<div>
-<a href="http://www.jetbrains.com/ruby/features?utm_source=RubyMineUser&utm_medium=Banner&utm_campaign=RubyMine" style="position: relative;display:block; width:127px; height:37px; border:0; margin:0;padding:0;text-decoration:none;text-indent:0;"><span style="margin: 0;padding: 0;position: absolute;top: 1px;left: 33px;font-size: 10px;cursor:pointer;  background-image:none;border:0;color: #efcedc; font-family: trebuchet ms,arial,sans-serif;font-weight: normal;text-align:left;">Developed with</span><img src="http://www.jetbrains.com/ruby/features/ruby_banners/ruby1/ruby125x37_rubin.gif" alt="Developed with" border="0"/></a>
-</div>
+
+<a href="http://www.jetbrains.com/ruby/features?utm_source=RubyMineUser&utm_medium=Banner&utm_campaign=RubyMine" style="position: relative;display:block; width:127px; height:37px; border:0; margin:0;padding:0;text-decoration:none;text-indent:0;">
+  <span style="margin: 0;padding: 0;position: absolute;top: 1px;left: 33px;font-size: 10px;cursor:pointer;  background-image:none;border:0;color: #efcedc; font-family: trebuchet ms,arial,sans-serif;font-weight: normal;text-align:left;">
+    Developed with
+  </span>
+  <img src="http://www.jetbrains.com/ruby/features/ruby_banners/ruby1/ruby125x37_rubin.gif" alt="Developed with" border="0"/>
+</a>
+
 
 Copyright
 ---------
