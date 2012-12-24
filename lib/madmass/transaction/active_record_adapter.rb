@@ -41,18 +41,23 @@ module Madmass
         end
 
         def rescues #FIXME see CloudTM Adapter
-          {ActiveRecord::Rollback => Proc.new {
-              sleep(rand/4.0)
-              retry
-              return
-            },
-            ActiveRecord::StaleObjectError => Proc.new {
-              sleep(rand/4.0)
-#              Game.current.reload if Game.current
-#              Player.current.reload if Player.current
-              retry
-              return
-            }
+          {
+            ActiveRecord::Rollback => retry_proc,
+            ActiveRecord::StaleObjectError => retry_proc
+          }
+        end
+
+        private
+
+        def retry_proc
+          Proc.new { |attempts|
+            Madmass.logger.warn("Retrying transaction")
+            #FIXME there should be a maximum number of attempts and a quadratic backoff
+            sleep_time = (1000*rand/4.0)+ (attempts)**3 #polynomial backoff in ms
+            Madmass.logger.warn("Sleeping for #{sleep_time}")
+            sleep(sleep_time)
+            Madmass.logger.warn("Woke up after #{sleep_time}")
+            :retry
           }
         end
 
