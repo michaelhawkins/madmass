@@ -141,22 +141,19 @@ module Madmass
 
       end
 
+      #FIXME rename geograph_nodes in domain_nodes and remove dependency from nimbus
       def set_connection_options
         if Madmass.install_options(:cluster_nodes) and Madmass.install_options(:cluster_nodes)[:geograph_nodes]
-          # NOTE: it is available in Ruby 1.9, so if using an earlier version, require "backports".
-          # Note that in Ruby 1.8.7 it exists under the unfortunate name choice; it was renamed in later version so you shouldn't use it.
-          # In jruby sample does not exists!
-
           #FIXME: Geograph nodes should not be mentioned here! Refactor to  domain nodes ....
-          @host = Madmass.install_options(:cluster_nodes)[:geograph_nodes].choice
+          @host = Madmass.install_options(:cluster_nodes)[:geograph_nodes].sample
           @port = Madmass.install_options(:remote_messaging_port)
+          Rails.logger.info("Connecting to remote backend/domain at host #{@host}:#{@port}")
         else
           @host = 'madmass-node'
           @port = 5445
+          Rails.logger.info("Connecting to local backend/domain at host #{@host}:#{@port}")
         end
       end
-
-
     end
 
   end

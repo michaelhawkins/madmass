@@ -22,10 +22,6 @@ Contributing to MadMass
 * Start a feature/bugfix branch
 * Commit and push until you are happy with your contribution
 * Make sure to add tests for it. This is important so I don't break it in a future version unintentionally.
-
-**Note:** MADMASS is currently an experimental project. If you are willing to contribute please contact the developers first. They will
-be happy to introduce you to the project and guide you in the learning process.
-
 Credits
 -------
 
@@ -49,4 +45,8 @@ Copyright
 
 Madmass is Copyright (c) 2011 Algorithmica Srl. It is free software, and may be redistributed under the terms specified in the
 LICENSE.txt file.
+
+**Note:** MADMASS is currently an experimental project. If you are willing to contribute please contact the developers first. They will
+be happy to introduce you to the project and guide you in the learning process.
+
 
