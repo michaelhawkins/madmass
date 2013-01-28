@@ -28,7 +28,7 @@ Transaction Processing Systems, Location-based Mobile Social Networks (or geo-so
   s.add_dependency "bundler"
   s.add_dependency "rcov", "~> 0.9.11"
   s.add_dependency "torquebox-rake-support"
-  s.add_dependency "torquebox", "2.2.0"
+  s.add_dependency "torquebox", "2.3.0"
   # FIXME: uncomment when agent farm will be published and remove from Gemfile of client apps
   #s.add_dependency "agent_farm"
 
