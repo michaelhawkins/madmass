@@ -49,7 +49,6 @@ module Madmass
         #@parameters[:data][:agent] = {:id => @parameters[:data][:agent].oid}
         @payload = (@parameters[:data] || {})
         Madmass.logger.debug %Q{Initialized Remote action with payload:\n #{@payload.to_yaml}\n}
-        @payload = @payload.to_json
         @remote_perception = []
       end
 
@@ -79,7 +78,7 @@ module Madmass
       def build_result
         @remote_perception.each do |p|
           percept = Madmass::Perception::Percept.new(self)
-          percept.data = p[:data]
+          percept.data = p.data.clone
           Madmass.current_perception << percept
         end
         Madmass.logger.debug "Generated Perception \n#{Madmass.current_perception.to_yaml}\n"
@@ -108,15 +107,16 @@ module Madmass
         @parameters[:data][:agent] = {:id => @parameters[:data][:agent].object_id}
         Madmass.logger.debug "RemoteAction data: #{@parameters[:data].to_yaml}"
         #begin
-        queue.publish((@parameters[:data] || {}).to_json, :tx => false, :persistent => false)
+        queue.publish((@parameters[:data] || {}), :tx => false, :persistent => false)
       end
 
       def sync_send
         Madmass.logger.debug "SYNC SEND: JMS options #{@options.to_yaml}"
+        Madmass.logger.debug "SYNC SEND: JMS payload #{@payload.to_yaml}"
 
         result = @session.publish_and_receive(@queue,
                                             @payload,
-                                            {:encoding => :json, :timeout => 60000, :tx => false}
+                                            { :timeout => 60000, :tx => false} #WHICH ENCODING? :encoding => :json,
         )
         return (result or [])
       end

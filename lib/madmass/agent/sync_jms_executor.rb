@@ -42,28 +42,29 @@ module Madmass
         super
       end
 
-      def on_message(body)
+      def on_message(message)
 
         Madmass.logger.debug "\n**************************SYNC Message received********************\n"
         # The synchronous methods always put the user message inside
         # a :message parameter, hence the need to descend here.
-        Madmass.logger.debug "BODY:  \n #{body.to_yaml}\n"
+        #Madmass.logger.debug "BODY:  \n #{body.to_yaml}\n"
         #json_message = JSON.parse(body) #body[:message] #FIXME is JSON needed?
         #Madmass.logger.debug "Objectified version of message received: #{json_message.to_yaml}"
-        message_hash = JSON(body[:message])
+        #message = body  #TODO CHECK ENCODINGS JSON(body[:message])
 
-        Madmass.logger.debug "MESSAGE \n #{message_hash.inspect}\n"
+        Madmass.logger.debug "MESSAGE \n #{message.inspect}\n"
 
-        Madmass.current_agent = Madmass::Agent::ProxyAgent.new(message_hash.delete('agent'))
+        message.delete('agent')
+        Madmass.current_agent = Madmass::Agent::ProxyAgent.new()
 
-        Madmass.current_agent.execute(message_hash)
+        Madmass.current_agent.execute(message)
 
         sync_reply(Madmass.current_perception)
 
       end
 
       def sync_reply(reply)
-        Madmass.logger.debug "Reply perception is \n#{message.to_yaml}\n"
+        Madmass.logger.debug "Reply perception is \n#{reply.to_yaml}\n"
         queue_name = message.jms_message.jms_destination.name
         jms_message_id = message.jms_message.jms_message_id
         Madmass.logger.debug("sender queue_name #{queue_name}  and message_id #{jms_message_id}\n")
@@ -71,7 +72,7 @@ module Madmass
 
         queue.publish(reply, {
           :correlation_id => jms_message_id,
-          :encoding => :json,
+          #:encoding => :json,
           :properties => {:perception => 'true'}}
         )
       end

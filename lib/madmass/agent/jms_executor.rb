@@ -40,7 +40,7 @@ module Madmass
         super
       end
 
-      def on_message(body)
+      def on_message(message)
         # notify that a command is received
         #ActiveSupport::Notifications.instrument("madmass.command_received")
 
@@ -51,7 +51,6 @@ module Madmass
         #agent = Madmass.current_agent || ProxyAgent.new
         Madmass.logger.debug "\n******************* ASYNC message received***************\n}"
 
-        message = JSON(body)
         Madmass.logger.debug "ASYNC message received: #{message.inspect}"
         Madmass.current_agent = Madmass::Agent::ProxyAgent.new(message.delete('agent'))
 

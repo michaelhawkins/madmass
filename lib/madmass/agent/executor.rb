@@ -48,7 +48,8 @@ module Madmass
 
         #prepare opts
         opts = usr_opts.clone
-        opts[:agent] = self
+        #FIXME TEST opts[:agent] = self
+        opts[:agent] = object_id
 
         #Reset perception, that will later be populated by the action
         Madmass.current_perception = []
