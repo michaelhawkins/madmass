@@ -63,12 +63,12 @@ module Madmass
 
         if @sync
           Madmass.logger.debug "Sync send mode"
-          @remote_perception = [{:data => sync_send.data}]
-          Madmass.logger.debug "Response was \n#{@remote_perception[:data].to_yaml}\n"
+          @remote_perception = sync_send
+          Madmass.logger.debug "Response was \n#{@remote_perception.to_yaml}\n"
         else
           Madmass.logger.debug "Async send mode"
           async_send
-          @remote_perception = [{:data => nil}]
+          @remote_perception = []
           Madmass.logger.debug "Message sent"
         end
 
@@ -78,7 +78,7 @@ module Madmass
       def build_result
         @remote_perception.each do |p|
           percept = Madmass::Perception::Percept.new(self)
-          percept.data = p[:data].clone
+          percept.data = p.data
           Madmass.current_perception << percept
         end
         Madmass.logger.debug "Generated Perception \n#{Madmass.current_perception.to_yaml}\n"
