@@ -31,10 +31,13 @@
 class Madmass::Transaction::CloudTmAdapter
   class << self
     def transaction &block
-      Madmass.logger.debug "-- Madmass::Transaction::CloudTmAdapter::transaction --"
+      Madmass.logger.debug "-- BEFORE Madmass::Transaction::CloudTmAdapter::transaction --"
       CloudTm::FenixFramework.getTransactionManager.withTransaction do
+        Madmass.logger.debug "-- OPEN Madmass::Transaction::CloudTmAdapter::transaction --"
         block.call
+        Madmass.logger.debug "-- EXECUTED Madmass::Transaction::CloudTmAdapter::transaction --"
       end
+      Madmass.logger.debug "--  COMMITTED Madmass::Transaction::CloudTmAdapter::transaction --"
     end
 
     def rescues

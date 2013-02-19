@@ -71,6 +71,7 @@ module Madmass
           Madmass.logger.debug("Loading #{action_path}")
           load action_path
         end
+        Madmass.logger.debug("Setup complete. All actions are loaded")
 
       end
     end
