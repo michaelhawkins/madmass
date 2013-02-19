@@ -78,7 +78,14 @@ module Madmass
       def build_result
         @remote_perception.each do |p|
           percept = Madmass::Perception::Percept.new(self)
-          percept.data = p.data
+
+          #FIXME HACK. We get both responses that are Percept Objects and Hashes
+          begin
+            percept.data = p.data
+          rescue Exception
+            percept.data = p[:data]
+          end
+
           Madmass.current_perception << percept
         end
         Madmass.logger.debug "Generated Perception \n#{Madmass.current_perception.to_yaml}\n"
