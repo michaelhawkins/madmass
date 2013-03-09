@@ -81,12 +81,14 @@ module Madmass
             next_action = @current_behavior.next_action
           end
 
-          next_action.merge!(opts)
+         if next_action != nil
+            next_action.merge!(opts)
 
-          Madmass.logger.debug "SIMULATE: will execute \n #{next_action.inspect}"
+            Madmass.logger.debug "SIMULATE: will execute \n #{next_action.inspect}"
 
-          self.execute(next_action)  if self.running?
-
+            self.execute(next_action)  if self.running?
+         end
+          
           self.status = 'dead' if to_kill
 
           Madmass.logger.debug "***********************************************"
