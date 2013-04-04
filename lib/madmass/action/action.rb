@@ -89,6 +89,7 @@ module Madmass
   module Action
     class Action
       include Madmass::Action::Stateful
+      extend ActiveModel::Translation
 
       class_attribute :valid_params
 

@@ -43,14 +43,14 @@ module Madmass
         def rescues #FIXME see CloudTM Adapter
           {ActiveRecord::Rollback => Proc.new {
               sleep(rand/4.0)
-              retry
+              #retry
               return
             },
            ActiveRecord::StaleObjectError => Proc.new {
               sleep(rand/4.0)
 #              Game.current.reload if Game.current
 #              Player.current.reload if Player.current
-              retry
+              #retry
               return
             }
           }
