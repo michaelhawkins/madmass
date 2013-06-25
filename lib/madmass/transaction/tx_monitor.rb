@@ -43,30 +43,31 @@ module Madmass
             #raise Java::OrgInfinispan::CacheException.new #REMOVE ME (USED ONLY FOR DEBUGGING)
           end
         rescue Exception => exc
-          Madmass.logger.warn "\n********************************************************\n"
-          Madmass.logger.warn "Exception in transaction"
-          Madmass.logger.warn("Error during processing: #{$!}, message \n #{exc.message}")
-          Madmass.logger.warn("Backtrace:\n\t#{exc.backtrace.join("\n\t")}")
-          Madmass.logger.warn "\n********************************************************\n\n\n"
-          cause = main_cause exc
-          Madmass.logger.warn "Main Cause is #{cause}"
-          policy = Madmass.rescues[cause.class]
-          # do not retry when the action is not applicable
-          Madmass.logger.error "CAUSE CLASS: #{cause.class}"
-          if policy 
-            Madmass.logger.warn("Recovering through policy for #{cause.class}")
-            if policy.call(attempts) == :retry
-              attempts += 1
-              Madmass.logger.warn("Retrying for the **#{ActiveSupport::Inflector.ordinalize(attempts)}** time!")
-              retry if attempts <= MAX_ATTEMPTS
-              msg = "Aborting, max number of retries (#{MAX_ATTEMPTS}) reached"
-              Madmass.logger.error msg
-              raise Madmass::Errors::CatastrophicError.new(msg)
-            end
-          else
-            Madmass.logger.error("Raising up the stack! No recovery policy for: #{cause.class} ** MESSAGE:\n #{cause.message} ")
-            raise exc;
-          end
+          nop = 0
+#          Madmass.logger.warn "\n********************************************************\n"
+#          Madmass.logger.warn "Exception in transaction"
+#          Madmass.logger.warn("Error during processing: #{$!}, message \n #{exc.message}")
+#          Madmass.logger.warn("Backtrace:\n\t#{exc.backtrace.join("\n\t")}")
+#          Madmass.logger.warn "\n********************************************************\n\n\n"
+#          cause = main_cause exc
+#          Madmass.logger.warn "Main Cause is #{cause}"
+#          policy = Madmass.rescues[cause.class]
+#          # do not retry when the action is not applicable
+#          Madmass.logger.error "CAUSE CLASS: #{cause.class}"
+#          if policy 
+#            Madmass.logger.warn("Recovering through policy for #{cause.class}")
+#            if policy.call(attempts) == :retry
+#              attempts += 1
+#              Madmass.logger.warn("Retrying for the **#{ActiveSupport::Inflector.ordinalize(attempts)}** time!")
+#              retry if attempts <= MAX_ATTEMPTS
+#              msg = "Aborting, max number of retries (#{MAX_ATTEMPTS}) reached"
+#              Madmass.logger.error msg
+#              raise Madmass::Errors::CatastrophicError.new(msg)
+#            end
+#          else
+#            Madmass.logger.error("Raising up the stack! No recovery policy for: #{cause.class} ** MESSAGE:\n #{cause.message} ")
+#            raise exc;
+#          end
         end
         Madmass.logger.debug "############################# TX_MONITOR END #############################"
       end

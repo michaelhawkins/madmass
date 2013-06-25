@@ -31,6 +31,7 @@ module Madmass
   module AgentFarm
     module Agent
       class Behavior
+        attr_accessor :opts
 
         #override, to define the behavior of agent before dying
         def last_wish

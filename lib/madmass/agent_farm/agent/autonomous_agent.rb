@@ -64,6 +64,7 @@ module Madmass
 
                   #Set the appropriate behavior (as specified by agent implementation)
                   current_behavior = behavior
+                  current_behavior.opts = opts
                   jms = jms_endpoint(session, queue)
                   #Register the agent to the domain
                   register_agent opts, jms
