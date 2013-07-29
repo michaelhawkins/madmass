@@ -33,12 +33,13 @@ module Madmass
     class Config
       include Singleton
 
-      attr_accessor :tx_adapter, :perception_sender, :domain_updater
+      attr_accessor :tx_adapter, :perception_sender, :domain_updater, :tx_profiler
 
       def initialize
         @tx_adapter = :"Madmass::Transaction::NoneAdapter"
         @perception_sender = :"Madmass::Comm::DummySender"
         @domain_updater = :"AgentFarm::Domain::AbstractUpdater" #FIXME What is this?
+        @tx_profiler = false
       end
 
       # Overrides default values for all configurations in the yaml file passed

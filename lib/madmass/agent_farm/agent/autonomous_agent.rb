@@ -57,17 +57,17 @@ module Madmass
               begin
 
                 alive = true
-                queue = commands_queue
+##                queue = commands_queue
                 stats = Madmass::AgentFarm::Agent::ExecutionStats.new
 
-                queue.with_session(:tx => false) { |session|
+##                queue.with_session(:tx => false) { |session|
 
                   #Set the appropriate behavior (as specified by agent implementation)
                   current_behavior = behavior
                   current_behavior.opts = opts
-                  jms = jms_endpoint(session, queue)
+##                  jms = jms_endpoint(session, queue)
                   #Register the agent to the domain
-                  register_agent opts, jms
+                  register_agent opts	# jms
 
                   #################################
                   # Main loop.The transactions must be inside the while loop or it will be impossible to
@@ -88,7 +88,7 @@ module Madmass
                         Madmass.logger.debug "Linked Agent to Behavior and Stats"
 
                         #Execute Step
-                        agent.execute_step(jms)
+                        agent.execute_step({})		# jms
 
                         return (agent.status != 'dead')
 
@@ -102,7 +102,7 @@ module Madmass
                     java.lang.Thread.sleep(sleep_time)
 
                   end
-                }
+##                }
 
               rescue Exception => ex
                 Madmass.logger.error "AGENT ABORTED"
@@ -120,7 +120,7 @@ module Madmass
 
           private
 
-          def register_agent opts, jms
+          def register_agent opts
             tx_monitor do
               agent = fetch_agent opts
               agent.execute({
@@ -131,7 +131,7 @@ module Madmass
                                 :user => {:id => agent.getExternalId},
                                 :data => {:type => agent.class.name.demodulize}
                               }
-                            }.merge(jms))
+                            })
             end
           end
 
