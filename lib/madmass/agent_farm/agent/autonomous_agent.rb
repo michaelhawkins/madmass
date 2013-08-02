@@ -67,6 +67,10 @@ module Madmass
                   current_behavior.opts = opts
 ##                  jms = jms_endpoint(session, queue)
                   #Register the agent to the domain
+                  if current_behavior.respond_to?(:get_additional_opts)
+                    opts = opts.merge(current_behavior.get_additional_opts)
+                  end
+Madmass.logger.error "REGISTERING AGENT: #{opts}"
                   register_agent opts	# jms
 
                   #################################
