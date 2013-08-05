@@ -70,7 +70,7 @@ module Madmass
                   if current_behavior.respond_to?(:get_additional_opts)
                     opts = opts.merge(current_behavior.get_additional_opts)
                   end
-Madmass.logger.error "REGISTERING AGENT: #{opts}"
+Madmass.logger.error "FARM REGISTERING AGENT: #{opts}"
                   register_agent opts	# jms
 
                   #################################
@@ -133,7 +133,7 @@ Madmass.logger.error "REGISTERING AGENT: #{opts}"
                                 :cmd => 'register_agent',
                                 :sync => true,
                                 :user => {:id => agent.getExternalId},
-                                :data => {:type => agent.class.name.demodulize, :opts => opts}
+                                :data => {:type => agent.class.name.demodulize, :locality_hint => opts[:locality_hint]}
                               }
                             })
             end
