@@ -133,7 +133,7 @@ Madmass.logger.error "REGISTERING AGENT: #{opts}"
                                 :cmd => 'register_agent',
                                 :sync => true,
                                 :user => {:id => agent.getExternalId},
-                                :data => {:type => agent.class.name.demodulize}
+                                :data => {:type => agent.class.name.demodulize, :opts => opts}
                               }
                             })
             end
