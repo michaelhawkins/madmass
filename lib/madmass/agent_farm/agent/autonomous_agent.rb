@@ -84,7 +84,11 @@ Madmass.logger.error "FARM REGISTERING AGENT: #{opts}"
                       #Execute Step
 Madmass.logger.error "MADMASS A #{opts[:agent_id]}"
 t = Time.new
-                      agent.execute_step({})		# jms
+                      begin
+                        agent.execute_step({})		# jms
+                      rescue Exception => ex
+Madmass.logger.error "AGENT #{opts[:agent_id]} WOULD ABORT, BUT WE ARE RETRYING"
+                      end
 Madmass.logger.error "MADMASS B #{opts[:agent_id]} #{(Time.new - t).to_f}"
 
                       return (agent.status != 'dead')
