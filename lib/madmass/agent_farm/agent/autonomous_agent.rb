@@ -96,7 +96,7 @@ Madmass.logger.error "MADMASS B #{opts[:agent_id]} #{(Time.new - t).to_f}"
                   # sleep before the next step, with some noise to avoid
                   # many "synchronized" requests when you start multiple agents together
                   sleep_time = opts[:step]+((opts[:step]/3.0)*(0.5-rand))
-Madmass.logger.error "MADMASS C #{sleep_time}"
+Madmass.logger.error "MADMASS C #{opts[:agent_id]} #{sleep_time}"
                   java.lang.Thread.sleep(sleep_time)
 
                 end
