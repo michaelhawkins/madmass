@@ -78,15 +78,20 @@ module Madmass
             Madmass.logger.debug "Agent killed"
           else
             #Note: results (if any) are in Madmass.current_perception
+Madmass.logger.error "MADMASS RA #{opts}"
+t = Time.new
             next_action = @current_behavior.next_action
+Madmass.logger.error "MADMASS RB #{opts} #{(Time.new - t).to_f}"
           end
 
          if next_action != nil
             next_action.merge!(opts)
 
             Madmass.logger.debug "SIMULATE: will execute \n #{next_action.inspect}"
-
+Madmass.logger.error "MADMASS QA #{opts}"
+t = Time.new
             self.execute(next_action)  if self.running?
+Madmass.logger.error "MADMASS QB #{opts} #{(Time.new - t).to_f}"
          end
           
           self.status = 'dead' if to_kill
