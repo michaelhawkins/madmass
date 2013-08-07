@@ -57,56 +57,49 @@ module Madmass
               begin
 
                 alive = true
-##                queue = commands_queue
                 stats = Madmass::AgentFarm::Agent::ExecutionStats.new
 
-##                queue.with_session(:tx => false) { |session|
-
-                  #Set the appropriate behavior (as specified by agent implementation)
-                  current_behavior = behavior
-                  current_behavior.opts = opts
-##                  jms = jms_endpoint(session, queue)
-                  #Register the agent to the domain
-                  if current_behavior.respond_to?(:get_additional_opts)
-                    opts = opts.merge(current_behavior.get_additional_opts)
-                  end
+                current_behavior = behavior
+                current_behavior.opts = opts
+                if current_behavior.respond_to?(:get_additional_opts)
+                  opts = opts.merge(current_behavior.get_additional_opts)
+                end
 Madmass.logger.error "FARM REGISTERING AGENT: #{opts}"
-                  register_agent opts	# jms
+                register_agent opts	# jms
 
-                  #################################
-                  # Main loop.The transactions must be inside the while loop or it will be impossible to
-                  # have access to the updated state of the action.
-                  while alive
-                    Madmass.logger.debug "Simulation opts are \n#{opts.to_yaml}\n"
+                while alive
+                  Madmass.logger.debug "Simulation opts are \n#{opts.to_yaml}\n"
 
-                    tx_monitor do
+                  tx_monitor do
 
-                      #Execute a Simulation Step
-                      alive = stats.measure lambda {
+                    alive = stats.measure lambda {
 
-                        agent = fetch_agent opts
+                      agent = fetch_agent opts
 
-                        #Link Agent to Behavior and Stats
-                        current_behavior.agent = stats.agent = agent
-                        agent.behavior = current_behavior
-                        Madmass.logger.debug "Linked Agent to Behavior and Stats"
+                      #Link Agent to Behavior and Stats
+                      current_behavior.agent = stats.agent = agent
+                      agent.behavior = current_behavior
+                      Madmass.logger.debug "Linked Agent to Behavior and Stats"
 
-                        #Execute Step
-                        agent.execute_step({})		# jms
+                      #Execute Step
+Madmass.logger.error "MADMASS A #{opts[:agent_id]}"
+t = Time.new
+                      agent.execute_step({})		# jms
+Madmass.logger.error "MADMASS B #{opts[:agent_id]} #{(Time.new - t).to_f}"
 
-                        return (agent.status != 'dead')
+                      return (agent.status != 'dead')
 
-                      }
-                    end
-                    Madmass.logger.debug "Agent alive: #{alive}"
-
-                    # sleep before the next step, with some noise to avoid
-                    # many "synchronized" requests when you start multiple agents together
-                    sleep_time = opts[:step]+((opts[:step]/3.0)*(0.5-rand))
-                    java.lang.Thread.sleep(sleep_time)
-
+                    }
                   end
-##                }
+                  Madmass.logger.debug "Agent alive: #{alive}"
+
+                  # sleep before the next step, with some noise to avoid
+                  # many "synchronized" requests when you start multiple agents together
+                  sleep_time = opts[:step]+((opts[:step]/3.0)*(0.5-rand))
+Madmass.logger.error "MADMASS C #{sleep_time}"
+                  java.lang.Thread.sleep(sleep_time)
+
+                end
 
               rescue Exception => ex
                 Madmass.logger.error "AGENT ABORTED"
