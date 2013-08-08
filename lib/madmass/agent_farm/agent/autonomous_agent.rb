@@ -64,7 +64,7 @@ module Madmass
                 if current_behavior.respond_to?(:get_additional_opts)
                   opts = opts.merge(current_behavior.get_additional_opts)
                 end
-Madmass.logger.error "FARM REGISTERING AGENT: #{opts}"
+#Madmass.logger.error "FARM REGISTERING AGENT: #{opts}"
                 register_agent opts	# jms
 
                 while alive
@@ -82,14 +82,14 @@ Madmass.logger.error "FARM REGISTERING AGENT: #{opts}"
                       Madmass.logger.debug "Linked Agent to Behavior and Stats"
 
                       #Execute Step
-Madmass.logger.error "MADMASS A #{opts[:agent_id]}"
-t = Time.new
+#Madmass.logger.error "MADMASS A #{opts[:agent_id]}"
+#t = Time.new
                       begin
                         agent.execute_step({})		# jms
                       rescue Exception => ex
 Madmass.logger.error "AGENT #{opts[:agent_id]} WOULD ABORT, BUT WE ARE RETRYING"
                       end
-Madmass.logger.error "MADMASS B #{opts[:agent_id]} #{(Time.new - t).to_f}"
+#Madmass.logger.error "MADMASS B #{opts[:agent_id]} #{(Time.new - t).to_f}"
 
                       return (agent.status != 'dead')
 
