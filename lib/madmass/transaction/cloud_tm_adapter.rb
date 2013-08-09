@@ -32,10 +32,19 @@ class Madmass::Transaction::CloudTmAdapter
   class << self
     def transaction &block
       Madmass.logger.debug "-- BEFORE Madmass::Transaction::CloudTmAdapter::transaction --"
-      CloudTm::FenixFramework.getTransactionManager.withTransaction do
-        Madmass.logger.debug "-- OPEN Madmass::Transaction::CloudTmAdapter::transaction --"
-        block.call
-        Madmass.logger.debug "-- EXECUTED Madmass::Transaction::CloudTmAdapter::transaction --"
+      begin
+        CloudTm::FenixFramework.getTransactionManager.withTransaction do
+          Madmass.logger.debug "-- OPEN Madmass::Transaction::CloudTmAdapter::transaction --"
+          block.call
+          Madmass.logger.debug "-- EXECUTED Madmass::Transaction::CloudTmAdapter::transaction --"
+        end
+      rescue Exception => exc
+        if exc.message.include?("ActionStatus.ABORTED")
+Madmass.logger.error "ROLLBACK"
+          CloudTm::FenixFramework.getTransactionManager.rollback
+        else
+          raise exc
+        end
       end
       Madmass.logger.debug "--  COMMITTED Madmass::Transaction::CloudTmAdapter::transaction --"
     end
