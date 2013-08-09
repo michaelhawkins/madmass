@@ -40,8 +40,8 @@ class Madmass::Transaction::CloudTmAdapter
         end
       rescue Exception => exc
         if exc.message.include?("ActionStatus.ABORTED")
-Madmass.logger.error "ROLLBACK"
-          CloudTm::FenixFramework.getTransactionManager.rollback
+Madmass.logger.error "IGNORING"
+#          CloudTm::FenixFramework.getTransactionManager.rollback
         else
           raise exc
         end
