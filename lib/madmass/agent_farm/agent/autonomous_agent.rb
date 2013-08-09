@@ -74,18 +74,18 @@ module Madmass
 
                     alive = stats.measure lambda {
 
-                      agent = fetch_agent opts
-
-                      #Link Agent to Behavior and Stats
-                      current_behavior.agent = stats.agent = agent
-                      agent.behavior = current_behavior
-                      Madmass.logger.debug "Linked Agent to Behavior and Stats"
-
-                      #Execute Step
-#Madmass.logger.error "MADMASS A #{opts[:agent_id]}"
-#t = Time.new
                       begin
+                        agent = fetch_agent opts
+
+                        # Link Agent to Behavior and Stats
+                        current_behavior.agent = stats.agent = agent
+                        agent.behavior = current_behavior
+                        Madmass.logger.debug "Linked Agent to Behavior and Stats"
+
+                        # Execute Step
+Madmass.logger.error "AGENT-A"
                         agent.execute_step({})		# jms
+Madmass.logger.error "AGENT-B"
                       rescue Exception => ex
 Madmass.logger.error "AGENT #{opts[:agent_id]} WOULD ABORT, BUT WE ARE RETRYING"
                       end
