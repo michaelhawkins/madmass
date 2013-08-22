@@ -83,11 +83,11 @@ module Madmass
                         Madmass.logger.debug "Linked Agent to Behavior and Stats"
 
                         # Execute Step
-Madmass.logger.error "AGENT-A"
+#Madmass.logger.error "AGENT-A"
                         agent.execute_step({})		# jms
-Madmass.logger.error "AGENT-B"
+#Madmass.logger.error "AGENT-B"
                       rescue Exception => ex
-Madmass.logger.error "AGENT #{opts[:agent_id]} WOULD ABORT, BUT WE ARE RETRYING"
+#Madmass.logger.error "AGENT #{opts[:agent_id]} WOULD ABORT, BUT WE ARE RETRYING"
                       end
 #Madmass.logger.error "MADMASS B #{opts[:agent_id]} #{(Time.new - t).to_f}"
 
