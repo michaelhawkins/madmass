@@ -39,7 +39,7 @@ module Madmass
           base.extend ClassMethods
           base.extend(Madmass::Transaction::TxMonitor)
           base.extend(TorqueBox::Messaging::Backgroundable)
-          base.extend(Madmass::AgentFarm::Agent::JmsMessenger::ClassMethods)
+#          base.extend(Madmass::AgentFarm::Agent::JmsMessenger::ClassMethods)
           base.send(:include, Madmass::AgentFarm::Agent::Controllable)
         end
 
