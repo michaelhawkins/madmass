@@ -49,7 +49,7 @@ module Madmass
           alive = step.call #Execute a Simulation Step
 
           # sample the time it takes for the agent to execute a step (in ms)
-          if (Time.now-@last_iteration_update) > LOGGING_INTERVAL
+          if false #(Time.now-@last_iteration_update) > LOGGING_INTERVAL
             @agent.execution_time = (Time.now - @iteration_start_time)*1000
             Madmass.logger.debug "Updated exec duration to #{@agent.execution_time}"
             @last_iteration_update = Time.now
