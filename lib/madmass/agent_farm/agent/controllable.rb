@@ -81,15 +81,15 @@ t = Time.now
             #Note: results (if any) are in Madmass.current_perception
             next_action = @current_behavior.next_action
           end
-Madmass.logger.error "[MADMASS 1] #{(Time.now - t)}s"
-t = Time.now 
+#Madmass.logger.error "[MADMASS 1] #{(Time.now - t)}s"
+#t = Time.now 
          if next_action != nil
             next_action.merge!(opts)
 
             Madmass.logger.debug "SIMULATE: will execute \n #{next_action.inspect}"
             self.execute(next_action)  if self.running?
          end
-Madmass.logger.error "[MADMASS 2] #{(Time.now - t)}s"          
+#Madmass.logger.error "[MADMASS 2] #{(Time.now - t)}s"          
           self.status = 'dead' if to_kill
 
           Madmass.logger.debug "***********************************************"
